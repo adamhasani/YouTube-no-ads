@@ -81,14 +81,6 @@ body.light #search-input{background:#f8f8f8}
 .psel{background:rgba(0,0,0,.6);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:4px 8px;font-size:13px;cursor:pointer;font-family:inherit}
 .psp{flex:1}
 
-/* MINI UI CONTROLS (MINI MODE) */
-#mini-ui{position:absolute;inset:0;display:none;align-items:center;padding:0 12px;background:#1a1a1a;z-index:30;cursor:pointer;}
-#mini-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;}
-#mini-title{font-size:13px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-#mini-ch{font-size:11px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
-.mini-btn{background:none;border:none;color:#fff;padding:8px;cursor:pointer;}
-.mini-btn svg{width:24px;height:24px;}
-
 /* CSS GRID LAYOUT FOR WATCH MODE */
 body.is-watch #main {
   display: grid;
@@ -112,7 +104,7 @@ body.is-watch #watch-page { display: contents; }
 body.is-watch #w-details { grid-area: details; }
 body.is-watch #w-related { grid-area: related; }
 
-/* MINI MODE CSS */
+/* MINI MODE CSS (PINDH KE MAIN) */
 body.is-mini #player-wrapper {
   display: flex !important;
   position: fixed;
@@ -128,12 +120,15 @@ body.is-mini #player-wrapper {
 }
 body.is-mini #pw-inner { flex: 1; }
 body.is-mini #pctrl { display: none !important; }
-body.is-mini #mini-ui {
-  display: flex !important;
-  position: relative;
-  height: 56px;
-  border-top: 1px solid #333;
-}
+
+/* GLOBAL MINI PLAYER UI */
+#mini-ui{position:absolute;inset:0;display:none;align-items:center;padding:0 12px;background:#1a1a1a;z-index:30;cursor:pointer;}
+body.is-mini #mini-ui{display:flex !important; position: relative; height: 56px; border-top: 1px solid #333;}
+#mini-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;}
+#mini-title{font-size:13px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#mini-ch{font-size:11px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.mini-btn{background:none;border:none;color:#fff;padding:8px;cursor:pointer;}
+.mini-btn svg{width:24px;height:24px;}
 
 /* CATS */
 #cats{display:flex;gap:12px;padding:12px 24px;overflow-x:auto;scrollbar-width:none;position:sticky;top:var(--nav-h);background:var(--bg);z-index:50;}
@@ -452,13 +447,13 @@ body.is-mini #mini-ui {
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
 // ═══════════════════════════════
-// STATE / CONFIG & MULTIPLE API KEYS
+// MULTIPLE API KEYS & FALLBACK
 // ═══════════════════════════════
 const API_KEYS = [
-  'AIzaSyDGL07gZV6q40NEsSJ_oA4vaT84est1dXM', // Key 1
-  'AIzaSyCkrAcmKqEAhGG_Nhv0Xz_s2kdOQJctUPo', // Key 2
-  'AIzaSyB4NZlvp3_Y86sICZcACFb8ch7ToeWj6H4', // Key 3
-  'AIzaSyA7JxaKSNvOfBPOQoj81ehXNvqVp8zEbUs'  // Key 4
+  'AIzaSyDGL07gZV6q40NEsSJ_oA4vaT84est1dXM',
+  'AIzaSyCkrAcmKqEAhGG_Nhv0Xz_s2kdOQJctUPo',
+  'AIzaSyB4NZlvp3_Y86sICZcACFb8ch7ToeWj6H4',
+  'AIzaSyA7JxaKSNvOfBPOQoj81ehXNvqVp8zEbUs'
 ];
 let currentKeyIdx = parseInt(localStorage.getItem('yt_key_idx') || '0');
 if(currentKeyIdx >= API_KEYS.length) currentKeyIdx = 0;
@@ -487,53 +482,57 @@ function ago(d){const s=Math.floor((Date.now()-new Date(d))/1000);if(s<60)return
 function dur(d){if(!d)return'';const m=d.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return'';const h=parseInt(m[1]||0),mn=parseInt(m[2]||0),s=parseInt(m[3]||0);if(h>0)return`${h}:${String(mn).padStart(2,'0')}:${String(s).padStart(2,'0')}`;return`${mn}:${String(s).padStart(2,'0')}`;}
 function esc(s){return(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function G(id){return document.getElementById(id);}
-function toast(msg,ms=2600){const t=G('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
+function toast(msg,ms=3000){const t=G('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
 function spin(show){G('spinner').style.display=show?'flex':'none';}
 
 // ═══════════════════════════════
-// SMART API MATCHER (CACHE & FALLBACK)
+// SMART API MATCHER (ERROR DETECTOR)
 // ═══════════════════════════════
 async function api(ep, p, useCache = true) {
-  // 1. Cek Memory Cache (HEMAT KUOTA 100%)
   const cacheKey = 'ytc_' + ep + '_' + JSON.stringify(p);
   if (useCache) {
     const cached = sessionStorage.getItem(cacheKey);
     if (cached) return JSON.parse(cached);
   }
 
-  // 2. Fetch dengan API Key saat ini
-  p.key = API_KEYS[currentKeyIdx];
-  const url = `${BASE}/${ep}?` + new URLSearchParams(p);
-  
-  try {
-    let r = await fetch(url);
-    let d = await r.json();
+  let d = null;
+  let tries = 0;
+
+  // Coba semua 4 key satu per satu kalau ada error
+  while(tries < API_KEYS.length) {
+    p.key = API_KEYS[currentKeyIdx];
+    const url = `${BASE}/${ep}?` + new URLSearchParams(p);
     
-    // 3. Fallback: Kalau Kuota Habis (Error 403), oper ke Key berikutnya
-    if (d.error && d.error.code === 403) {
-      console.warn(`Key ${currentKeyIdx + 1} habis. Mengganti ke key berikutnya...`);
-      currentKeyIdx = (currentKeyIdx + 1) % API_KEYS.length;
-      localStorage.setItem('yt_key_idx', currentKeyIdx);
-      
-      p.key = API_KEYS[currentKeyIdx];
-      const urlRetry = `${BASE}/${ep}?` + new URLSearchParams(p);
-      r = await fetch(urlRetry);
+    try {
+      let r = await fetch(url);
       d = await r.json();
-    }
+      
+      if (d.error) {
+        // Kalau error 403 (Kuota habis / API tidak diizinkan) atau 400 (API v3 belum aktif)
+        console.warn(`Key ${currentKeyIdx + 1} gagal: ${d.error.message}`);
+        
+        currentKeyIdx = (currentKeyIdx + 1) % API_KEYS.length;
+        localStorage.setItem('yt_key_idx', currentKeyIdx);
+        tries++;
+        continue; // Lanjut nyoba pakai key berikutnya
+      }
+      
+      // Sukses! Simpan di cache sementara
+      if (useCache && d) sessionStorage.setItem(cacheKey, JSON.stringify(d));
+      return d;
 
-    if (d.error) {
-      console.error(d.error);
-      return null;
+    } catch(e) {
+      tries++;
     }
-    
-    // Simpan ke Cache Sementara
-    if (useCache && d) sessionStorage.setItem(cacheKey, JSON.stringify(d));
-    return d;
-
-  } catch(e) {
-    console.error(e);
-    return null;
   }
+  
+  // Kalau 4 kali nyoba gagal semua
+  if(d && d.error) {
+    toast(`⚠️ Semua API Key Error: ${d.error.message.substring(0,40)}...`);
+  } else {
+    toast('⚠️ Gagal terhubung ke YouTube API');
+  }
+  return null;
 }
 
 async function fetchAv(ids){
@@ -575,7 +574,7 @@ function applyRoute(state){
     if(curVidId) document.body.classList.add('is-mini');
     else document.body.classList.remove('is-mini');
     
-    if(page==='home') showHome(); // Selalu refresh home biar sesuai histori terbaru
+    if(page==='home') showHome(); 
     if(page==='channel') openChannel(state.arg);
     if(page==='search') doSearchTerm(state.arg, true);
     if(page==='history') showHistory();
@@ -624,14 +623,11 @@ function closeMini(){
   document.body.classList.remove('is-mini'); curVidId=null;
 }
 
-// FIX LANDSCAPE AUTO (Pakai setTimeout untuk menunggu layer)
 async function goFS(){
   const e = G('player-wrapper');
   try {
     if(e.requestFullscreen) await e.requestFullscreen();
     else if(e.webkitRequestFullscreen) await e.webkitRequestFullscreen();
-    
-    // Tunggu sedikit agar browser siap merotasi
     setTimeout(async () => {
       if(screen.orientation && screen.orientation.lock) {
         await screen.orientation.lock('landscape').catch(console.warn);
@@ -724,13 +720,14 @@ async function loadPersonalized(terms){
     for(const b of res){for(const v of(b||[])){const id=v.id?.videoId||v.id;if(!seen.has(id)){seen.add(id);merged.push(v);}}}
     await fetchAv(merged.map(v=>v.snippet?.channelId).filter(Boolean));
     g.innerHTML=merged.map(v=>cardH(v)).join('');
-  }catch(e){g.innerHTML='';}
+  }catch(e){g.innerHTML='<div class="empty">Gagal memuat video. Silakan muat ulang.</div>';}
 }
 const CATS=[{id:'',l:'Semua'},{id:'10',l:'🎵 Musik'},{id:'20',l:'🎮 Gaming'},{id:'25',l:'📰 Berita'},{id:'17',l:'⚽ Olahraga'},{id:'28',l:'💻 Teknologi'}];
 function buildCats(){G('cats').innerHTML=CATS.map(c=>`<button class="cpill${c.id===curCat?' on':''}" onclick="loadCat('${c.id}')">${c.l}</button>`).join('');}
 async function loadCat(c){
   curCat=c;buildCats(); const g=G('grid'); g.innerHTML=Array(12).fill(0).map(skelC).join('');
-  const d=await getTrendAPI(c,24); if(!d)return;
+  const d=await getTrendAPI(c,24); 
+  if(!d){g.innerHTML='<div class="empty">Gagal memuat video.</div>'; return;}
   await fetchAv(d.map(v=>v.snippet?.channelId).filter(Boolean)); g.innerHTML=d.map(v=>cardH(v)).join('');
 }
 async function getTrendAPI(c,m){const d=await api('videos',{part:'snippet,statistics,contentDetails',chart:'mostPopular',maxResults:m,regionCode:'ID',...(c?{videoCategoryId:c}:{})});return d?.items||null;}
@@ -748,13 +745,13 @@ async function openChannel(chId){
   if(!chId)return nav('home');
   G('ch-banner').innerHTML=''; G('ch-big-av').innerHTML=''; G('ch-big-name').textContent='Memuat...'; G('ch-big-subs').textContent='';
   G('ch-grid').innerHTML=Array(8).fill(0).map(skelC).join('');
-  const d=await api('channels',{part:'snippet,brandingSettings,statistics',id:chId}, true); // Pakai Cache
+  const d=await api('channels',{part:'snippet,brandingSettings,statistics',id:chId}, true); 
   if(!d?.items?.length)return; const ch=d.items[0],sn=ch.snippet,st=ch.statistics,bs=ch.brandingSettings;
   if(bs?.image?.bannerExternalUrl)G('ch-banner').innerHTML=`<img src="${bs.image.bannerExternalUrl}"/>`;
   if(sn?.thumbnails?.high?.url)G('ch-big-av').innerHTML=`<img src="${sn.thumbnails.high.url}"/>`;
   G('ch-big-name').textContent=sn?.title||''; G('ch-big-subs').textContent=`${fv(st?.subscriberCount||0)} subscriber · ${fv(st?.videoCount||0)} video`;
   if(sn?.thumbnails?.default?.url)avCache[chId]=sn.thumbnails.default.url;
-  const vids=await api('search',{part:'snippet',channelId:chId,order:'date',type:'video',maxResults:16}, true); // Pakai cache
+  const vids=await api('search',{part:'snippet',channelId:chId,order:'date',type:'video',maxResults:16}, true); 
   if(!vids?.items?.length){G('ch-grid').innerHTML='<div class="empty">Belum ada video</div>';return;}
   const vDetails=await api('videos',{part:'snippet,statistics,contentDetails',id:vids.items.map(i=>i.id.videoId).join(',')}, true);
   G('ch-grid').innerHTML=vDetails?.items?.map(v=>cardH(v)).join('')||'';
@@ -794,7 +791,6 @@ async function openWatch(vid){
 
   addHist(v);
   
-  // FIX VIDEO SELANJUTNYA KOSONG: Hilangkan karakter aneh dan batasi panjang judul
   let safeTitle = sn.title.replace(/[^\w\s]/gi, ' ').split(/\s+/).slice(0,4).join(' ');
   let safeSearchQuery = sn.channelTitle + ' ' + safeTitle;
   const rel=await searchAPI(safeSearchQuery, 12);

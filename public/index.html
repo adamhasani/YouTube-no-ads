@@ -23,12 +23,13 @@ button{background:none;border:none;cursor:pointer;color:inherit;font-family:inhe
 .icon-btn{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}
 .icon-btn:hover{background:var(--surface)}
 .icon-btn svg{width:22px;height:22px}
-#logo-svg{cursor:pointer}
+#logo-svg{cursor:pointer;display:flex;align-items:center;gap:4px}
+.logo-txt{font-size:18px;font-weight:700;letter-spacing:-0.5px}
 
 /* search */
 #search-wrap{flex:1;max-width:580px;margin:0 auto;position:relative}
 #search-row{display:flex}
-#search-input{flex:1;padding:8px 16px;background:#121212;color:var(--text);border:1px solid var(--border);border-right:none;border-radius:40px 0 0 40px;outline:none;font-size:15px}
+#search-input{flex:1;padding:8px 16px;background:#121212;color:var(--text);border:1px solid var(--border);border-right:none;border-radius:40px 0 0 40px;outline:none;font-size:15px;min-width:0;}
 body.light #search-input{background:#f8f8f8}
 #search-input:focus{border-color:var(--blue)}
 #search-btn{width:52px;background:var(--surface);border:1px solid var(--border);border-radius:0 40px 40px 0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -40,7 +41,6 @@ body.light #search-input{background:#f8f8f8}
 
 /* nav right */
 #nav-right{display:flex;align-items:center;gap:4px;flex-shrink:0}
-.badge{position:absolute;top:3px;right:3px;background:var(--red);color:#fff;font-size:9px;font-weight:700;min-width:15px;height:15px;border-radius:9999px;display:flex;align-items:center;justify-content:center}
 
 /* SIDEBAR */
 #sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:90;}
@@ -61,6 +61,8 @@ body.light #search-input{background:#f8f8f8}
 /* MAIN */
 #main{margin-top:var(--nav-h);margin-left:var(--side-w);transition:margin-left .25s;min-height:calc(100vh - var(--nav-h))}
 #main.exp{margin-left:var(--side-full)}
+.page-sec{display:none; padding:16px; max-width:1800px; margin:0 auto;}
+#home-page{padding:0;}
 
 /* CATS */
 #cats{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;scrollbar-width:none;position:sticky;top:var(--nav-h);background:var(--bg);z-index:50;transition:background .3s}
@@ -69,11 +71,8 @@ body.light #search-input{background:#f8f8f8}
 .cpill:hover{background:var(--surface2)}
 .cpill.on{background:var(--text);color:var(--bg)}
 
-/* PERS BANNER */
-#pbanner{display:none;margin:8px 16px;padding:10px 14px;background:linear-gradient(135deg,#1a1a3e,#2d1b4e);border-radius:10px;align-items:center;gap:10px;font-size:13px;color:#c9b8ff}
-
 /* GRID */
-#grid,#sq-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:8px 16px 40px}
+#grid,#sq-grid,#ch-grid,#hist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:8px 16px 40px}
 
 /* VIDEO CARD */
 .vc{cursor:pointer}
@@ -95,7 +94,6 @@ body.light #search-input{background:#f8f8f8}
 .sk{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
 
 /* WATCH PAGE */
-#watch-page{display:none;padding:16px 16px 40px;max-width:1800px}
 #wlayout{display:flex;gap:20px;flex-wrap:wrap}
 #pcol{flex:1 1 600px;min-width:0;transition:flex .3s}
 
@@ -109,26 +107,19 @@ body.light #search-input{background:#f8f8f8}
 #audio-overlay{position:absolute;inset:0;background:#000;z-index:15;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:#fff;}
 #audio-overlay svg{width:48px;height:48px;color:var(--blue);margin-bottom:12px;}
 
-/* State Mini Player */
-#pwrap.is-mini{
-  position:fixed;
-  top:auto; left:auto;
-  bottom:20px; right:20px;
-  width:300px; height:calc(300px * 9 / 16);
-  border-radius:12px;
-  box-shadow:0 8px 32px rgba(0,0,0,.8);
-  z-index:999;
-}
-
-#mini-ui{position:absolute;top:0;left:0;right:0;background:rgba(0,0,0,0.85);padding:6px 10px;display:none;align-items:center;gap:8px;z-index:20;}
-#pwrap.is-mini #mini-ui{display:flex;}
-#mini-title-txt{font-size:12px;color:#ccc;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* GLOBAL MINI PLAYER CONTAINER */
+#global-mini{position:fixed;bottom:20px;right:20px;width:320px;background:#1a1a1a;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.8);z-index:999;display:none;flex-direction:column;overflow:hidden;cursor:pointer;}
+#global-mini-vid{width:100%;aspect-ratio:16/9;background:#000;}
+#mini-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#121212;border-top:1px solid #333;}
+#mini-title{font-size:12px;color:#eee;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
+.mini-btn{background:none;border:none;color:#aaa;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.mini-btn:hover{color:#fff;}
+.mini-btn svg{width:24px;height:24px;}
 
 /* player overlay controls */
 #pctrl{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85));padding:8px 12px 12px;display:flex;align-items:center;gap:6px;opacity:0;transition:opacity .2s;z-index:10;flex-wrap:wrap;pointer-events:none;}
 #pwrap:hover #pctrl{opacity:1}
 #pctrl > * {pointer-events:auto;} 
-#pwrap.is-mini #pctrl{display:none !important;}
 
 .pb{background:none;border:none;color:#fff;cursor:pointer;padding:4px 5px;border-radius:5px;display:flex;align-items:center;flex-shrink:0}
 .pb:hover{background:rgba(255,255,255,.18)}
@@ -143,11 +134,10 @@ body.light #search-input{background:#f8f8f8}
 #lbar{height:3px;background:var(--border);border-radius:99px;overflow:hidden}
 #lbar-fill{height:100%;background:var(--blue);transition:width .6s;border-radius:99px}
 #vmeta{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px}
-#chinfo{display:flex;align-items:center;gap:10px;flex:1;min-width:200px}
+#chinfo{display:flex;align-items:center;gap:10px;flex:1;min-width:200px;cursor:pointer;}
 #chavatar{width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px}
 #chavatar img{width:100%;height:100%;object-fit:cover}
 #subbtn{padding:10px 16px;background:var(--text);color:var(--bg);border-radius:9999px;font-weight:600;font-size:14px;cursor:pointer}
-#subbtn:hover{opacity:.85}
 #abtns{display:flex;gap:7px;flex-wrap:wrap}
 .ab{display:flex;align-items:center;gap:6px;padding:8px 13px;border-radius:9999px;background:var(--surface);font-size:13px;font-weight:500;transition:background .15s;white-space:nowrap;cursor:pointer}
 .ab:hover,.ab.on{background:var(--surface2)}
@@ -156,16 +146,8 @@ body.light #search-input{background:#f8f8f8}
 
 /* desc box */
 #dbox{background:var(--surface);border-radius:12px;padding:14px;margin-top:10px;transition:background .3s}
-#dstats{font-size:14px;font-weight:600;margin-bottom:8px}
 #dtxt{font-size:14px;line-height:1.6;white-space:pre-wrap;max-height:72px;overflow:hidden;transition:max-height .4s}
 #dtxt.exp{max-height:2000px}
-#dtoggle{margin-top:8px;font-weight:600;font-size:14px;cursor:pointer;background:none;border:none;color:var(--text)}
-
-/* notes */
-#notesec{display:none;margin-top:12px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
-#notehdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);cursor:pointer;font-weight:600;font-size:14px}
-#notebody{display:none}
-#notearea{width:100%;min-height:100px;background:var(--bg);color:var(--text);border:none;padding:12px;font-family:inherit;font-size:14px;resize:vertical;outline:none;display:block;transition:background .3s,color .3s}
 
 /* related */
 #rcol{flex:0 0 360px;min-width:0}
@@ -175,9 +157,15 @@ body.light #search-input{background:#f8f8f8}
 .rthumb img{width:100%;height:100%;object-fit:cover;display:block}
 .rdur{position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.85);color:#fff;font-size:11px;font-weight:600;padding:1px 4px;border-radius:3px}
 .rtitle{font-size:13px;font-weight:500;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.rch,.rst{font-size:12px;color:var(--text2);margin-top:2px}
 
-/* PLAYLIST PANEL (Pengganti Watch Later) */
+/* CHANNEL PAGE */
+#ch-banner{width:100%;height:200px;background:#333;border-radius:16px;overflow:hidden;margin-bottom:24px;}
+#ch-banner img{width:100%;height:100%;object-fit:cover;}
+#ch-hdr{display:flex;gap:24px;align-items:center;margin-bottom:32px;}
+#ch-big-av{width:128px;height:128px;border-radius:50%;overflow:hidden;background:var(--surface);flex-shrink:0;}
+#ch-big-av img{width:100%;height:100%;object-fit:cover;}
+
+/* PLAYLIST PANEL */
 #pl-panel{position:fixed;top:var(--nav-h);right:-380px;width:360px;bottom:0;background:var(--bg);border-left:1px solid var(--border);z-index:250;transition:right .3s,background .3s;display:flex;flex-direction:column;}
 #pl-panel.open{right:0}
 .pl-hdr{padding:16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;}
@@ -193,21 +181,9 @@ body.light #search-input{background:#f8f8f8}
 .moverlay.show{display:flex}
 .mbox{background:#1a1a1a;border:1px solid var(--border);border-radius:16px;padding:24px;max-width:400px;width:100%}
 body.light .mbox{background:#fff;}
-.mbox h2{font-size:20px;margin-bottom:16px}
 .minput{width:100%;padding:12px 14px;background:#0f0f0f;border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;margin-bottom:12px}
 body.light .minput{background:#f8f8f8;}
-.minput:focus{border-color:var(--blue)}
 .mbtn{width:100%;padding:12px;background:var(--blue);color:#fff;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;border:none}
-.mbtn:hover{background:#2b8bdc}
-
-/* SEARCH PAGE */
-#sq-page{display:none;padding:16px 16px 40px}
-#sq-title{font-size:14px;color:var(--text2);margin-bottom:16px}
-
-/* SPINNER */
-#spinner{display:none;justify-content:center;padding:60px;flex-direction:column;align-items:center;gap:14px}
-.sring{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
 
 /* TOAST */
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#333;color:#fff;padding:10px 20px;border-radius:9999px;font-size:14px;z-index:9999;transition:transform .3s;white-space:nowrap;pointer-events:none}
@@ -218,6 +194,13 @@ body.light .minput{background:#f8f8f8;}
 
 /* RESPONSIVE & MOBILE FIX */
 @media(max-width:640px){
+  #navbar {padding: 0 8px; gap:4px;}
+  .logo-txt {display:none;} /* Sembunyikan tulisan YourTube biar search bar lega */
+  #search-input {padding: 8px 12px; font-size:14px; border-radius: 40px;}
+  #search-btn {border-radius: 0 40px 40px 0; width: 44px; position:absolute; right:0; top:0; bottom:0;}
+  #search-wrap {max-width: none; flex:1;}
+  #suggest-box {position:fixed; top:56px; left:0; right:0; width:100vw; border-radius:0; border-left:none; border-right:none;}
+
   #main{margin-left:0!important}
   
   /* Sidebar Mobile Drawer */
@@ -228,18 +211,24 @@ body.light .minput{background:#f8f8f8;}
   #sidebar .sdiv {width:calc(100% - 32px); margin:6px 16px;}
   
   /* Fix Grid Kepotong */
-  #grid, #sq-grid {display:block; padding:0;}
+  #grid, #sq-grid, #ch-grid, #hist-grid {display:block; padding:0;}
   .vc {margin-bottom:24px; display:block;}
   .vt {border-radius:0;}
   .vmi {padding:0 12px;}
+  .page-sec {padding:0 0 40px 0;}
   
   #wlayout{flex-direction:column; gap:0;}
   #pwrap-container {border-radius:0;}
+  #vtitle, #vmeta, #dbox, #notesec {margin-left:12px; margin-right:12px;}
   #rcol{flex:none;width:100%; padding: 0 12px;}
-  #watch-page{padding:0 0 40px}
-  #pwrap.is-mini{width:240px; height:calc(240px * 9 / 16); bottom:70px; right:10px;}
+  
   #pl-panel{width:100%;right:-100%}
   #pctrl{flex-wrap:wrap}
+
+  #ch-hdr {flex-direction:column; text-align:center; gap:12px; margin-top:16px;}
+  #ch-banner {border-radius:0;}
+  
+  #global-mini {width:100%; bottom:0; right:0; border-radius:0;}
 }
 </style>
 </head>
@@ -250,15 +239,17 @@ body.light .minput{background:#f8f8f8;}
     <button class="icon-btn" onclick="toggleSidebar()" aria-label="Menu">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
     </button>
-    <svg id="logo-svg" onclick="showHome()" height="20" viewBox="0 0 120 20">
-      <path d="M27.97 3.12C27.64 1.89 26.68.93 25.45.6 23.22 0 14.28 0 14.28 0S5.35 0 3.12.6C1.89.93.93 1.89.6 3.12 0 5.35 0 10 0 10s0 4.65.6 6.88c.33 1.23 1.29 2.19 2.52 2.52C5.35 20 14.28 20 14.28 20s8.93 0 11.17-.6c1.23-.33 2.19-1.29 2.52-2.52C28.57 14.65 28.57 10 28.57 10s0-4.65-.6-6.88z" fill="#FF0000"/>
-      <path d="M11.43 14.29L18.86 10l-7.43-4.29v8.58z" fill="white"/>
-      <text x="33" y="15" font-size="13" font-weight="700" fill="currentColor" font-family="Roboto,Arial,sans-serif">YourTube</text>
-    </svg>
+    <div id="logo-svg" onclick="nav('home')">
+      <svg height="20" viewBox="0 0 120 20" style="width:28px;overflow:visible">
+        <path d="M27.97 3.12C27.64 1.89 26.68.93 25.45.6 23.22 0 14.28 0 14.28 0S5.35 0 3.12.6C1.89.93.93 1.89.6 3.12 0 5.35 0 10 0 10s0 4.65.6 6.88c.33 1.23 1.29 2.19 2.52 2.52C5.35 20 14.28 20 14.28 20s8.93 0 11.17-.6c1.23-.33 2.19-1.29 2.52-2.52C28.57 14.65 28.57 10 28.57 10s0-4.65-.6-6.88z" fill="#FF0000"/>
+        <path d="M11.43 14.29L18.86 10l-7.43-4.29v8.58z" fill="white"/>
+      </svg>
+      <span class="logo-txt">YourTube</span>
+    </div>
   </div>
 
   <div id="search-wrap">
-    <form onsubmit="doSearch(event)" autocomplete="off">
+    <form onsubmit="doSearch(event)" autocomplete="off" style="position:relative">
       <div id="search-row">
         <input id="search-input" type="text" placeholder="Cari video..." oninput="onSugInput(this.value)" onfocus="onSugFocus()" onblur="onSugBlur()"/>
         <button id="search-btn" type="submit">
@@ -270,7 +261,7 @@ body.light .minput{background:#f8f8f8;}
   </div>
 
   <div id="nav-right">
-    <button class="icon-btn" onclick="togglePLPanel()" title="Koleksi Playlist" id="wl-navbtn">
+    <button class="icon-btn" onclick="togglePLPanel()" title="Koleksi Playlist">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
     </button>
     <button class="icon-btn" onclick="toggleTheme()" title="Ganti Tema">
@@ -281,13 +272,17 @@ body.light .minput{background:#f8f8f8;}
 
 <div id="sb-overlay" onclick="toggleSidebar()"></div>
 <aside id="sidebar">
-  <div class="si on" id="sb-home" onclick="showHome()">
+  <div class="si on" id="sb-home" onclick="nav('home')">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
     <span>Beranda</span>
   </div>
-  <div class="si" onclick="doSearchTerm('shorts viral')">
+  <div class="si" onclick="nav('search','shorts viral')">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.77 10.32l-1.2-.5L18 9l.5-1.2.5 1.2 1.2.5-1.2.5L18 11.2l-.23-.88zM3 9l2.93 7h1.76l1.44-3.39L10.56 16h1.76L15.26 9h-1.7l-1.45 3.48L10.56 9H8.81l-1.45 3.48L5.91 9H3z"/></svg>
     <span>Shorts</span>
+  </div>
+  <div class="si" onclick="nav('history')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+    <span>Riwayat</span>
   </div>
   <div class="si" onclick="openPLPanel()">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
@@ -299,128 +294,79 @@ body.light .minput{background:#f8f8f8;}
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.2 10H14L17 3H11v8H8l6.8 9z"/></svg>
     <span>Trending</span>
   </div>
-  <div class="si" onclick="doSearchTerm('musik indonesia terbaru')">
+  <div class="si" onclick="nav('search','musik indonesia terbaru')">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
     <span>Musik</span>
   </div>
-  <div class="si" onclick="doSearchTerm('gaming indonesia')">
+  <div class="si" onclick="nav('search','gaming indonesia')">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5S14.67 12 15.5 12s1.5.67 1.5 1.5S16.33 15 15.5 15zm3-3c-.83 0-1.5-.67-1.5-1.5S17.67 9 18.5 9s1.5.67 1.5 1.5S19.33 12 18.5 12z"/></svg>
     <span>Gaming</span>
   </div>
-  <div class="si" onclick="doSearchTerm('berita terkini hari ini')">
+  <div class="si" onclick="nav('search','berita terkini hari ini')">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 3H2C.9 3 0 3.9 0 5v14c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H2V5h20v14zM4 9h4v2H4zm0 4h4v2H4zm0-8h16v2H4zm6 4h10v2H10zm0 4h10v2H10z"/></svg>
     <span>Berita</span>
   </div>
 </aside>
 
 <div id="main">
-  <div id="home-page">
-    <div id="pbanner">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="#c9b8ff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-      <span id="pbtext"></span>
-    </div>
+  
+  <div id="home-page" class="page-sec">
     <div id="cats"></div>
-    <div id="spinner" style="display:flex"><div class="sring"></div><span style="color:var(--text2)">Memuat...</span></div>
     <div id="grid"></div>
   </div>
 
-  <div id="watch-page">
+  <div id="watch-page" class="page-sec">
     <div id="wlayout">
       <div id="pcol">
         <div id="pwrap-container">
           <div id="pwrap">
             <div id="yt-player"></div>
-            
             <div id="audio-overlay" onclick="toggleAudioMode()">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v9.28a4.39 4.39 0 00-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/></svg>
               <div style="font-size:16px;font-weight:600">Mode Audio Aktif</div>
               <div style="font-size:13px;color:#aaa;margin-top:6px">Ketuk untuk menampilkan video</div>
             </div>
-
-            <div id="mini-ui">
-              <span id="mini-title-txt">–</span>
-              <button onclick="backToPlayer()" style="font-size:16px;color:var(--blue);background:none;border:none;cursor:pointer;padding:0 4px;" title="Kembali ke atas">↑</button>
-              <button onclick="closeMini()" style="font-size:18px;color:#aaa;background:none;border:none;cursor:pointer;padding:0 4px;" title="Tutup">✕</button>
-            </div>
-
             <div id="pctrl">
               <button class="pb" onclick="yc('playVideo')" title="Play"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></button>
               <button class="pb" onclick="yc('pauseVideo')" title="Pause"><svg viewBox="0 0 24 24" fill="#fff"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
-              <select class="psel" id="spd-sel" onchange="setSpd(this.value)" title="Kecepatan Putar">
-                <option value="0.25">0.25×</option><option value="0.5">0.5×</option>
-                <option value="0.75">0.75×</option><option value="1" selected>1×</option>
-                <option value="1.25">1.25×</option><option value="1.5">1.5×</option>
-                <option value="2">2×</option>
+              <select class="psel" id="spd-sel" onchange="setSpd(this.value)">
+                <option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option>
               </select>
-              <select class="psel" id="cap-sel" onchange="setCap(this.value)" title="Subtitle" style="max-width:115px">
-                <option value="">Subtitle OFF</option>
-                <option value="id">🇮🇩 Indonesia</option>
-                <option value="en">🇺🇸 English</option>
-                <option value="ar">🇸🇦 Arab</option>
-                <option value="ja">🇯🇵 Jepang</option>
-                <option value="ko">🇰🇷 Korea</option>
-                <option value="zh-Hans">🇨🇳 Mandarin</option>
+              <select class="psel" id="cap-sel" onchange="setCap(this.value)">
+                <option value="">CC OFF</option><option value="id">ID</option><option value="en">EN</option>
               </select>
               <div class="psp"></div>
-              
-              <button class="pb" onclick="toggleAudioMode()" title="Mode Hemat Baterai (Hanya Suara)">
-                <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3v9.28a4.39 4.39 0 00-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/></svg>
-              </button>
-
-              <button class="pb" id="rep-btn" onclick="toggleRep()" title="Ulangi">
-                <svg viewBox="0 0 24 24" fill="#fff"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
-              </button>
-              <button class="pb" onclick="toggleTheater()" title="Mode Bioskop">
-                <svg viewBox="0 0 24 24" fill="#fff"><path d="M19 6H5c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H5V8h14v8z"/></svg>
-              </button>
-              <button class="pb" onclick="goFS()" title="Layar Penuh">
-                <svg viewBox="0 0 24 24" fill="#fff"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-              </button>
+              <button class="pb" onclick="toggleAudioMode()" title="Mode Audio"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3v9.28a4.39 4.39 0 00-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/></svg></button>
+              <button class="pb" onclick="goFS()" title="Layar Penuh"><svg viewBox="0 0 24 24" fill="#fff"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
             </div>
           </div>
         </div>
 
-        <h1 id="vtitle" style="padding: 0 16px;">Memuat...</h1>
-
-        <div id="lbar-wrap" style="padding: 0 16px;">
+        <h1 id="vtitle">Memuat...</h1>
+        <div id="lbar-wrap">
           <div id="lbar-labels"><span id="llike"></span><span id="lratio"></span></div>
           <div id="lbar"><div id="lbar-fill" style="width:0"></div></div>
         </div>
 
-        <div id="vmeta" style="padding: 0 16px;">
-          <div id="chinfo">
+        <div id="vmeta">
+          <div id="chinfo" onclick="nav('channel', G('chinfo').dataset.chid)">
             <div id="chavatar"></div>
             <div>
               <div id="chname" style="font-weight:600;font-size:15px"></div>
               <div id="chsubs" style="font-size:13px;color:var(--text2)"></div>
             </div>
-            <button id="subbtn">Berlangganan</button>
           </div>
+          <button id="subbtn">Berlangganan</button>
           <div id="abtns">
-            <button class="ab" id="likebtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg><span id="lc">Suka</span></button>
             <button class="ab" id="save-vbtn" onclick="openSaveModalCur()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>Simpan</button>
             <button class="ab" onclick="shareVid()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>Bagikan</button>
-            <button class="ab" onclick="toggleNotes()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>Catatan</button>
           </div>
         </div>
-
-        <div id="dbox" style="margin: 10px 16px;">
-          <div id="dstats"></div>
-          <div id="dtxt"></div>
+        <div id="dbox">
+          <div id="dstats"></div><div id="dtxt"></div>
           <button id="dtoggle" onclick="toggleDesc()">Tampilkan selengkapnya</button>
         </div>
-
-        <div id="notesec" style="margin: 12px 16px;">
-          <div id="notehdr" onclick="toggleNoteBody()">
-            <span>📝 Catatan Pribadi Video Ini</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" id="notechev"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-          </div>
-          <div id="notebody">
-            <textarea id="notearea" placeholder="Tulis catatan pribadi untuk video ini... misalnya timestamp penting, ringkasan, atau ide." oninput="saveNote()"></textarea>
-          </div>
-        </div>
       </div>
-
       <div id="rcol">
         <h3 style="font-size:16px;font-weight:600;margin-bottom:10px">Video Selanjutnya</h3>
         <div id="rlist"></div>
@@ -428,9 +374,39 @@ body.light .minput{background:#f8f8f8;}
     </div>
   </div>
 
-  <div id="sq-page">
+  <div id="channel-page" class="page-sec">
+    <div id="ch-banner"></div>
+    <div id="ch-hdr">
+      <div id="ch-big-av"></div>
+      <div style="flex:1">
+        <h1 id="ch-big-name" style="font-size:28px;margin-bottom:8px;">Memuat...</h1>
+        <div id="ch-big-subs" style="color:var(--text2);margin-bottom:16px;"></div>
+        <button class="ab on" style="border:none;padding:10px 20px;font-size:14px;">Berlangganan</button>
+      </div>
+    </div>
+    <div style="font-size:18px;font-weight:600;margin-bottom:16px;">Video Terbaru</div>
+    <div id="ch-grid"></div>
+  </div>
+
+  <div id="sq-page" class="page-sec">
     <div id="sq-title"></div>
     <div id="sq-grid"></div>
+  </div>
+
+  <div id="hist-page" class="page-sec">
+    <h2 style="font-size:22px;margin-bottom:20px;">Riwayat Tontonan</h2>
+    <div id="hist-grid"></div>
+  </div>
+
+</div>
+
+<div id="global-mini" onclick="nav('watch', curVidId)">
+  <div id="global-mini-vid"></div>
+  <div id="mini-bar">
+    <div id="mini-title">Memuat...</div>
+    <button class="mini-btn" onclick="event.stopPropagation();yc('playVideo')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+    <button class="mini-btn" onclick="event.stopPropagation();yc('pauseVideo')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
+    <button class="mini-btn" onclick="event.stopPropagation();closeGlobalMini()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
   </div>
 </div>
 
@@ -453,6 +429,10 @@ body.light .minput{background:#f8f8f8;}
   </div>
 </div>
 
+<div id="spinner" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;">
+  <div class="sring"></div><div style="color:#fff">Memuat...</div>
+</div>
+
 <div id="toast"></div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
@@ -469,69 +449,29 @@ let curVidId=null;
 let curVidData=null;
 let ytP=null,ytReady=false,pendVid=null;
 let autoRep=false,theaterOn=false,curSpd=1,audioMode=false;
-let pObs=null,sugTimer=null;
+let sugTimer=null, timeTracker=null;
 let avCache={};
 
-// Data Storage
 let wHist=JSON.parse(localStorage.getItem('yt_hist')||'[]');
-let sHist=JSON.parse(localStorage.getItem('yt_shist')||'[]'); // Search History
+let sHist=JSON.parse(localStorage.getItem('yt_shist')||'[]');
 let playlists=JSON.parse(localStorage.getItem('yt_playlists')||'{"Tonton Nanti":[]}');
 let curPlView='Tonton Nanti';
 
-// Avatar colors
 const AVC=['#e53935','#8e24aa','#1e88e5','#00897b','#f4511e','#6d4c41','#546e7a','#43a047','#fb8c00','#d81b60'];
 function avc(s){let h=0;for(let c of(s||''))h=(h*31+c.charCodeAt(0))&0xffffffff;return AVC[Math.abs(h)%AVC.length];}
-
-// ═══════════════════════════════
-// YT IFRAME API
-// ═══════════════════════════════
-window.onYouTubeIframeAPIReady=function(){ytReady=true;if(pendVid){loadP(pendVid);pendVid=null;}};
-
-function loadP(vid){
-  if(!ytReady){pendVid=vid;return;}
-  if(ytP){ytP.loadVideoById(vid);return;}
-  ytP=new YT.Player('yt-player',{
-    host: 'https://www.youtube.com', 
-    videoId:vid,
-    playerVars:{
-      autoplay:1, rel:0, modestbranding:1, playsinline:1, enablejsapi:1
-    },
-    events:{
-      onReady(e){e.target.setPlaybackRate(curSpd);},
-      onStateChange(e){if(e.data===YT.PlayerState.ENDED&&autoRep){ytP.seekTo(0);ytP.playVideo();}}
-    }
-  });
-}
-function yc(cmd){if(ytP&&ytP[cmd])ytP[cmd]();}
-function setSpd(v){curSpd=parseFloat(v);if(ytP)ytP.setPlaybackRate(curSpd);}
-function setCap(lang){
-  if(!ytP)return;
-  try{
-    if(!lang){ytP.unloadModule&&ytP.unloadModule('captions');}
-    else{ytP.loadModule&&ytP.loadModule('captions');ytP.setOption&&ytP.setOption('captions','track',{languageCode:lang});}
-  }catch(e){}
-}
-
-// ═══════════════════════════════
-// UTILS
-// ═══════════════════════════════
 function fv(n){if(!n)return'0';n=parseInt(n);if(n>=1e9)return(n/1e9).toFixed(1)+'M';if(n>=1e6)return(n/1e6).toFixed(1)+'jt';if(n>=1e3)return(n/1e3).toFixed(0)+'rb';return n.toString();}
-function fvl(n){if(!n)return'0 tayangan';n=parseInt(n);if(n>=1e6)return(n/1e6).toFixed(1)+' juta tayangan';if(n>=1e3)return(n/1e3).toFixed(0)+' ribu tayangan';return n.toLocaleString('id')+' tayangan';}
+function fvl(n){if(!n)return'0 penayangan';n=parseInt(n);return n.toLocaleString('id')+' penayangan';}
 function ago(d){const s=Math.floor((Date.now()-new Date(d))/1000);if(s<60)return'baru saja';const m=Math.floor(s/60);if(m<60)return m+'m lalu';const h=Math.floor(m/60);if(h<24)return h+' jam lalu';const dy=Math.floor(h/24);if(dy<7)return dy+' hari lalu';const w=Math.floor(dy/7);if(w<5)return w+' minggu lalu';const mo=Math.floor(dy/30);if(mo<12)return mo+' bulan lalu';return Math.floor(dy/365)+' tahun lalu';}
-function dur(d){if(!d)return'';const m=d.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return'';const h=parseInt(m[1]||0),mn=parseInt(m[2]||0),s=parseInt(m[3]||0);if(h>0)return`${h}:${pad(mn)}:${pad(s)}`;return`${mn}:${pad(s)}`;}
-function pad(n){return String(n).padStart(2,'0');}
+function dur(d){if(!d)return'';const m=d.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return'';const h=parseInt(m[1]||0),mn=parseInt(m[2]||0),s=parseInt(m[3]||0);if(h>0)return`${h}:${String(mn).padStart(2,'0')}:${String(s).padStart(2,'0')}`;return`${mn}:${String(s).padStart(2,'0')}`;}
 function esc(s){return(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function G(id){return document.getElementById(id);}
 function toast(msg,ms=2600){const t=G('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
+function spin(show){G('spinner').style.display=show?'flex':'none';}
 
-// ═══════════════════════════════
-// API
-// ═══════════════════════════════
 async function api(ep,p){
-  p.key=API_KEY;
-  const url=`${BASE}/${ep}?`+new URLSearchParams(p);
-  try{const r=await fetch(url),d=await r.json();if(d.error){toast('⚠️ API error');console.error(d.error);return null;}return d;}
-  catch(e){console.error(e);return null;}
+  p.key=API_KEY; const url=`${BASE}/${ep}?`+new URLSearchParams(p);
+  try{const r=await fetch(url),d=await r.json();if(d.error){toast('⚠️ API error');return null;}return d;}
+  catch(e){return null;}
 }
 async function fetchAv(ids){
   const miss=[...new Set(ids)].filter(id=>!avCache[id]&&id);
@@ -543,7 +483,132 @@ async function fetchAv(ids){
 }
 
 // ═══════════════════════════════
-// HISTORY
+// ROUTER & HISTORY API (NEW!)
+// ═══════════════════════════════
+function nav(page, arg){
+  const state = {page, arg};
+  history.pushState(state, '', `#${page}${arg?('='+encodeURIComponent(arg)):''}`);
+  handleRoute(state);
+}
+
+window.addEventListener('popstate', (e) => {
+  handleRoute(e.state || {page:'home'});
+});
+
+function handleRoute(state){
+  if(window.innerWidth<=640 && G('sidebar').classList.contains('exp')) toggleSidebar();
+  
+  // Sembunyikan semua page
+  document.querySelectorAll('.page-sec').forEach(el=>el.style.display='none');
+  window.scrollTo(0,0);
+
+  // Cek Global Mini Player
+  if(state.page !== 'watch' && curVidId && ytP) {
+    showGlobalMini();
+  } else {
+    hideGlobalMini();
+  }
+
+  if(state.page === 'home') {
+    G('home-page').style.display='block';
+    if(!G('grid').innerHTML) showHome();
+  } 
+  else if(state.page === 'watch') {
+    G('watch-page').style.display='block';
+    if(curVidId !== state.arg) openWatch(state.arg);
+  }
+  else if(state.page === 'channel') {
+    G('channel-page').style.display='block';
+    openChannel(state.arg);
+  }
+  else if(state.page === 'search') {
+    G('sq-page').style.display='block';
+    doSearchTerm(state.arg, true);
+  }
+  else if(state.page === 'history') {
+    G('hist-page').style.display='block';
+    showHistory();
+  }
+}
+
+// ═══════════════════════════════
+// GLOBAL MINI PLAYER (NEW!)
+// ═══════════════════════════════
+function showGlobalMini(){
+  const pe = G('yt-player'), c = G('global-mini-vid');
+  if(pe && !c.contains(pe)) c.appendChild(pe);
+  G('global-mini').style.display = 'flex';
+}
+function hideGlobalMini(){
+  const pe = G('yt-player'), c = G('pwrap');
+  if(pe && !c.contains(pe)) c.insertBefore(pe, c.firstChild);
+  G('global-mini').style.display = 'none';
+}
+function closeGlobalMini(){
+  if(ytP&&ytP.pauseVideo) ytP.pauseVideo();
+  hideGlobalMini();
+  curVidId = null;
+}
+
+// ═══════════════════════════════
+// YT PLAYER & RESUME TIME
+// ═══════════════════════════════
+window.onYouTubeIframeAPIReady=function(){ytReady=true;if(pendVid){loadP(pendVid);pendVid=null;}};
+
+function loadP(vid){
+  if(!ytReady){pendVid=vid;return;}
+  hideGlobalMini(); 
+  
+  let savedTime = localStorage.getItem('ytt_'+vid);
+
+  if(ytP){
+    ytP.loadVideoById(vid, savedTime ? parseFloat(savedTime) : 0);
+    return;
+  }
+  
+  ytP=new YT.Player('yt-player',{
+    host: 'https://www.youtube.com', 
+    videoId:vid,
+    playerVars:{ autoplay:1, rel:0, modestbranding:1, playsinline:1, enablejsapi:1 },
+    events:{
+      onReady(e){
+        e.target.setPlaybackRate(curSpd);
+        if(savedTime) e.target.seekTo(parseFloat(savedTime));
+      },
+      onStateChange(e){
+        if(e.data===YT.PlayerState.ENDED&&autoRep) ytP.seekTo(0);
+        // Track Watch Time
+        if(e.data===YT.PlayerState.PLAYING){
+          if(timeTracker) clearInterval(timeTracker);
+          timeTracker = setInterval(()=>{
+            if(ytP && ytP.getCurrentTime && curVidId) localStorage.setItem('ytt_'+curVidId, ytP.getCurrentTime());
+          }, 3000);
+        } else {
+          if(timeTracker) clearInterval(timeTracker);
+        }
+      }
+    }
+  });
+}
+
+function yc(cmd){if(ytP&&ytP[cmd])ytP[cmd]();}
+function setSpd(v){curSpd=parseFloat(v);if(ytP)ytP.setPlaybackRate(curSpd);}
+function setCap(lang){
+  if(!ytP)return;
+  try{
+    if(!lang){ytP.unloadModule&&ytP.unloadModule('captions');}
+    else{ytP.loadModule&&ytP.loadModule('captions');ytP.setOption&&ytP.setOption('captions','track',{languageCode:lang});}
+  }catch(e){}
+}
+function toggleAudioMode(){
+  audioMode=!audioMode;
+  const ov = G('audio-overlay');
+  if(audioMode){ov.style.display='flex';toast('🎧 Mode Audio Aktif');}
+  else{ov.style.display='none';}
+}
+
+// ═══════════════════════════════
+// HISTORY & RECENT SEARCHES
 // ═══════════════════════════════
 function addHist(v){
   const id=v.id?.videoId||v.id;
@@ -552,113 +617,12 @@ function addHist(v){
   wHist=wHist.slice(0,60);
   localStorage.setItem('yt_hist',JSON.stringify(wHist));
 }
-function getPersonTerms(){
-  if(wHist.length<2)return[];
-  const c={};wHist.slice(0,20).forEach(v=>{if(v.ch)c[v.ch]=(c[v.ch]||0)+1;});
-  return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k])=>k);
+function showHistory(){
+  const grid = G('hist-grid');
+  if(!wHist.length) { grid.innerHTML='<div class="empty" style="grid-column:1/-1">Belum ada riwayat tontonan</div>'; return; }
+  grid.innerHTML = wHist.map(v=>cardH({id:v.id, snippet:{title:v.title, channelTitle:v.ch, channelId:v.chId, thumbnails:{medium:{url:v.thumb}}}})).join('');
 }
 
-// ═══════════════════════════════
-// CUSTOM PLAYLISTS (NEW!)
-// ═══════════════════════════════
-function savePlData(){localStorage.setItem('yt_playlists', JSON.stringify(playlists));}
-
-function openSaveModalCur(){
-  if(!curVidData)return;
-  const sn=curVidData.snippet||{};
-  openSaveModal(curVidData.id, sn.title, sn.channelTitle, sn.thumbnails?.medium?.url||'');
-}
-
-function openSaveModal(id, title, ch, thumb){
-  // Simpan data video di modal (buat kalau bikin playlist baru)
-  const m = G('pl-modal');
-  m.dataset.vid = id; m.dataset.vtitle = title; m.dataset.vch = ch; m.dataset.vthumb = thumb;
-  
-  // Render list checkbox
-  let html = '';
-  for(let pName in playlists){
-    let isChecked = playlists[pName].some(v => v.id === id);
-    html += `<label style="display:flex;align-items:center;gap:12px;margin-bottom:12px;cursor:pointer;font-size:15px;color:var(--text)">
-      <input type="checkbox" style="width:18px;height:18px;accent-color:var(--blue)" ${isChecked?'checked':''} 
-       onchange="togglePlItem('${pName}','${id}','${esc(title)}','${esc(ch)}','${thumb}',this.checked)">
-      ${esc(pName)}
-    </label>`;
-  }
-  G('pl-list-modal').innerHTML = html;
-  m.classList.add('show');
-}
-
-function togglePlItem(pName, id, title, ch, thumb, isCheck){
-  if(isCheck){
-    if(!playlists[pName].some(v=>v.id===id)){
-      playlists[pName].unshift({id, title, ch, thumb, ts:Date.now()});
-      toast(`Ditambahkan ke ${pName}`);
-    }
-  }else{
-    playlists[pName] = playlists[pName].filter(v=>v.id!==id);
-    toast(`Dihapus dari ${pName}`);
-  }
-  savePlData();
-  if(G('pl-panel').classList.contains('open')) renderPL();
-}
-
-function createNewPl(){
-  let n = G('new-pl-inp').value.trim();
-  if(!n){toast('Nama playlist tidak boleh kosong!'); return;}
-  if(playlists[n]){toast('Playlist sudah ada!'); return;}
-  
-  playlists[n] = [];
-  G('new-pl-inp').value = '';
-  const m = G('pl-modal');
-  // Auto add video to new playlist
-  togglePlItem(n, m.dataset.vid, m.dataset.vtitle, m.dataset.vch, m.dataset.vthumb, true);
-  // Refresh modal
-  openSaveModal(m.dataset.vid, m.dataset.vtitle, m.dataset.vch, m.dataset.vthumb);
-}
-
-// Render Panel Kanan (Koleksi)
-function renderPL(){
-  const sel = G('pl-select');
-  sel.innerHTML = Object.keys(playlists).map(p => `<option value="${p}" ${p===curPlView?'selected':''}>${esc(p)}</option>`).join('');
-  
-  const l = G('wl-list');
-  const items = playlists[curPlView] || [];
-  if(!items.length){l.innerHTML='<p style="color:var(--text2);text-align:center;padding:40px 0">Playlist kosong</p>';return;}
-  l.innerHTML = items.map(v=>`<div class="wlitem" onclick="openWatch('${v.id}');closePLPanel()">
-    <div class="wlthumb">${v.thumb?`<img src="${v.thumb}" loading="lazy" alt=""/>`:''}</div>
-    <div style="flex:1;min-width:0">
-      <div style="font-size:13px;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(v.title||'')}</div>
-      <div style="font-size:12px;color:var(--text2);margin-top:2px">${esc(v.ch||'')}</div>
-    </div>
-    <button onclick="event.stopPropagation();rmFromPl('${v.id}')" style="width:26px;height:26px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">✕</button>
-  </div>`).join('');
-}
-function rmFromPl(id){
-  playlists[curPlView] = playlists[curPlView].filter(v=>v.id!==id);
-  savePlData(); renderPL();
-}
-function togglePLPanel(){G('pl-panel').classList.toggle('open');renderPL();}
-function openPLPanel(){if(window.innerWidth<=640)toggleSidebar(); G('pl-panel').classList.add('open');renderPL();}
-function closePLPanel(){G('pl-panel').classList.remove('open');}
-function bgClose(e,id){if(e.target===G(id))G(id).classList.remove('show');}
-
-// ═══════════════════════════════
-// NOTES
-// ═══════════════════════════════
-function loadNote(id){const n=JSON.parse(localStorage.getItem('yt_notes')||'{}');G('notearea').value=n[id]||'';}
-function saveNote(){if(!curVidId)return;const n=JSON.parse(localStorage.getItem('yt_notes')||'{}');n[curVidId]=G('notearea').value;localStorage.setItem('yt_notes',JSON.stringify(n));}
-function toggleNotes(){const ns=G('notesec');ns.style.display=ns.style.display==='block'?'none':'block';}
-function toggleNoteBody(){const b=G('notebody');b.style.display=b.style.display==='block'?'none':'block';}
-
-// ═══════════════════════════════
-// SUGGESTIONS & SEARCH HISTORY
-// ═══════════════════════════════
-function addSearchHist(q){
-  sHist=sHist.filter(x=>x!==q);
-  sHist.unshift(q);
-  sHist=sHist.slice(0,10);
-  localStorage.setItem('yt_shist',JSON.stringify(sHist));
-}
 function onSugInput(v){
   clearTimeout(sugTimer);
   if(!v||v.length<2){showRecentSearches();return;}
@@ -666,42 +630,35 @@ function onSugInput(v){
 }
 function onSugFocus(){
   const v=G('search-input').value.trim();
-  if(v.length>=2) fetchSug(v);
-  else showRecentSearches();
+  if(v.length>=2) fetchSug(v); else showRecentSearches();
 }
 function onSugBlur(){setTimeout(hideSug,200);}
 function showRecentSearches(){
   if(!sHist.length){hideSug();return;}
   const b=G('suggest-box');
-  b.innerHTML=sHist.map(s=>`<div class="sug-item" onmousedown="pickSug('${s.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-    ${esc(s)}</div>`).join('');
+  b.innerHTML=sHist.map(s=>`<div class="sug-item" onmousedown="pickSug('${esc(s)}')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>${esc(s)}</div>`).join('');
   b.style.display='block';
 }
 function fetchSug(q){
-  const cb='_yts_'+Date.now();
-  const s=document.createElement('script');
+  const cb='_yts_'+Date.now(); const s=document.createElement('script');
   const t=setTimeout(()=>{hideSug();try{delete window[cb];s.remove();}catch(e){}},3000);
-  window[cb]=data=>{clearTimeout(t);try{delete window[cb];s.remove();}catch(e){}
-    renderSug(data[1]?data[1].map(x=>Array.isArray(x)?x[0]:x):[]);};
+  window[cb]=data=>{clearTimeout(t);try{delete window[cb];s.remove();}catch(e){} renderSug(data[1]?data[1].map(x=>Array.isArray(x)?x[0]:x):[]);};
   s.src=`https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&hl=id&q=${encodeURIComponent(q)}&callback=${cb}`;
-  s.onerror=()=>{clearTimeout(t);hideSug();};
   document.head.appendChild(s);
 }
 function renderSug(items){
-  const b=G('suggest-box');
-  if(!items.length){b.style.display='none';return;}
-  b.innerHTML=items.slice(0,8).map(s=>`<div class="sug-item" onmousedown="pickSug('${s.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-    ${esc(s)}</div>`).join('');
-  b.style.display='block';
+  if(!items.length)return;
+  G('suggest-box').innerHTML=items.slice(0,8).map(s=>`<div class="sug-item" onmousedown="pickSug('${esc(s)}')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>${esc(s)}</div>`).join('');
+  G('suggest-box').style.display='block';
 }
 function hideSug(){G('suggest-box').style.display='none';}
-function pickSug(s){G('search-input').value=s;hideSug();doSearchTerm(s);}
-function doSearch(e){e.preventDefault();const q=G('search-input').value.trim();if(q)doSearchTerm(q);}
+function pickSug(s){G('search-input').value=s;hideSug();nav('search', s);}
+function doSearch(e){e.preventDefault();const q=G('search-input').value.trim();if(q)nav('search', q);}
 
 // ═══════════════════════════════
-// CARD RENDERING
+// CARDS & PAGES
 // ═══════════════════════════════
 function cardH(v,horiz=false){
   const id=v.id?.videoId||v.id;
@@ -709,68 +666,43 @@ function cardH(v,horiz=false){
   const th=sn.thumbnails?.high?.url||sn.thumbnails?.medium?.url||'';
   const d=dur(cd.duration),views=fv(st.viewCount),ta=sn.publishedAt?ago(sn.publishedAt):'';
   const title=esc(sn.title||''),ch=esc(sn.channelTitle||''),chId=sn.channelId||'';
-  const avU=avCache[chId]||'';
-  const avC=avc(sn.channelTitle||'');
-  const avH=avU?`<img src="${avU}" loading="lazy" alt="" onerror="this.style.display='none'"/>`:((sn.channelTitle||'?')[0].toUpperCase());
+  const avU=avCache[chId]||''; const avC=avc(ch);
+  const avH=avU?`<img src="${avU}" loading="lazy"/>`:((ch||'?')[0].toUpperCase());
 
-  if(horiz)return`<div class="rcard" onclick="openWatch('${id}')">
-    <div class="rthumb">${th?`<img src="${th}" loading="lazy" alt=""/>`:''}<span class="rdur">${d}</span></div>
-    <div style="flex:1;min-width:0"><div class="rtitle">${title}</div><div class="rch">${ch}</div><div class="rst">${views?views+' penayangan':''}</div></div>
+  if(horiz)return`<div class="rcard" onclick="nav('watch','${id}')">
+    <div class="rthumb">${th?`<img src="${th}" loading="lazy"/>`:''}<span class="rdur">${d}</span></div>
+    <div style="flex:1;min-width:0"><div class="rtitle">${title}</div><div class="rch">${ch}</div></div>
   </div>`;
 
   return`<div class="vc">
-    <div class="vt" onclick="openWatch('${id}')">
-      ${th?`<img src="${th}" loading="lazy" alt=""/>`:''}<span class="vdur">${d}</span>
-      <button class="vsavebtn" onclick="event.stopPropagation();openSaveModal('${id}','${title.replace(/'/g,"\\'")}','${ch.replace(/'/g,"\\'")}','${th}')">
+    <div class="vt" onclick="nav('watch','${id}')">
+      ${th?`<img src="${th}" loading="lazy"/>`:''}<span class="vdur">${d}</span>
+      <button class="vsavebtn" onclick="event.stopPropagation();openSaveModal('${id}','${esc(title)}','${esc(ch)}','${th}')">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg> Simpan
       </button>
     </div>
     <div class="vmi">
-      <div class="vav" style="background:${avC}" onclick="doSearchTerm('${ch.replace(/'/g,"\\'")}');">${avH}</div>
-      <div style="flex:1;min-width:0;cursor:pointer" onclick="openWatch('${id}')">
+      <div class="vav" style="background:${avC}" onclick="nav('channel','${chId}')">${avH}</div>
+      <div style="flex:1;min-width:0;cursor:pointer" onclick="nav('watch','${id}')">
         <div class="vnm">${title}</div><div class="vch">${ch}</div><div class="vst">${views?views+' penayangan':''}${ta?' · '+ta:''}</div>
       </div>
     </div>
   </div>`;
 }
 
-function skelC(){return`<div>
-  <div class="sk" style="width:100%;aspect-ratio:16/9;border-radius:12px"></div>
-  <div style="display:flex;gap:10px;margin-top:10px">
-    <div class="sk" style="width:36px;height:36px;border-radius:50%;flex-shrink:0"></div>
-    <div style="flex:1"><div class="sk" style="height:13px;border-radius:4px;margin-bottom:7px;width:90%"></div>
-    <div class="sk" style="height:12px;border-radius:4px;margin-bottom:6px;width:60%"></div>
-    <div class="sk" style="height:11px;border-radius:4px;width:70%"></div></div>
-  </div></div>`;}
-
-// ═══════════════════════════════
-// PAGES & CORE LOGIC
-// ═══════════════════════════════
-function showPg(p){
-  G('home-page').style.display=p==='home'?'block':'none';
-  G('watch-page').style.display=p==='watch'?'block':'none';
-  G('sq-page').style.display=p==='search'?'block':'none';
-}
+function skelC(){return`<div><div class="sk" style="width:100%;aspect-ratio:16/9;border-radius:12px"></div><div style="display:flex;gap:10px;margin-top:10px"><div class="sk" style="width:36px;height:36px;border-radius:50%;flex-shrink:0"></div><div style="flex:1"><div class="sk" style="height:13px;border-radius:4px;margin-bottom:7px;width:90%"></div><div class="sk" style="height:12px;border-radius:4px;width:60%"></div></div></div></div>`;}
 
 async function showHome(){
-  showPg('home');buildCats();
-  const terms=getPersonTerms();
-  if(terms.length){
-    G('pbanner').style.display='flex';
-    G('pbtext').textContent=`Berdasarkan tontonanmu: ${terms.slice(0,2).join(', ')}`;
-    await loadPersonalized(terms);
-  }else{
-    G('pbanner').style.display='none';
-    await loadCat('');
-  }
+  buildCats();
+  const terms=wHist.slice(0,20).reduce((acc, v)=>{if(v.ch) acc[v.ch]=(acc[v.ch]||0)+1; return acc;}, {});
+  const top = Object.entries(terms).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
+  if(top.length) await loadPersonalized(top); else await loadCat('');
 }
 
 async function loadPersonalized(terms){
-  const grid=G('grid'),sp=G('spinner');
-  sp.style.display='flex';grid.innerHTML='';
-  grid.innerHTML=Array(12).fill(0).map(skelC).join('');sp.style.display='none';
+  const grid=G('grid'); grid.innerHTML=Array(12).fill(0).map(skelC).join('');
   try{
-    const qs=[...terms.slice(0,2).map(t=>searchAPI(t,10)),getTrendAPI('',8)];
+    const qs=[...terms.map(t=>searchAPI(t,10)),getTrendAPI('',8)];
     const res=await Promise.all(qs);
     const seen=new Set(),merged=[];
     for(const batch of res){for(const v of(batch||[])){const id=v.id?.videoId||v.id;if(!seen.has(id)){seen.add(id);merged.push(v);}}}
@@ -779,196 +711,152 @@ async function loadPersonalized(terms){
   }catch(e){grid.innerHTML='';}
 }
 
-const CATS=[
-  {id:'',l:'Semua'},{id:'10',l:'🎵 Musik'},{id:'20',l:'🎮 Gaming'},
-  {id:'25',l:'📰 Berita'},{id:'17',l:'⚽ Olahraga'},{id:'28',l:'💻 Teknologi'},
-  {id:'24',l:'🎭 Hiburan'},{id:'22',l:'👤 Vlog'},{id:'1',l:'🎬 Film'},
-  {id:'23',l:'😂 Komedi'},{id:'27',l:'📚 Edukasi'},{id:'19',l:'✈️ Travel'}
-];
-
-function buildCats(){
-  G('cats').innerHTML=CATS.map(c=>`<button class="cpill${c.id===curCat?' on':''}" onclick="loadCat('${c.id}')">${c.l}</button>`).join('');
-}
+const CATS=[{id:'',l:'Semua'},{id:'10',l:'🎵 Musik'},{id:'20',l:'🎮 Gaming'},{id:'25',l:'📰 Berita'},{id:'17',l:'⚽ Olahraga'},{id:'28',l:'💻 Teknologi'}];
+function buildCats(){G('cats').innerHTML=CATS.map(c=>`<button class="cpill${c.id===curCat?' on':''}" onclick="loadCat('${c.id}')">${c.l}</button>`).join('');}
 
 async function loadCat(catId){
-  curCat=catId;buildCats();showPg('home');
-  const grid=G('grid'),sp=G('spinner');
-  sp.style.display='flex';grid.innerHTML='';
+  curCat=catId;buildCats(); const grid=G('grid');
+  grid.innerHTML=Array(12).fill(0).map(skelC).join('');
   const data=await getTrendAPI(catId,24);
-  sp.style.display='none';
   if(!data)return;
   await fetchAv(data.map(v=>v.snippet?.channelId).filter(Boolean));
   grid.innerHTML=data.map(v=>cardH(v)).join('');
-  G('pbanner').style.display='none';
 }
+async function getTrendAPI(c,m){const d=await api('videos',{part:'snippet,statistics,contentDetails',chart:'mostPopular',maxResults:m,regionCode:'ID',...(c?{videoCategoryId:c}:{})}); return d?.items||null;}
+async function searchAPI(q,m){const d=await api('search',{part:'snippet',q,type:'video',maxResults:m}); if(!d?.items?.length)return[]; const i=d.items.map(x=>x.id.videoId).join(','); return (await api('videos',{part:'snippet,statistics,contentDetails',id:i}))?.items||[];}
 
-async function getTrendAPI(catId,max=24){
-  const p={part:'snippet,statistics,contentDetails',chart:'mostPopular',maxResults:max,regionCode:'ID'};
-  if(catId)p.videoCategoryId=catId;
-  const d=await api('videos',p);return d?.items||null;
-}
-
-async function searchAPI(q,max=20){
-  const d=await api('search',{part:'snippet',q,type:'video',maxResults:max});
-  if(!d?.items?.length)return[];
-  const ids=d.items.map(i=>i.id.videoId).filter(Boolean).join(',');
-  if(!ids)return[];
-  const d2=await api('videos',{part:'snippet,statistics,contentDetails',id:ids});
-  return d2?.items||[];
-}
-
-async function doSearchTerm(q){
-  G('search-input').value=q;hideSug(); addSearchHist(q);
-  showPg('search');window.scrollTo(0,0);
+async function doSearchTerm(q, isRouted){
+  if(!isRouted) return nav('search', q); // Route it if called directly
+  G('search-input').value=q; sHist=sHist.filter(x=>x!==q); sHist.unshift(q); localStorage.setItem('yt_shist',JSON.stringify(sHist.slice(0,10)));
   G('sq-title').innerHTML=`Hasil untuk: <strong style="color:var(--text)">"${esc(q)}"</strong>`;
-  const grid=G('sq-grid');
-  grid.innerHTML=Array(8).fill(0).map(skelC).join('');
-  const items=await searchAPI(q,20);
-  await fetchAv(items.map(v=>v.snippet?.channelId).filter(Boolean));
-  grid.innerHTML=items.length?items.map(v=>cardH(v)).join(''):`<div class="empty" style="grid-column:1/-1"><p>Tidak ada hasil untuk "${esc(q)}"</p></div>`;
+  const grid=G('sq-grid'); grid.innerHTML=Array(8).fill(0).map(skelC).join('');
+  const items=await searchAPI(q,20); await fetchAv(items.map(v=>v.snippet?.channelId).filter(Boolean));
+  grid.innerHTML=items.length?items.map(v=>cardH(v)).join(''):`<div class="empty">Tidak ada hasil</div>`;
 }
 
 // ═══════════════════════════════
-// WATCH LOGIC
+// NEW: CHANNEL PAGE
+// ═══════════════════════════════
+async function openChannel(chId){
+  if(!chId) return nav('home');
+  G('ch-banner').innerHTML = ''; G('ch-big-av').innerHTML = '';
+  G('ch-big-name').textContent = 'Memuat...'; G('ch-big-subs').textContent = '';
+  G('ch-grid').innerHTML=Array(8).fill(0).map(skelC).join('');
+  
+  const d = await api('channels', {part:'snippet,brandingSettings,statistics', id:chId});
+  if(!d?.items?.length) return;
+  const ch = d.items[0], sn = ch.snippet, st = ch.statistics, bs = ch.brandingSettings;
+  
+  if(bs?.image?.bannerExternalUrl) G('ch-banner').innerHTML = `<img src="${bs.image.bannerExternalUrl}"/>`;
+  if(sn?.thumbnails?.high?.url) G('ch-big-av').innerHTML = `<img src="${sn.thumbnails.high.url}"/>`;
+  
+  G('ch-big-name').textContent = sn?.title || '';
+  G('ch-big-subs').textContent = `${fv(st?.subscriberCount||0)} subscriber · ${fv(st?.videoCount||0)} video`;
+  
+  // Cache av biar pas render cardH muncul
+  if(sn?.thumbnails?.default?.url) avCache[chId] = sn.thumbnails.default.url;
+  
+  const vids = await api('search', {part:'snippet', channelId:chId, order:'date', type:'video', maxResults:16});
+  if(!vids?.items?.length) { G('ch-grid').innerHTML = '<div class="empty">Tidak ada video</div>'; return;}
+  
+  const ids = vids.items.map(i=>i.id.videoId).join(',');
+  const vDetails = await api('videos', {part:'snippet,statistics,contentDetails', id:ids});
+  
+  G('ch-grid').innerHTML = vDetails?.items?.map(v=>cardH(v)).join('') || '';
+}
+
+// ═══════════════════════════════
+// WATCH PAGE
 // ═══════════════════════════════
 async function openWatch(vid){
-  showPg('watch');window.scrollTo(0,0);curVidId=vid;
-  audioMode=false; G('audio-overlay').style.display='none';
-  G('vtitle').textContent='Memuat...';G('dstats').textContent='';G('dtxt').textContent='';
-  G('dtxt').classList.remove('exp');G('dtoggle').textContent='Tampilkan selengkapnya';
-  G('lbar-wrap').style.display='none';G('notesec').style.display='none';
-  G('lc').textContent='Suka';
-  G('chname').textContent='';G('chsubs').textContent='';G('chavatar').innerHTML='';
-  G('mini-title-txt').textContent='Memuat...';
-  
-  G('rlist').innerHTML=Array(5).fill(0).map(()=>`<div style="display:flex;gap:8px;margin-bottom:8px">
-    <div class="sk" style="width:168px;height:94px;border-radius:8px;flex-shrink:0"></div>
-    <div style="flex:1"><div class="sk" style="height:12px;border-radius:4px;margin-bottom:6px;width:90%"></div>
-    <div class="sk" style="height:11px;border-radius:4px;width:60%"></div></div></div>`).join('');
-
+  curVidId=vid; audioMode=false; G('audio-overlay').style.display='none';
+  G('vtitle').textContent='Memuat...'; G('chname').textContent=''; G('mini-title').textContent='Memuat...';
+  G('rlist').innerHTML=Array(5).fill(0).map(()=>`<div style="display:flex;gap:8px;margin-bottom:8px"><div class="sk" style="width:168px;height:94px;border-radius:8px;flex-shrink:0"></div><div style="flex:1"><div class="sk" style="height:12px;border-radius:4px;margin-bottom:6px;width:90%"></div></div></div>`).join('');
   loadP(vid);
 
   const d=await api('videos',{part:'snippet,statistics,contentDetails',id:vid});
   if(!d?.items?.length)return;
-  const v=d.items[0];curVidData=v;
-  const sn=v.snippet||{},st=v.statistics||{};
+  const v=d.items[0], sn=v.snippet, st=v.statistics;
 
-  document.title=`${sn.title||''} - YourTube`;
-  G('vtitle').textContent=sn.title||'';
-  G('dstats').textContent=`${fvl(st.viewCount)} · ${ago(sn.publishedAt)}`;
-  G('dtxt').textContent=sn.description||'';
-  G('lc').textContent=fv(st.likeCount)||'Suka';
-  G('mini-title-txt').textContent=sn.title||'';
+  document.title=`${sn.title} - YourTube`;
+  G('vtitle').textContent=sn.title; G('dstats').textContent=`${fvl(st.viewCount)} · ${ago(sn.publishedAt)}`;
+  G('dtxt').textContent=sn.description||''; G('lc').textContent=fv(st.likeCount)||'Suka';
+  G('mini-title').textContent=sn.title;
+
+  G('chinfo').dataset.chid = sn.channelId;
 
   if(st.likeCount&&st.viewCount){
     const r=Math.min(100,(parseInt(st.likeCount)/parseInt(st.viewCount))*500);
-    G('llike').textContent=`👍 ${fv(st.likeCount)} suka`;
-    G('lratio').textContent=`Disukai ${r.toFixed(1)}% penonton`;
-    G('lbar-fill').style.width=`${Math.min(100,r*2)}%`;
-    G('lbar-wrap').style.display='block';
+    G('lbar-fill').style.width=`${Math.min(100,r*2)}%`; G('lbar-wrap').style.display='block';
   }
-
-  loadNote(vid);
-
-  const chId=sn.channelId;
-  G('chname').textContent=sn.channelTitle||'';
+  
+  const chId=sn.channelId; G('chname').textContent=sn.channelTitle;
   if(chId){
     api('channels',{part:'snippet,statistics',id:chId}).then(cd=>{
-      if(!cd?.items?.length)return;
-      const ch=cd.items[0];
-      G('chsubs').textContent=`${fv(ch.statistics?.subscriberCount||0)} subscriber`;
-      const img=ch.snippet?.thumbnails?.medium?.url||ch.snippet?.thumbnails?.default?.url;
-      if(img){G('chavatar').innerHTML=`<img src="${img}" alt="" style="width:100%;height:100%;object-fit:cover"/>`;}
-      else{G('chavatar').textContent=(sn.channelTitle||'?')[0].toUpperCase();G('chavatar').style.background=avc(sn.channelTitle||'');}
+      if(!cd?.items?.length)return; const c=cd.items[0];
+      G('chsubs').textContent=`${fv(c.statistics?.subscriberCount||0)} sub`;
+      const img=c.snippet?.thumbnails?.medium?.url;
+      if(img)G('chavatar').innerHTML=`<img src="${img}"/>`; else{G('chavatar').textContent=sn.channelTitle[0].toUpperCase();G('chavatar').style.background=avc(sn.channelTitle);}
     });
   }
 
   addHist(v);
-
-  const rel=await searchAPI(sn.title||'',12);
-  await fetchAv(rel.map(r=>r.snippet?.channelId).filter(Boolean));
+  const rel=await searchAPI(sn.title,12); await fetchAv(rel.map(r=>r.snippet?.channelId).filter(Boolean));
   G('rlist').innerHTML=rel.filter(r=>(r.id?.videoId||r.id)!==vid).map(r=>cardH(r,true)).join('');
-
-  setupMiniObs();
 }
 
 // ═══════════════════════════════
-// NEW MINI PLAYER
+// PLAYLISTS
 // ═══════════════════════════════
-function setupMiniObs(){
-  if(pObs)pObs.disconnect();
-  pObs=new IntersectionObserver(([e])=>{
-    if(!curVidId)return;
-    if(G('watch-page').style.display !== 'block') return;
-    if(!e.isIntersecting) showMini(); else hideMini();
-  },{threshold:0.15});
-  pObs.observe(G('pwrap-container'));
-}
-function showMini(){G('pwrap').classList.add('is-mini');}
-function hideMini(){G('pwrap').classList.remove('is-mini');}
-function closeMini(){if(ytP&&ytP.pauseVideo)ytP.pauseVideo();hideMini();}
-function backToPlayer(){hideMini();G('pwrap-container').scrollIntoView({behavior:'smooth', block: 'center'});}
-
-// ═══════════════════════════════
-// THEATER, AUDIO MODE & FULLSCREEN
-// ═══════════════════════════════
-function toggleTheater(){
-  theaterOn=!theaterOn;
-  const pc=G('pcol'),pw=G('pwrap-container'),rc=G('rcol');
-  if(theaterOn){pc.style.flex='1 1 100%';pw.classList.add('theater');rc.style.display='none';G('watch-page').style.padding='0';toast('🎭 Mode Bioskop ON');}
-  else{pc.style.flex='';pw.classList.remove('theater');rc.style.display='';G('watch-page').style.padding='16px 16px 40px';toast('Mode Bioskop OFF');}
-}
-
-// FITUR BARU: AUDIO MODE
-function toggleAudioMode(){
-  audioMode=!audioMode;
-  const ov = G('audio-overlay');
-  if(audioMode){ov.style.display='flex';toast('🎧 Mode Audio Aktif');}
-  else{ov.style.display='none';}
-}
-
-async function goFS(){
-  const el=G('pwrap');
-  try{if(el.requestFullscreen)await el.requestFullscreen();else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();else if(el.mozRequestFullScreen)el.mozRequestFullScreen();}catch(e){console.warn(e);}
-}
-async function lockLandscape(){try{await screen.orientation.lock('landscape');toast('📱 Landscape aktif');}catch(e){}}
-function unlockOrientation(){try{screen.orientation.unlock();}catch(e){}}
-document.addEventListener('fullscreenchange',()=>{if(document.fullscreenElement)lockLandscape();else unlockOrientation();});
-document.addEventListener('webkitfullscreenchange',()=>{if(document.webkitFullscreenElement)lockLandscape();else unlockOrientation();});
-
-function toggleRep(){autoRep=!autoRep;G('rep-btn').style.background=autoRep?'rgba(255,0,0,.35)':'';toast(autoRep?'🔁 Putar Ulang ON':'Putar Ulang OFF');}
-function toggleDesc(){const el=G('dtxt');const e=el.classList.toggle('exp');G('dtoggle').textContent=e?'Tampilkan lebih sedikit':'Tampilkan selengkapnya';}
-function shareVid(){
-  const url=`https://youtu.be/${curVidId}`;
-  if(navigator.share)navigator.share({title:G('vtitle').textContent,url});
-  else if(navigator.clipboard)navigator.clipboard.writeText(url).then(()=>toast('🔗 Link disalin!'));
-  else toast('Link: '+url);
-}
-
-// ═══════════════════════════════
-// THEME + SIDEBAR
-// ═══════════════════════════════
-function toggleTheme(){document.body.classList.toggle('light');const l=document.body.classList.contains('light');localStorage.setItem('yt_theme',l?'light':'dark');toast(l?'☀️ Mode Terang':'🌙 Mode Gelap');}
-function toggleSidebar(){
-  const sb = G('sidebar'), mn = G('main'), ov = G('sb-overlay');
-  if(window.innerWidth <= 640) {
-    sb.classList.toggle('exp');
-    if(sb.classList.contains('exp')) ov.classList.add('show');
-    else ov.classList.remove('show');
-  } else {
-    sideExp = !sideExp;
-    if(sideExp){sb.classList.add('exp');mn.classList.add('exp');}
-    else{sb.classList.remove('exp');mn.classList.remove('exp');}
+function openSaveModalCur(){if(curVidData)openSaveModal(curVidData.id,curVidData.snippet.title,curVidData.snippet.channelTitle,curVidData.snippet.thumbnails?.medium?.url);}
+function openSaveModal(id,title,ch,thumb){
+  const m=G('pl-modal'); m.dataset.vid=id; m.dataset.vtitle=title; m.dataset.vch=ch; m.dataset.vthumb=thumb;
+  let html='';
+  for(let p in playlists){
+    let c=playlists[p].some(v=>v.id===id);
+    html+=`<label style="display:flex;align-items:center;gap:12px;margin-bottom:12px;cursor:pointer"><input type="checkbox" style="width:18px;height:18px" ${c?'checked':''} onchange="togglePlItem('${p}','${id}','${esc(title)}','${esc(ch)}','${thumb}',this.checked)">${esc(p)}</label>`;
   }
+  G('pl-list-modal').innerHTML=html; m.classList.add('show');
+}
+function togglePlItem(p,id,t,c,th,chk){
+  if(chk){if(!playlists[p].some(v=>v.id===id)){playlists[p].unshift({id,title:t,ch:c,thumb:th});toast(`Masuk ke ${p}`);}}
+  else{playlists[p]=playlists[p].filter(v=>v.id!==id);toast(`Dihapus dari ${p}`);}
+  localStorage.setItem('yt_playlists',JSON.stringify(playlists)); if(G('pl-panel').classList.contains('open'))renderPL();
+}
+function createNewPl(){
+  let n=G('new-pl-inp').value.trim(); if(!n||playlists[n])return;
+  playlists[n]=[]; G('new-pl-inp').value='';
+  const m=G('pl-modal'); togglePlItem(n,m.dataset.vid,m.dataset.vtitle,m.dataset.vch,m.dataset.vthumb,true);
+  openSaveModal(m.dataset.vid,m.dataset.vtitle,m.dataset.vch,m.dataset.vthumb);
+}
+function renderPL(){
+  G('pl-select').innerHTML=Object.keys(playlists).map(p=>`<option value="${p}" ${p===curPlView?'selected':''}>${esc(p)}</option>`).join('');
+  const i=playlists[curPlView]||[];
+  G('wl-list').innerHTML=i.length?i.map(v=>`<div class="wlitem" onclick="nav('watch','${v.id}');closePLPanel()"><div class="wlthumb"><img src="${v.thumb}"/></div><div style="flex:1"><div style="font-size:13px;font-weight:500;overflow:hidden">${esc(v.title)}</div><div style="font-size:12px;color:#aaa">${esc(v.ch)}</div></div><button onclick="event.stopPropagation();playlists['${curPlView}']=playlists['${curPlView}'].filter(x=>x.id!=='${v.id}');localStorage.setItem('yt_playlists',JSON.stringify(playlists));renderPL()" style="width:26px;height:26px;border-radius:50%;background:var(--surface);color:#fff;border:none">✕</button></div>`).join(''):'<div class="empty">Kosong</div>';
+}
+function togglePLPanel(){G('pl-panel').classList.toggle('open');renderPL();}
+function openPLPanel(){if(window.innerWidth<=640)toggleSidebar();G('pl-panel').classList.add('open');renderPL();}
+function closePLPanel(){G('pl-panel').classList.remove('open');}
+function bgClose(e,id){if(e.target===G(id))G(id).classList.remove('show');}
+function toggleTheme(){document.body.classList.toggle('light');localStorage.setItem('yt_theme',document.body.classList.contains('light')?'light':'dark');}
+function toggleSidebar(){
+  const sb=G('sidebar'),mn=G('main'),ov=G('sb-overlay');
+  if(window.innerWidth<=640){sb.classList.toggle('exp');ov.classList.toggle('show',sb.classList.contains('exp'));}
+  else{sideExp=!sideExp;sb.classList.toggle('exp',sideExp);mn.classList.toggle('exp',sideExp);}
 }
 
-// ═══════════════════════════════
-// INIT
-// ═══════════════════════════════
+// Init Router
 document.addEventListener('DOMContentLoaded',()=>{
   if(localStorage.getItem('yt_theme')==='light')document.body.classList.add('light');
-  if(sideExp && window.innerWidth > 640){G('sidebar').classList.add('exp');G('main').classList.add('exp');}
-  showHome();
+  if(sideExp && window.innerWidth>640){G('sidebar').classList.add('exp');G('main').classList.add('exp');}
+  
+  // Baca URL hash saat web dibuka
+  const hash = window.location.hash.substring(1);
+  if(!hash) nav('home');
+  else {
+    const [page, arg] = hash.split('=');
+    handleRoute({page, arg: decodeURIComponent(arg||'')});
+  }
 });
 </script>
 </body>

@@ -103,8 +103,10 @@ body.light #search-input{background:#f8f8f8}
 #yt-player,#pwrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
 
 /* player overlay controls */
-#pctrl{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85));padding:8px 12px 12px;display:flex;align-items:center;gap:6px;opacity:0;transition:opacity .2s;z-index:10;flex-wrap:wrap}
+#pctrl{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85));padding:8px 12px 12px;display:flex;align-items:center;gap:6px;opacity:0;transition:opacity .2s;z-index:10;flex-wrap:wrap;pointer-events:none; /* Agar tidak memblokir tombol settings YT bawaan */}
 #pwrap:hover #pctrl{opacity:1}
+#pctrl > * {pointer-events:auto;} /* Mengizinkan klik pada elemen kustom kita sendiri */
+
 .pb{background:none;border:none;color:#fff;cursor:pointer;padding:4px 5px;border-radius:5px;display:flex;align-items:center;flex-shrink:0}
 .pb:hover{background:rgba(255,255,255,.18)}
 .pb svg{width:22px;height:22px}
@@ -178,18 +180,6 @@ body.light #search-input{background:#f8f8f8}
 .sring{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* MODAL */
-.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center;padding:16px}
-.moverlay.show{display:flex}
-.mbox{background:#1a1a1a;border:1px solid var(--border);border-radius:16px;padding:24px;max-width:480px;width:100%}
-.mbox h2{font-size:20px;margin-bottom:8px}
-.mbox p{color:var(--text2);font-size:14px;margin-bottom:16px;line-height:1.6}
-.minput{width:100%;padding:12px 14px;background:#0f0f0f;border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;margin-bottom:12px}
-.minput:focus{border-color:var(--blue)}
-.mbtn{width:100%;padding:12px;background:var(--red);color:#fff;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;border:none}
-.mbtn:hover{background:#cc0000}
-.mlink{display:block;text-align:center;margin-top:10px;color:var(--blue);font-size:13px}
-
 /* TOAST */
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#333;color:#fff;padding:10px 20px;border-radius:9999px;font-size:14px;z-index:9999;transition:transform .3s;white-space:nowrap;pointer-events:none}
 #toast.show{transform:translateX(-50%) translateY(0)}
@@ -217,7 +207,6 @@ body.light #search-input{background:#f8f8f8}
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav id="navbar">
   <div id="logo-wrap">
     <button class="icon-btn" onclick="toggleSidebar()" aria-label="Menu">
@@ -250,13 +239,9 @@ body.light #search-input{background:#f8f8f8}
     <button class="icon-btn" onclick="toggleTheme()" title="Ganti Tema">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
     </button>
-    <button class="icon-btn" onclick="showKeyModal()" title="API Key">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-    </button>
   </div>
 </nav>
 
-<!-- SIDEBAR -->
 <aside id="sidebar">
   <div class="si on" id="sb-home" onclick="showHome()">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -303,9 +288,7 @@ body.light #search-input{background:#f8f8f8}
   </div>
 </aside>
 
-<!-- MAIN -->
 <div id="main">
-  <!-- HOME -->
   <div id="home-page">
     <div id="pbanner">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="#c9b8ff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
@@ -316,7 +299,6 @@ body.light #search-input{background:#f8f8f8}
     <div id="grid"></div>
   </div>
 
-  <!-- WATCH -->
   <div id="watch-page">
     <div id="wlayout">
       <div id="pcol">
@@ -331,7 +313,7 @@ body.light #search-input{background:#f8f8f8}
               <option value="1.25">1.25×</option><option value="1.5">1.5×</option>
               <option value="2">2×</option>
             </select>
-            <select class="psel" id="cap-sel" onchange="setCap(this.value)" title="Subtitle / Sulih Suara" style="max-width:115px">
+            <select class="psel" id="cap-sel" onchange="setCap(this.value)" title="Subtitle" style="max-width:115px">
               <option value="">Subtitle OFF</option>
               <option value="id">🇮🇩 Indonesia</option>
               <option value="en">🇺🇸 English</option>
@@ -401,14 +383,12 @@ body.light #search-input{background:#f8f8f8}
     </div>
   </div>
 
-  <!-- SEARCH -->
   <div id="sq-page">
     <div id="sq-title"></div>
     <div id="sq-grid"></div>
   </div>
 </div>
 
-<!-- MINI PLAYER -->
 <div id="mini">
   <div id="mini-inner"></div>
   <div id="mini-bar">
@@ -418,7 +398,6 @@ body.light #search-input{background:#f8f8f8}
   </div>
 </div>
 
-<!-- WATCH LATER PANEL -->
 <div id="wlpanel">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
     <h2 style="font-size:18px;font-weight:700">🕐 Tonton Nanti</h2>
@@ -427,26 +406,18 @@ body.light #search-input{background:#f8f8f8}
   <div id="wl-list"></div>
 </div>
 
-<!-- API KEY MODAL -->
-<div class="moverlay" id="key-modal" onclick="bgClose(event,'key-modal')">
-  <div class="mbox">
-    <h2>🔑 YouTube API Key</h2>
-    <p>Dapatkan API key gratis di <a href="https://console.cloud.google.com" target="_blank" style="color:var(--blue)">console.cloud.google.com</a> → APIs &amp; Services → Credentials. Aktifkan <strong>YouTube Data API v3</strong> dulu.</p>
-    <input class="minput" id="key-inp" type="text" placeholder="AIzaSy..."/>
-    <button class="mbtn" onclick="saveKey()">Simpan &amp; Muat</button>
-    <a class="mlink" href="https://console.cloud.google.com" target="_blank">→ Buka Google Cloud Console</a>
-  </div>
-</div>
-
 <div id="toast"></div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
 // ═══════════════════════════════
-// STATE
+// STATE / CONFIG
 // ═══════════════════════════════
+
+// Tulis API Key kamu di sini, atau injeksi lewat process.env kalau di build system/Vercel
+const API_KEY = 'API_KEY_KAMU_DISINI'; 
+
 const BASE='https://www.googleapis.com/youtube/v3';
-let API_KEY=localStorage.getItem('yt_api_key')||'';
 let sideExp=window.innerWidth>1024;
 let curCat='';
 let curVidId=null;
@@ -476,8 +447,15 @@ function loadP(vid){
 
   if(ytP){ytP.loadVideoById(vid);return;}
   ytP=new YT.Player('yt-player',{
+    host: 'https://www.youtube.com', // Memaksa mode desktop agar sulih suara muncul
     videoId:vid,
-    playerVars:{autoplay:1,rel:0,modestbranding:1,playsinline:1,enablejsapi:1},
+    playerVars:{
+      autoplay:1,
+      rel:0,
+      modestbranding:1,
+      playsinline:1, // Tetap berada di halaman (tidak full screen native) di hp
+      enablejsapi:1
+    },
     events:{
       onReady(e){e.target.setPlaybackRate(curSpd);},
       onStateChange(e){if(e.data===YT.PlayerState.ENDED&&autoRep){ytP.seekTo(0);ytP.playVideo();}}
@@ -511,7 +489,6 @@ function toast(msg,ms=2600){const t=G('toast');t.textContent=msg;t.classList.add
 // API
 // ═══════════════════════════════
 async function api(ep,p){
-  if(!API_KEY){showKeyModal();return null;}
   p.key=API_KEY;
   const url=`${BASE}/${ep}?`+new URLSearchParams(p);
   try{const r=await fetch(url),d=await r.json();if(d.error){if(d.error.code===403)toast('⚠️ API key tidak valid / quota habis');else console.error(d.error);return null;}return d;}
@@ -684,7 +661,6 @@ async function showHome(){
 }
 
 async function loadPersonalized(terms){
-  if(!API_KEY){showKeyModal();return;}
   const grid=G('grid'),sp=G('spinner');
   sp.style.display='flex';grid.innerHTML='';
   grid.innerHTML=Array(12).fill(0).map(skelC).join('');sp.style.display='none';
@@ -711,7 +687,6 @@ function buildCats(){
 
 async function loadCat(catId){
   curCat=catId;buildCats();showPg('home');
-  if(!API_KEY){showKeyModal();return;}
   const grid=G('grid'),sp=G('spinner');
   sp.style.display='flex';grid.innerHTML='';
   const data=await getTrendAPI(catId,24);
@@ -894,21 +869,13 @@ function toggleSidebar(){
 }
 
 // ═══════════════════════════════
-// KEY MODAL
-// ═══════════════════════════════
-function showKeyModal(){G('key-inp').value=API_KEY||'';G('key-modal').classList.add('show');}
-function saveKey(){const k=G('key-inp').value.trim();if(!k){alert('Masukkan API key!');return;}API_KEY=k;localStorage.setItem('yt_api_key',k);G('key-modal').classList.remove('show');showHome();}
-function bgClose(e,id){if(e.target===G(id))G(id).classList.remove('show');}
-
-// ═══════════════════════════════
 // INIT
 // ═══════════════════════════════
 document.addEventListener('DOMContentLoaded',()=>{
   if(localStorage.getItem('yt_theme')==='light')document.body.classList.add('light');
   if(sideExp){G('sidebar').classList.add('exp');G('main').classList.add('exp');}
   updBadge();
-  if(!API_KEY){G('spinner').style.display='none';buildCats();showKeyModal();}
-  else showHome();
+  showHome();
 });
 </script>
 </body>

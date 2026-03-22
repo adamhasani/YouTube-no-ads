@@ -44,7 +44,7 @@ body.light #search-input{background:#f8f8f8}
 /* SIDEBAR */
 #sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:290;}
 #sb-overlay.show{display:block;}
-#sidebar{position:fixed;top:var(--nav-h);left:0;bottom:0;width:var(--side-w);background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:8px 0;z-index:295;overflow-y:auto;overflow-x:hidden;transition:width .2s, transform .2s;scrollbar-width:none}
+#sidebar{position:fixed;top:var(--nav-h);left:0;bottom:0;width:var(--side-w);background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:8px 0;z-index:295;overflow-y:auto;overflow-x:hidden;transition:width .2s, transform .2s, background .3s;scrollbar-width:none}
 #sidebar.exp{width:var(--side-full);align-items:flex-start}
 #sidebar::-webkit-scrollbar{display:none}
 .si{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0;width:100%;cursor:pointer;border-radius:10px;font-size:10px;color:var(--text2);transition:background .1s}
@@ -231,15 +231,13 @@ body.is-mini #mini-ui {
 }
 
 @media(max-width:640px){
-  /* Navbar Ramping */
   #navbar {padding: 0 8px; gap:8px;}
-  .logo-txt {display:none;} /* Sembunyikan YourTube biar search bar lega */
+  .logo-txt {display:none;}
   #search-input {padding: 8px 16px; font-size:14px;}
   #search-btn {width: 48px;}
   #search-wrap {flex:1; max-width:none;}
   #suggest-box {top: 52px; left: 0; right: 0; border-radius: 0; border: none; border-bottom:1px solid var(--border);}
   
-  /* Reset Main Padding */
   #main{margin-left:0!important}
   .page-pad {padding: 12px 0 60px;}
   #grid,#sq-grid,#ch-grid,#hist-grid {grid-template-columns: 1fr; padding: 12px 0; gap:24px;}
@@ -247,14 +245,12 @@ body.is-mini #mini-ui {
   .vt {border-radius:0;}
   .vmi {padding:0 12px;}
   
-  /* Sidebar Drawer */
   #sidebar {transform:translateX(-100%); width:260px; box-shadow:none; z-index:295;}
   #sidebar.exp {transform:translateX(0); box-shadow:4px 0 24px rgba(0,0,0,0.6);}
   #sidebar .si {flex-direction:row; padding:14px 20px; gap:24px; font-size:15px;}
   #sidebar .slabel {display:block; padding:12px 20px;}
   #sidebar .sdiv {width:calc(100% - 40px); margin:8px 20px;}
   
-  /* Mobile Mini Player Bar */
   body.is-mini #player-wrapper {
     bottom: 0; right: 0; width: 100%; height: 60px;
     border-radius: 0; flex-direction: row;
@@ -500,7 +496,7 @@ async function fetchAv(ids){
 }
 
 // ═══════════════════════════════
-// SPA ROUTER (MENCEGAH KELUAR APLIKASI)
+// SPA ROUTER
 // ═══════════════════════════════
 function nav(page, arg){
   if(history.state?.page === page && history.state?.arg === arg) return;
@@ -513,10 +509,7 @@ window.addEventListener('popstate', (e)=>{
 });
 
 function applyRoute(state){
-  // Tutup sidebar di mobile
   if(window.innerWidth<=640 && G('sidebar').classList.contains('exp')) toggleSidebar();
-  
-  // Sembunyikan semua page
   document.querySelectorAll('.page').forEach(p => p.style.display='none');
   window.scrollTo(0,0);
   
@@ -524,27 +517,21 @@ function applyRoute(state){
   const pgEl = G(page+'-page');
   if(pgEl) pgEl.style.display='block';
 
-  // State Watch Mode vs Mini Mode
   if(page === 'watch'){
-    document.body.classList.add('is-watch');
-    document.body.classList.remove('is-mini');
+    document.body.classList.add('is-watch'); document.body.classList.remove('is-mini');
     if(curVidId !== state.arg) openWatch(state.arg);
   } else {
     document.body.classList.remove('is-watch');
-    if(curVidId){
-      document.body.classList.add('is-mini');
-    } else {
-      document.body.classList.remove('is-mini');
-    }
+    if(curVidId) document.body.classList.add('is-mini');
+    else document.body.classList.remove('is-mini');
     
-    // Init page content
-    if(page==='home' && !G('grid').innerHTML) showHome();
+    // Perbaikan Bug Algoritma: Selalu panggil showHome() tiap kali masuk home
+    if(page==='home') showHome();
     if(page==='channel') openChannel(state.arg);
     if(page==='search') doSearchTerm(state.arg, true);
     if(page==='history') showHistory();
   }
   
-  // Update sidebar active state
   document.querySelectorAll('.si').forEach(el=>el.classList.remove('on'));
   const activeNav = G('sb-'+page);
   if(activeNav) activeNav.classList.add('on');
@@ -557,27 +544,18 @@ window.onYouTubeIframeAPIReady=function(){ytReady=true;if(curVidId)loadP(curVidI
 
 function loadP(vid){
   let savedTime = localStorage.getItem('ytt_'+vid);
-  if(ytP){
-    ytP.loadVideoById(vid, savedTime ? parseFloat(savedTime) : 0);
-    return;
-  }
+  if(ytP){ ytP.loadVideoById(vid, savedTime ? parseFloat(savedTime) : 0); return; }
   ytP=new YT.Player('yt-player',{
     host: 'https://www.youtube.com', 
     videoId:vid,
     playerVars:{ autoplay:1, rel:0, modestbranding:1, playsinline:1, enablejsapi:1 },
     events:{
-      onReady(e){
-        e.target.setPlaybackRate(curSpd);
-        if(savedTime) e.target.seekTo(parseFloat(savedTime));
-      },
+      onReady(e){ e.target.setPlaybackRate(curSpd); if(savedTime) e.target.seekTo(parseFloat(savedTime)); },
       onStateChange(e){
         if(e.data===YT.PlayerState.ENDED&&autoRep) ytP.seekTo(0);
-        // Track Watch Time tiap 3 detik
         if(e.data===YT.PlayerState.PLAYING){
           if(timeTracker) clearInterval(timeTracker);
-          timeTracker = setInterval(()=>{
-            if(ytP && ytP.getCurrentTime && curVidId) localStorage.setItem('ytt_'+curVidId, ytP.getCurrentTime());
-          }, 3000);
+          timeTracker = setInterval(()=>{ if(ytP && ytP.getCurrentTime && curVidId) localStorage.setItem('ytt_'+curVidId, ytP.getCurrentTime()); }, 3000);
         } else {
           if(timeTracker) clearInterval(timeTracker);
         }
@@ -594,8 +572,21 @@ function toggleAudioMode(){
 }
 function closeMini(){
   if(ytP&&ytP.pauseVideo) ytP.pauseVideo();
-  document.body.classList.remove('is-mini');
-  curVidId=null;
+  document.body.classList.remove('is-mini'); curVidId=null;
+}
+
+// Perbaikan Bug Landscape
+async function goFS(){
+  const e=G('player-wrapper');
+  try{
+    if(e.requestFullscreen) await e.requestFullscreen();
+    else if(e.webkitRequestFullscreen) await e.webkitRequestFullscreen();
+    
+    // Paksa orientasi di HP setelah layar penuh berhasil dipanggil
+    if(screen.orientation && screen.orientation.lock) {
+      await screen.orientation.lock('landscape');
+    }
+  }catch(err){console.log('Fullscreen/Landscape error:', err);}
 }
 
 // ═══════════════════════════════
@@ -669,9 +660,10 @@ function cardH(v,horiz=false){
 function skelC(){return`<div><div class="sk" style="width:100%;aspect-ratio:16/9;border-radius:12px"></div><div style="display:flex;gap:12px;margin-top:12px"><div class="sk" style="width:40px;height:40px;border-radius:50%;flex-shrink:0"></div><div style="flex:1"><div class="sk" style="height:14px;border-radius:4px;margin-bottom:8px;width:90%"></div><div class="sk" style="height:12px;border-radius:4px;width:60%"></div></div></div></div>`;}
 
 async function showHome(){
-  buildCats(); const terms=wHist.slice(0,20).reduce((a,v)=>{if(v.ch)a[v.ch]=(a[v.ch]||0)+1;return a;},{});
+  buildCats(); 
+  const terms=wHist.slice(0,20).reduce((a,v)=>{if(v.ch)a[v.ch]=(a[v.ch]||0)+1;return a;},{});
   const top=Object.entries(terms).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
-  if(top.length){await loadPersonalized(top);}else{await loadCat('');}
+  if(top.length) await loadPersonalized(top); else await loadCat('');
 }
 async function loadPersonalized(terms){
   const g=G('grid'); g.innerHTML=Array(12).fill(0).map(skelC).join('');
@@ -750,7 +742,14 @@ async function openWatch(vid){
   }
 
   addHist(v);
-  const rel=await searchAPI(sn.title,12); await fetchAv(rel.map(r=>r.snippet?.channelId).filter(Boolean));
+  
+  // Perbaikan Bug Rekomendasi "Video Selanjutnya"
+  // Bersihkan judul dari simbol aneh agar API Search YouTube tidak error.
+  let cleanTitle = sn.title.replace(/[^\w\s]/gi, '').split(' ').slice(0,4).join(' ');
+  let safeSearchQuery = sn.channelTitle + ' ' + cleanTitle;
+  const rel=await searchAPI(safeSearchQuery, 12);
+  
+  await fetchAv(rel.map(r=>r.snippet?.channelId).filter(Boolean));
   G('rlist').innerHTML=rel.filter(r=>(r.id?.videoId||r.id)!==vid).map(r=>cardH(r,true)).join('');
 }
 
@@ -799,9 +798,6 @@ function shareVid(){
   const u=`https://youtu.be/${curVidId}`;
   if(navigator.share)navigator.share({url:u});else if(navigator.clipboard)navigator.clipboard.writeText(u).then(()=>toast('🔗 Link disalin!'));else toast(u);
 }
-async function goFS(){
-  const e=G('player-wrapper'); try{if(e.requestFullscreen)await e.requestFullscreen();else if(e.webkitRequestFullscreen)e.webkitRequestFullscreen();}catch(err){}
-}
 
 // ═══════════════════════════════
 // INIT
@@ -810,7 +806,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(localStorage.getItem('yt_theme')==='light')document.body.classList.add('light');
   if(sideExp && window.innerWidth>640){G('sidebar').classList.add('exp');G('main').classList.add('exp');}
   
-  // Set default state
   if(!history.state) history.replaceState({page: 'home'}, '', window.location.pathname);
   
   const hash = window.location.hash.substring(1);

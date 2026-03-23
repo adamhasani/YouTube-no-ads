@@ -41,7 +41,7 @@ body.light #search-input{background:#f8f8f8}
 
 /* NAV RIGHT */
 #nav-right{display:flex;align-items:center;gap:4px;flex-shrink:0}
-.badge{position:absolute;top:3px;right:3px;background:var(--red);color:#fff;font-size:9px;font-weight:700;min-width:15px;height:15px;border-radius:99px;display:flex;align-items:center;justify-content:center}
+.badge{position:absolute;top:3px;right:3px;background:var(--red);color:#fff;font-size:9px;font-weight:700;min-width:15px;height:15px;border-radius:999px;display:flex;align-items:center;justify-content:center}
 
 /* SIDEBAR */
 #sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:290}
@@ -65,7 +65,7 @@ body.light #search-input{background:#f8f8f8}
 .page{display:none}
 .page-pad{padding:16px 20px 60px;max-width:1800px;margin:0 auto}
 
-/* PLAYER WRAPPER — satu element permanen di DOM */
+/* PLAYER WRAPPER */
 #player-wrapper{display:none;background:#000;position:relative}
 #pw-inner{position:relative;width:100%;height:100%}
 #yt-player{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
@@ -301,7 +301,6 @@ body.is-mini #mini-ui{display:flex}
 
 <main id="main">
 
-  <!-- PERMANENT PLAYER WRAPPER -->
   <div id="player-wrapper" onclick="if(document.body.classList.contains('is-mini'))nav('watch',curVidId)">
     <div id="pw-inner">
       <div id="yt-player"></div>
@@ -346,7 +345,6 @@ body.is-mini #mini-ui{display:flex}
     </div>
   </div>
 
-  <!-- HOME -->
   <div id="home-page" class="page">
     <div id="pbanner">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="#c9b8ff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
@@ -356,7 +354,6 @@ body.is-mini #mini-ui{display:flex}
     <div id="grid"></div>
   </div>
 
-  <!-- WATCH -->
   <div id="watch-page" class="page">
     <div id="w-details">
       <h1 id="vtitle">Memuat...</h1>
@@ -398,7 +395,6 @@ body.is-mini #mini-ui{display:flex}
     </div>
   </div>
 
-  <!-- CHANNEL -->
   <div id="channel-page" class="page page-pad">
     <div id="ch-banner" style="width:100%;height:180px;background:var(--surface);border-radius:12px;overflow:hidden;margin-bottom:20px"></div>
     <div id="ch-hdr" style="display:flex;gap:20px;align-items:center;margin-bottom:28px">
@@ -412,13 +408,11 @@ body.is-mini #mini-ui{display:flex}
     <div id="ch-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:0 0 40px"></div>
   </div>
 
-  <!-- SEARCH -->
   <div id="search-page" class="page page-pad">
     <div id="sq-title" style="font-size:16px;margin:0 0 16px"></div>
     <div id="sq-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:0"></div>
   </div>
 
-  <!-- HISTORY -->
   <div id="history-page" class="page page-pad">
     <h2 style="font-size:22px;font-weight:700;margin-bottom:20px">Riwayat Tontonan</h2>
     <div id="hist-grid" style="padding:0"></div>
@@ -426,7 +420,6 @@ body.is-mini #mini-ui{display:flex}
 
 </main>
 
-<!-- PLAYLIST PANEL -->
 <div id="pl-panel">
   <div class="pl-hdr">
     <select id="pl-select" class="pl-sel" onchange="curPlView=this.value;renderPL()"></select>
@@ -435,7 +428,6 @@ body.is-mini #mini-ui{display:flex}
   <div id="wl-list"></div>
 </div>
 
-<!-- SAVE MODAL -->
 <div class="moverlay" id="pl-modal" onclick="bgClose(event,'pl-modal')">
   <div class="mbox">
     <h2>Simpan ke...</h2>
@@ -454,7 +446,6 @@ body.is-mini #mini-ui{display:flex}
 <script>
 // ═══════════════════════════════════════════════
 // CORE — semua request ke /api/youtube (proxy)
-// API key AMAN di Vercel, user tidak bisa lihat
 // ═══════════════════════════════════════════════
 async function api(endpoint, params, useCache = true) {
   const cacheKey = 'ytc_' + endpoint + '_' + JSON.stringify(params);
@@ -473,13 +464,11 @@ async function api(endpoint, params, useCache = true) {
 }
 
 // ═══════════════════════════════════════════════
-// RSS FEED — GRATIS, 0 QUOTA YouTube API
-// Dipakai untuk: related videos, channel videos
+// RSS FEED — GRATIS
 // ═══════════════════════════════════════════════
 async function rssChannel(channelId, max = 12) {
   try {
     const url = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
-    // Pakai cors proxy ringan
     const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
     const r = await fetch(proxy);
     const json = await r.json();
@@ -508,7 +497,6 @@ async function rssChannel(channelId, max = 12) {
   } catch(e) { return []; }
 }
 
-// Thumbnail langsung dari ytimg — GRATIS tanpa API
 function ytThumb(id, q = 'hqdefault') {
   return `https://i.ytimg.com/vi/${id}/${q}.jpg`;
 }
@@ -541,13 +529,14 @@ function toast(msg,ms=3000){const t=G('toast');t.textContent=msg;t.classList.add
 function spin(v){G('spinner').style.display=v?'flex':'none';}
 
 // ═══════════════════════════════════════════════
-// YT PLAYER
+// YT PLAYER (Dengan Fix Dubbing/Desktop)
 // ═══════════════════════════════════════════════
 window.onYouTubeIframeAPIReady = function(){ ytReady=true; if(pendVid){loadP(pendVid);pendVid=null;} };
 function loadP(vid) {
   const saved = localStorage.getItem('ytt_' + vid);
   if (ytP) { ytP.loadVideoById(vid, saved ? parseFloat(saved) : 0); return; }
   ytP = new YT.Player('yt-player', {
+    host: 'https://www.youtube.com', // Fix dubbing di mobile
     videoId: vid,
     playerVars: { autoplay:1, rel:0, modestbranding:1, playsinline:1, enablejsapi:1 },
     events: {

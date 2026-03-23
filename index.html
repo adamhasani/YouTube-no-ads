@@ -1224,16 +1224,6 @@ async function faaSearch(query, max = 12) {
   } catch(e) { return []; }
 }
 
-// Override searchAPI: coba YouTube API dulu, kalau null fallback ke FAA
-const _origSearchAPI = searchAPI;
-async function searchAPI(q, m) {
-  const result = await _origSearchAPI(q, m);
-  if (result && result.length > 0) return result;
-  // Fallback ke FAA API (gratis, tanpa quota!)
-  console.log('YouTube API kosong, fallback ke FAA API untuk:', q);
-  return faaSearch(q, m);
-}
-
 // ══════════════════════════════════════════
 // SHORTS — 0 QUOTA (Invidious + FAA fallback)
 // ══════════════════════════════════════════
@@ -1924,10 +1914,15 @@ async function loadCat(c){
 }
 async function getTrendAPI(c,m){const d=await api('videos',{part:'snippet,statistics,contentDetails',chart:'mostPopular',maxResults:m,regionCode:'ID',...(c?{videoCategoryId:c}:{})});return d?.items||null;}
 async function searchAPI(q,m){
+  // Coba YouTube API dulu
   const d=await api('search',{part:'snippet',q,type:'video',maxResults:m});
-  if(!d?.items?.length)return[];
-  const ids=d.items.map(x=>x.id.videoId).filter(Boolean).join(',');
-  return(await api('videos',{part:'snippet,statistics,contentDetails',id:ids}))?.items||[];
+  if(d?.items?.length){
+    const ids=d.items.map(x=>x.id.videoId).filter(Boolean).join(',');
+    const r=(await api('videos',{part:'snippet,statistics,contentDetails',id:ids}))?.items||[];
+    if(r.length)return r;
+  }
+  // Fallback ke FAA API (0 quota!)
+  return faaSearch(q,m);
 }
 async function doSearchTerm(q,isR){
   if(!isR)return nav('search',q);

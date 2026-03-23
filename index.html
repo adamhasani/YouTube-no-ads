@@ -323,7 +323,47 @@ body.data-saver .vt img{image-rendering:pixelated}
   .pb{padding:4px 5px;font-size:12px}
   .psel{font-size:12px;padding:4px 6px;max-width:90px}
 }
-/* LIVE BADGE */
+/* SHORTS — full height, no margin */
+body.is-shorts #main{margin-left:0!important}
+#shorts-page{display:none;position:relative;background:#000;height:calc(100vh - var(--nav-h));overflow:hidden}
+#shorts-container{height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#shorts-container::-webkit-scrollbar{display:none}
+.short-item{height:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;display:flex;align-items:center;justify-content:center;background:#000;flex-shrink:0}
+.short-iframe{width:100%;height:100%;border:none;position:absolute;inset:0}
+/* Portrait adjust */
+@media(min-aspect-ratio:9/16){
+  .short-iframe{width:calc(100vh * 9/16);height:100%;left:50%;transform:translateX(-50%)}
+}
+/* Short overlay info */
+.short-overlay{position:absolute;bottom:0;left:0;right:0;padding:16px 16px 24px;background:linear-gradient(transparent,rgba(0,0,0,.85));z-index:10;pointer-events:none}
+.short-overlay *{pointer-events:auto}
+.short-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:8px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.short-ch{font-size:13px;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:8px}
+.short-ch-av{width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid #fff;background:#333;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
+.short-ch-av img{width:100%;height:100%;object-fit:cover}
+/* Short right actions */
+.short-actions{position:absolute;right:12px;bottom:80px;display:flex;flex-direction:column;align-items:center;gap:18px;z-index:10}
+.short-act{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:#fff}
+.short-act svg{width:28px;height:28px;filter:drop-shadow(0 1px 4px rgba(0,0,0,.6))}
+.short-act span{font-size:11px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+/* Nav arrows */
+.short-nav{position:absolute;right:12px;z-index:20;width:40px;height:40px;background:rgba(0,0,0,.5);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(4px)}
+#short-prev{top:50%;transform:translateY(-calc(50% + 40px))}
+#short-next{bottom:140px}
+/* Loading shorts */
+.short-loading{height:100%;display:flex;align-items:center;justify-content:center;background:#0a0a0a;scroll-snap-align:start;flex-shrink:0}
+/* Shorts top bar */
+#shorts-topbar{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:linear-gradient(rgba(0,0,0,.5),transparent)}
+
+/* HOME SHORTS GRID — 2 kolom vertikal seperti YouTube */
+.hs-card{position:relative;aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:#111;cursor:pointer}
+.hs-card img{width:100%;height:100%;object-fit:cover;transition:transform .25s;display:block}
+.hs-card:hover img{transform:scale(1.04)}
+.hs-card-info{position:absolute;bottom:0;left:0;right:0;padding:8px 10px 10px;background:linear-gradient(transparent,rgba(0,0,0,.88))}
+.hs-card-title{font-size:12px;font-weight:600;color:#fff;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hs-card-ch{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}
+.sk-short{aspect-ratio:9/16;border-radius:12px}
+
 .live-badge{position:absolute;top:6px;left:6px;background:#ff0000;color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;display:flex;align-items:center;gap:4px;z-index:2}
 .live-dot{width:7px;height:7px;background:#fff;border-radius:50%;animation:livepulse 1s infinite}
 @keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -405,7 +445,7 @@ body.data-saver .vt img{image-rendering:pixelated}
 <div id="sb-overlay" onclick="toggleSidebar()"></div>
 <aside id="sidebar">
   <div class="si on" id="sb-home" onclick="nav('home')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Beranda</span></div>
-  <div class="si" onclick="nav('search','shorts viral')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.77 10.32l-1.2-.5L18 9l.5-1.2.5 1.2 1.2.5-1.2.5L18 11.2l-.23-.88zM3 9l2.93 7h1.76l1.44-3.39L10.56 16h1.76L15.26 9h-1.7l-1.45 3.48L10.56 9H8.81l-1.45 3.48L5.91 9H3z"/></svg><span>Shorts</span></div>
+  <div class="si" id="sb-shorts" onclick="nav('shorts')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.77 10.32l-1.2-.5L18 9l.5-1.2.5 1.2 1.2.5-1.2.5L18 11.2l-.23-.88zM3 9l2.93 7h1.76l1.44-3.39L10.56 16h1.76L15.26 9h-1.7l-1.45 3.48L10.56 9H8.81l-1.45 3.48L5.91 9H3z"/></svg><span>Shorts</span></div>
   <div class="si" id="sb-pinned" onclick="nav('pinned')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg><span>Channel Favorit</span></div>
   <div class="si" id="sb-history" onclick="nav('history')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg><span>Riwayat</span></div>
   <div class="si" id="sb-stats" onclick="nav('stats')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg><span>Statistik</span></div>
@@ -482,8 +522,19 @@ body.data-saver .vt img{image-rendering:pixelated}
 
   <!-- HOME -->
   <div id="home-page" class="page">
-    <div id="pbanner"><svg width="18" height="18" viewBox="0 0 24 24" fill="#c9b8ff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span id="pbtext"></span></div>
     <div id="cats"></div>
+    <div id="pbanner"><svg width="18" height="18" viewBox="0 0 24 24" fill="#c9b8ff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span id="pbtext"></span></div>
+    <!-- SHORTS SECTION di beranda — 2 kolom seperti YouTube asli -->
+    <div id="home-shorts-sec" style="display:none;padding:8px 20px 0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;margin-top:4px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--red)"><path d="M17.77 10.32l-1.2-.5L18 9l.5-1.2.5 1.2 1.2.5-1.2.5L18 11.2l-.23-.88zM3 9l2.93 7h1.76l1.44-3.39L10.56 16h1.76L15.26 9h-1.7l-1.45 3.48L10.56 9H8.81l-1.45 3.48L5.91 9H3z"/></svg>
+          <span style="font-size:18px;font-weight:700;font-family:'Outfit',sans-serif;letter-spacing:-.3px">Shorts</span>
+        </div>
+        <button onclick="nav('shorts')" style="font-size:13px;color:var(--accent);font-weight:600;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='none'">Lihat semua →</button>
+      </div>
+      <div id="home-shorts-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px"></div>
+    </div>
     <div id="grid"></div>
   </div>
 
@@ -572,6 +623,22 @@ body.data-saver .vt img{image-rendering:pixelated}
       <p>Belum ada channel yang di-pin</p>
       <p style="font-size:13px;margin-top:6px">Buka halaman channel lalu klik tombol "📌 Pin"</p>
     </div>
+  </div>
+
+  <!-- SHORTS PAGE -->
+  <div id="shorts-page" class="page">
+    <div id="shorts-topbar">
+      <span style="font-size:18px;font-weight:800;color:#fff;font-family:'Outfit',sans-serif;letter-spacing:-.5px">
+        ▶ Shorts
+      </span>
+      <div style="display:flex;gap:8px">
+        <button onclick="loadShorts('viral')" style="padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:12px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px)">🔥 Viral</button>
+        <button onclick="loadShorts('gaming')" style="padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:12px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px)">🎮 Gaming</button>
+        <button onclick="loadShorts('musik')" style="padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:12px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px)">🎵 Musik</button>
+        <button onclick="loadShorts('lucu')" style="padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:12px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px)">😂 Lucu</button>
+      </div>
+    </div>
+    <div id="shorts-container"></div>
   </div>
 
   <!-- HISTORY -->
@@ -1108,6 +1175,166 @@ async function searchAPI(q, m) {
   return faaSearch(q, m);
 }
 
+// ══════════════════════════════════════════
+// SHORTS — 0 QUOTA (Invidious + FAA fallback)
+// ══════════════════════════════════════════
+let shortsData=[], shortsCurIdx=0, shortsLoading=false, shortsQuery='shorts viral indonesia';
+let shortsObserver=null, invIdx=0;
+
+const INV_INSTANCES=[
+  'https://invidious.privacyredirect.com',
+  'https://inv.nadeko.net',
+  'https://invidious.nerdvpn.de',
+  'https://yt.drgnz.club',
+];
+
+async function fetchInvShorts(query, page=1){
+  for(let i=0;i<INV_INSTANCES.length;i++){
+    const base=INV_INSTANCES[(invIdx+i)%INV_INSTANCES.length];
+    try{
+      const r=await fetch(`${base}/api/v1/search?q=${encodeURIComponent(query+' #shorts')}&type=video&page=${page}&region=ID`,{signal:AbortSignal.timeout(5000)});
+      if(!r.ok)continue;
+      const data=await r.json();
+      if(!Array.isArray(data)||!data.length)continue;
+      invIdx=(invIdx+i)%INV_INSTANCES.length;
+      return data.filter(v=>v.lengthSeconds>0&&v.lengthSeconds<=90).slice(0,15).map(v=>({
+        id:v.videoId, title:v.title||'', channel:v.author||'', channelId:v.authorId||'',
+        thumb:v.videoThumbnails?.[0]?.url||ytThumb(v.videoId), views:v.viewCount||0, dur:v.lengthSeconds||0
+      }));
+    }catch(e){continue;}
+  }
+  return[];
+}
+
+async function fetchFAAShorts(query){
+  try{
+    const r=await fetch(`${FAA_BASE}/youtube?query=${encodeURIComponent(query+' shorts')}`);
+    const d=await r.json();
+    if(!d.status||!d.result?.length)return[];
+    return d.result.slice(0,15).map(v=>{
+      const id=v.link?.match(/[?&]v=([^&]+)/)?.[1]||'';
+      const[m,s]=(v.duration||'0:0').split(':').map(Number);
+      return{id,title:v.title||'',channel:v.channel||'',channelId:'',thumb:v.imageUrl||ytThumb(id),views:0,dur:(m||0)*60+(s||0)};
+    }).filter(v=>v.id&&v.dur<=90&&v.dur>0);
+  }catch(e){return[];}
+}
+
+async function loadShorts(cat='viral'){
+  if(shortsLoading)return;
+  shortsLoading=true;
+  const container=G('shorts-container');
+  const queries={viral:'shorts viral indonesia terbaru',gaming:'gaming shorts indonesia',musik:'musik shorts indonesia viral',lucu:'shorts lucu indonesia'};
+  shortsQuery=queries[cat]||'shorts viral indonesia';
+  container.innerHTML=`<div class="short-loading"><div class="sring"></div></div>`;
+  shortsData=[];shortsCurIdx=0;
+
+  let videos=await fetchInvShorts(shortsQuery);
+  if(videos.length<3){
+    const faa=await fetchFAAShorts(shortsQuery);
+    const seen=new Set(videos.map(v=>v.id));
+    faa.forEach(v=>{if(!seen.has(v.id)){seen.add(v.id);videos.push(v);}});
+  }
+
+  if(!videos.length){
+    container.innerHTML=`<div class="short-loading" style="flex-direction:column;gap:12px">
+      <div style="font-size:40px">😕</div>
+      <div style="color:#aaa;font-size:14px">Gagal memuat Shorts. Coba kategori lain.</div>
+      <button onclick="loadShorts('${cat}')" style="padding:8px 20px;border-radius:99px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-weight:600">Coba Lagi</button>
+    </div>`;
+    shortsLoading=false;return;
+  }
+  shortsData=videos;
+  renderShorts(container);
+  shortsLoading=false;
+}
+
+function shortCard(v,i){
+  return`<div class="short-item" id="short-${i}" data-idx="${i}">
+    <iframe class="short-iframe" src="about:blank"
+      data-src="https://www.youtube.com/embed/${v.id}?autoplay=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${v.id}"
+      allow="autoplay;encrypted-media" allowfullscreen></iframe>
+    <div class="short-overlay">
+      <div class="short-title">${esc(v.title)}</div>
+      <div class="short-ch">
+        <div class="short-ch-av" style="background:${avc(v.channel)}">${(v.channel[0]||'?').toUpperCase()}</div>
+        <span>${esc(v.channel)}</span>
+        ${v.views?`<span style="color:rgba(255,255,255,.6)">· ${fv(v.views)}x</span>`:''}
+      </div>
+    </div>
+    <div class="short-actions">
+      <div class="short-act" onclick="nav('watch','${v.id}')">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg><span>Tonton</span>
+      </div>
+      <div class="short-act" onclick="event.stopPropagation();shareShort('${v.id}','${esc(v.title).replace(/'/g,"\\'")}')">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg><span>Share</span>
+      </div>
+      <div class="short-act" onclick="addToQueueById('${v.id}','${esc(v.title).replace(/'/g,"\\'")}','${esc(v.channel).replace(/'/g,"\\'")}','${v.thumb}')">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm4 0h14v-2H7v2zm0-4h14v-2H7v2zM7 7v2h14V7H7z"/></svg><span>Antrian</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderShorts(container){
+  container.innerHTML=shortsData.map((v,i)=>shortCard(v,i)).join('');
+  setupShortsObserver(container);
+}
+
+function setupShortsObserver(container){
+  if(shortsObserver)shortsObserver.disconnect();
+  shortsObserver=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      const el=entry.target, iframe=el.querySelector('iframe');
+      const idx=parseInt(el.dataset.idx);
+      if(!iframe)return;
+      if(entry.isIntersecting){
+        // Load iframe dengan autoplay
+        if(!iframe.src.includes('youtube.com')){
+          iframe.src=iframe.dataset.src.replace('autoplay=0','autoplay=1');
+        }
+        shortsCurIdx=idx;
+        if(idx>=shortsData.length-3)loadMoreShorts();
+      } else {
+        // Unload iframe jauh untuk hemat memori
+        if(Math.abs(idx-shortsCurIdx)>2) iframe.src='about:blank';
+      }
+    });
+  },{root:container,threshold:0.75});
+  container.querySelectorAll('.short-item').forEach(el=>shortsObserver.observe(el));
+}
+
+async function loadMoreShorts(){
+  if(shortsLoading)return;
+  shortsLoading=true;
+  const page=Math.ceil(shortsData.length/15)+1;
+  let more=await fetchInvShorts(shortsQuery,page);
+  if(!more.length)more=await fetchFAAShorts(shortsQuery);
+  const seen=new Set(shortsData.map(v=>v.id));
+  const newVids=more.filter(v=>!seen.has(v.id));
+  if(newVids.length){
+    const container=G('shorts-container');
+    const startIdx=shortsData.length;
+    shortsData.push(...newVids);
+    newVids.forEach((v,i)=>{
+      const el=document.createElement('div');
+      el.outerHTML; // dummy
+      const tmp=document.createElement('template');
+      tmp.innerHTML=shortCard(v,startIdx+i);
+      const item=tmp.content.firstElementChild;
+      container.appendChild(item);
+      shortsObserver.observe(item);
+    });
+  }
+  shortsLoading=false;
+}
+
+function shareShort(id,title){
+  const u=`https://youtu.be/${id}`;
+  if(navigator.share)navigator.share({title,url:u});
+  else if(navigator.clipboard)navigator.clipboard.writeText(u).then(()=>toast('🔗 Link Shorts disalin!'));
+  else toast(u);
+}
+
 let commentNextPage = null;
 let commentVidId = null;
 
@@ -1428,10 +1655,11 @@ function applyRoute(state){
   // FIX: watch-page harus display:contents agar grid berfungsi, bukan display:block
   if(pgEl) pgEl.style.display = (page==='watch') ? 'contents' : 'block';
   if(page==='watch'){
-    document.body.classList.add('is-watch');document.body.classList.remove('is-mini');
+    document.body.classList.add('is-watch');document.body.classList.remove('is-mini','is-shorts');
     if(curVidId!==state.arg)openWatch(state.arg);
   }else{
     document.body.classList.remove('is-watch');
+    document.body.classList.toggle('is-shorts', page==='shorts');
     if(curVidId)document.body.classList.add('is-mini');else document.body.classList.remove('is-mini');
     if(page==='home')showHome();
     if(page==='channel')openChannel(state.arg);
@@ -1439,6 +1667,7 @@ function applyRoute(state){
     if(page==='history')showHistory();
     if(page==='stats')showStats();
     if(page==='pinned')showPinnedPage();
+    if(page==='shorts'){ if(!shortsData.length) loadShorts('viral'); }
   }
   document.querySelectorAll('.si').forEach(el=>el.classList.remove('on'));
   const an=G('sb-'+page);if(an)an.classList.add('on');
@@ -1541,9 +1770,35 @@ function buildCats(){G('cats').innerHTML=CATS.map(c=>`<button class="cpill${c.id
 async function showHome(){
   buildCats();
   const terms=Object.entries(wHist.slice(0,20).reduce((a,v)=>{if(v.ch)a[v.ch]=(a[v.ch]||0)+1;return a;},{})).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
-  if(terms.length){G('pbanner').style.display='flex';G('pbtext').textContent=`Untukmu: ${terms.join(', ')}`;await loadPersonalized(terms);}
-  else{G('pbanner').style.display='none';await loadCat('');}
+  // Load video trending + shorts section paralel
+  const mainLoad = terms.length
+    ? (G('pbanner').style.display='flex', G('pbtext').textContent=`Untukmu: ${terms.join(', ')}`, loadPersonalized(terms))
+    : (G('pbanner').style.display='none', loadCat(''));
+  await Promise.all([mainLoad, loadHomeShorts()]);
 }
+// Load shorts section untuk beranda — 0 quota (Invidious/FAA)
+async function loadHomeShorts(){
+  const sec=G('home-shorts-sec'), grid=G('home-shorts-grid');
+  sec.style.display='block';
+  grid.innerHTML=`<div class="sk sk-short"></div><div class="sk sk-short"></div><div class="sk sk-short"></div><div class="sk sk-short"></div><div class="sk sk-short"></div><div class="sk sk-short"></div>`;
+
+  // 0 quota — Invidious dulu, fallback FAA
+  let videos=[];
+  try{ videos=await fetchInvShorts('shorts viral indonesia terbaru'); }catch(e){}
+  if(videos.length<2){ try{ videos=await fetchFAAShorts('shorts viral indonesia'); }catch(e){} }
+  if(!videos.length){sec.style.display='none';return;}
+
+  // 6 shorts (2 kolom × 3 baris) seperti YouTube asli
+  grid.innerHTML=videos.slice(0,6).map(v=>`
+    <div class="hs-card" onclick="nav('watch','`+`${v.id}')">
+      <img src="`+`${v.thumb||ytThumb(v.id,'mqdefault')}" loading="lazy" onerror="this.src='`+`${ytThumb(v.id,'mqdefault')}'"/>
+      <div class="hs-card-info">
+        <div class="hs-card-title">`+`${esc(v.title)}</div>
+        <div class="hs-card-ch">`+`${esc(v.channel)}</div>
+      </div>
+    </div>`).join('');
+}
+
 async function loadPersonalized(terms){
   const g=G('grid');g.innerHTML=Array(12).fill(0).map(skelC).join('');
   const qs=[...terms.map(t=>searchAPI(t,6)),getTrendAPI('',6)];
@@ -1555,6 +1810,14 @@ async function loadPersonalized(terms){
 }
 async function loadCat(c){
   curCat=c;buildCats();const g=G('grid');g.innerHTML=Array(12).fill(0).map(skelC).join('');
+  // Tampilkan shorts section hanya di "Semua"
+  const shortsSec=G('home-shorts-sec');
+  if(c===''){
+    if(!shortsSec.querySelector('.hs-card'))loadHomeShorts();
+    else shortsSec.style.display='block';
+  } else {
+    shortsSec.style.display='none';
+  }
   const d=await getTrendAPI(c,24);
   if(!d){g.innerHTML='<div class="empty">Gagal memuat</div>';return;}
   await fetchAv(d.map(v=>v.snippet?.channelId).filter(Boolean));

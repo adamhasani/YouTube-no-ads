@@ -1182,22 +1182,48 @@ let shortsData=[], shortsCurIdx=0, shortsLoading=false, shortsQuery='shorts vira
 let shortsObserver=null, invIdx=0;
 
 const INV_INSTANCES=[
+  'https://iv.datura.network',
   'https://invidious.privacyredirect.com',
+  'https://invidious.fdn.fr',
   'https://inv.nadeko.net',
-  'https://invidious.nerdvpn.de',
-  'https://yt.drgnz.club',
 ];
 
+// Helper timeout fetch (AbortSignal.timeout tidak support semua browser)
+function fetchWithTimeout(url, ms=6000){
+  const ctrl=new AbortController();
+  const t=setTimeout(()=>ctrl.abort(),ms);
+  return fetch(url,{signal:ctrl.signal}).finally(()=>clearTimeout(t));
+}
+
+// PRIMARY: FAA API (sudah terbukti jalan)
+async function fetchFAAShorts(query){
+  try{
+    const r=await fetchWithTimeout(`${FAA_BASE}/youtube?query=${encodeURIComponent(query+' shorts indonesia')}`);
+    const d=await r.json();
+    if(!d.status||!d.result?.length)return[];
+    return d.result.map(v=>{
+      const id=v.link?.match(/[?&]v=([^&]+)/)?.[1]||'';
+      const[m,s]=(v.duration||'0:30').split(':').map(Number);
+      const dur=(m||0)*60+(s||0);
+      return{id,title:v.title||'',channel:v.channel||'',channelId:'',thumb:v.imageUrl||ytThumb(id),views:0,dur};
+    }).filter(v=>v.id); // ambil semua, jangan filter durasi karena FAA durasi kadang salah
+  }catch(e){return[];}
+}
+
+// SECONDARY: Invidious (kadang jalan, kadang tidak)
 async function fetchInvShorts(query, page=1){
   for(let i=0;i<INV_INSTANCES.length;i++){
     const base=INV_INSTANCES[(invIdx+i)%INV_INSTANCES.length];
     try{
-      const r=await fetch(`${base}/api/v1/search?q=${encodeURIComponent(query+' #shorts')}&type=video&page=${page}&region=ID`,{signal:AbortSignal.timeout(5000)});
+      const r=await fetchWithTimeout(`${base}/api/v1/search?q=${encodeURIComponent(query)}&type=video&page=${page}&region=ID`,5000);
       if(!r.ok)continue;
       const data=await r.json();
       if(!Array.isArray(data)||!data.length)continue;
       invIdx=(invIdx+i)%INV_INSTANCES.length;
-      return data.filter(v=>v.lengthSeconds>0&&v.lengthSeconds<=90).slice(0,15).map(v=>({
+      // Filter shorts (≤90 detik)
+      const shorts=data.filter(v=>v.lengthSeconds>0&&v.lengthSeconds<=90);
+      if(!shorts.length)continue;
+      return shorts.slice(0,15).map(v=>({
         id:v.videoId, title:v.title||'', channel:v.author||'', channelId:v.authorId||'',
         thumb:v.videoThumbnails?.[0]?.url||ytThumb(v.videoId), views:v.viewCount||0, dur:v.lengthSeconds||0
       }));
@@ -1206,18 +1232,40 @@ async function fetchInvShorts(query, page=1){
   return[];
 }
 
-async function fetchFAAShorts(query){
+// LAST RESORT: YouTube API (pakai quota tapi pasti jalan)
+async function fetchYTShorts(query){
   try{
-    const r=await fetch(`${FAA_BASE}/youtube?query=${encodeURIComponent(query+' shorts')}`);
-    const d=await r.json();
-    if(!d.status||!d.result?.length)return[];
-    return d.result.slice(0,15).map(v=>{
-      const id=v.link?.match(/[?&]v=([^&]+)/)?.[1]||'';
-      const[m,s]=(v.duration||'0:0').split(':').map(Number);
-      return{id,title:v.title||'',channel:v.channel||'',channelId:'',thumb:v.imageUrl||ytThumb(id),views:0,dur:(m||0)*60+(s||0)};
-    }).filter(v=>v.id&&v.dur<=90&&v.dur>0);
+    const d=await api('search',{part:'snippet',q:query+' shorts',type:'video',videoDuration:'short',maxResults:12,regionCode:'ID'},true);
+    if(!d?.items?.length)return[];
+    return d.items.map(v=>({
+      id:v.id?.videoId||'',
+      title:v.snippet?.title||'',
+      channel:v.snippet?.channelTitle||'',
+      channelId:v.snippet?.channelId||'',
+      thumb:v.snippet?.thumbnails?.high?.url||ytThumb(v.id?.videoId||''),
+      views:0, dur:30
+    })).filter(v=>v.id);
   }catch(e){return[];}
 }
+
+// Gabungan semua sumber dengan fallback berantai
+async function fetchShorts(query, page=1){
+  // Layer 1: FAA (paling reliable untuk kamu)
+  let videos=await fetchFAAShorts(query);
+  if(videos.length>=3)return videos;
+
+  // Layer 2: Invidious
+  const inv=await fetchInvShorts(query+' shorts',page);
+  const seen=new Set(videos.map(v=>v.id));
+  inv.forEach(v=>{if(!seen.has(v.id)){seen.add(v.id);videos.push(v);}});
+  if(videos.length>=3)return videos;
+
+  // Layer 3: YouTube API (last resort, pakai quota)
+  const yt=await fetchYTShorts(query);
+  yt.forEach(v=>{if(!seen.has(v.id)){seen.add(v.id);videos.push(v);}});
+  return videos;
+}
+
 
 async function loadShorts(cat='viral'){
   if(shortsLoading)return;
@@ -1228,12 +1276,7 @@ async function loadShorts(cat='viral'){
   container.innerHTML=`<div class="short-loading"><div class="sring"></div></div>`;
   shortsData=[];shortsCurIdx=0;
 
-  let videos=await fetchInvShorts(shortsQuery);
-  if(videos.length<3){
-    const faa=await fetchFAAShorts(shortsQuery);
-    const seen=new Set(videos.map(v=>v.id));
-    faa.forEach(v=>{if(!seen.has(v.id)){seen.add(v.id);videos.push(v);}});
-  }
+  let videos=await fetchShorts(shortsQuery);
 
   if(!videos.length){
     container.innerHTML=`<div class="short-loading" style="flex-direction:column;gap:12px">
@@ -1307,8 +1350,7 @@ async function loadMoreShorts(){
   if(shortsLoading)return;
   shortsLoading=true;
   const page=Math.ceil(shortsData.length/15)+1;
-  let more=await fetchInvShorts(shortsQuery,page);
-  if(!more.length)more=await fetchFAAShorts(shortsQuery);
+  let more=await fetchShorts(shortsQuery,page);
   const seen=new Set(shortsData.map(v=>v.id));
   const newVids=more.filter(v=>!seen.has(v.id));
   if(newVids.length){
@@ -1783,9 +1825,7 @@ async function loadHomeShorts(){
   grid.innerHTML=`<div class="sk sk-short"></div><div class="sk sk-short"></div><div class="sk sk-short"></div><div class="sk sk-short"></div><div class="sk sk-short"></div><div class="sk sk-short"></div>`;
 
   // 0 quota — Invidious dulu, fallback FAA
-  let videos=[];
-  try{ videos=await fetchInvShorts('shorts viral indonesia terbaru'); }catch(e){}
-  if(videos.length<2){ try{ videos=await fetchFAAShorts('shorts viral indonesia'); }catch(e){} }
+  let videos=await fetchShorts('shorts viral indonesia');
   if(!videos.length){sec.style.display='none';return;}
 
   // 6 shorts (2 kolom × 3 baris) seperti YouTube asli

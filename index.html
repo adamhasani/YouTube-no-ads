@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="theme-color" content="#0f0f0f"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="YourTube"/>
+<link rel="manifest" href="/manifest.json"/>
 <title>YourTube</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
@@ -265,6 +271,35 @@ body.data-saver .vt img{image-rendering:pixelated}
   .pb{padding:4px 5px;font-size:12px}
   .psel{font-size:12px;padding:4px 6px;max-width:90px}
 }
+/* LIVE BADGE */
+.live-badge{position:absolute;top:6px;left:6px;background:#ff0000;color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;display:flex;align-items:center;gap:4px;z-index:2}
+.live-dot{width:7px;height:7px;background:#fff;border-radius:50%;animation:livepulse 1s infinite}
+@keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* COMMENTS */
+#comments-sec{margin-top:16px;border-top:1px solid var(--border);padding-top:16px}
+#comments-sec h3{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.comment-item{display:flex;gap:10px;margin-bottom:16px}
+.comment-av{width:32px;height:32px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.comment-av img{width:100%;height:100%;object-fit:cover}
+.comment-author{font-size:13px;font-weight:600}
+.comment-text{font-size:14px;line-height:1.5;margin-top:3px;white-space:pre-wrap}
+.comment-meta{font-size:12px;color:var(--text2);margin-top:4px;display:flex;align-items:center;gap:8px}
+#load-more-comments{display:block;width:100%;padding:10px;background:var(--surface);color:var(--text);border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-top:8px}
+#load-more-comments:hover{background:var(--surface2)}
+/* PIN CHANNEL */
+#pinned-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-top:16px}
+.pin-card{background:var(--surface);border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;transition:background .15s;position:relative}
+.pin-card:hover{background:var(--surface2)}
+.pin-av{width:64px;height:64px;border-radius:50%;overflow:hidden;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700}
+.pin-av img{width:100%;height:100%;object-fit:cover}
+.pin-live{position:absolute;top:8px;right:8px;background:#ff0000;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;display:flex;align-items:center;gap:3px}
+.pin-new{position:absolute;top:8px;left:8px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
+/* PWA BANNER */
+#pwa-banner{display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;z-index:800;box-shadow:0 8px 32px rgba(0,0,0,.7);align-items:center;gap:12px;max-width:340px;width:90%}
+#pwa-banner.show{display:flex}
+/* SLEEP TIMER */
+#sleep-indicator{position:fixed;bottom:20px;left:20px;background:rgba(0,0,0,.85);color:#fff;padding:8px 14px;border-radius:99px;font-size:13px;font-weight:500;z-index:800;display:none;align-items:center;gap:8px;border:1px solid #555}
+#sleep-indicator.show{display:flex}
 </style>
 </head>
 <body>
@@ -296,6 +331,12 @@ body.data-saver .vt img{image-rendering:pixelated}
     <div id="suggest-box"></div>
   </div>
   <div id="nav-right">
+    <button class="icon-btn" id="notif-btn" onclick="toggleNotif()" title="Notifikasi">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+    </button>
+    <button class="icon-btn" onclick="nav('pinned')" title="Channel Favorit">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+    </button>
     <button class="icon-btn" onclick="toggleQueuePanel()" title="Antrian">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
       <span class="badge" id="q-badge" style="display:none">0</span>
@@ -313,6 +354,7 @@ body.data-saver .vt img{image-rendering:pixelated}
 <aside id="sidebar">
   <div class="si on" id="sb-home" onclick="nav('home')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Beranda</span></div>
   <div class="si" onclick="nav('search','shorts viral')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.77 10.32l-1.2-.5L18 9l.5-1.2.5 1.2 1.2.5-1.2.5L18 11.2l-.23-.88zM3 9l2.93 7h1.76l1.44-3.39L10.56 16h1.76L15.26 9h-1.7l-1.45 3.48L10.56 9H8.81l-1.45 3.48L5.91 9H3z"/></svg><span>Shorts</span></div>
+  <div class="si" id="sb-pinned" onclick="nav('pinned')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg><span>Channel Favorit</span></div>
   <div class="si" id="sb-history" onclick="nav('history')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg><span>Riwayat</span></div>
   <div class="si" id="sb-stats" onclick="nav('stats')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg><span>Statistik</span></div>
   <div class="si" onclick="openPLPanel()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg><span>Koleksi</span></div>
@@ -424,6 +466,15 @@ body.data-saver .vt img{image-rendering:pixelated}
         </div>
         <textarea id="notearea" placeholder="Tulis catatan untuk video ini... (tersimpan otomatis)" oninput="saveNote()"></textarea>
       </div>
+      <!-- COMMENTS — klik dulu, hemat quota -->
+      <div id="comments-sec">
+        <h3>💬 Komentar <span id="comment-count" style="font-size:14px;color:var(--text2);font-weight:400"></span></h3>
+        <button id="show-comments-btn" onclick="showComments()" style="width:100%;padding:12px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px">
+          💬 Tampilkan Komentar
+        </button>
+        <div id="comments-list" style="display:none"></div>
+        <button id="load-more-comments" onclick="loadMoreComments()" style="display:none">Muat lebih banyak komentar</button>
+      </div>
     </div>
     <div id="w-related">
       <div style="display:flex;align-items:center;margin-bottom:12px">
@@ -443,6 +494,7 @@ body.data-saver .vt img{image-rendering:pixelated}
         <h1 id="ch-big-name" style="font-size:26px;font-weight:700;margin-bottom:4px">Memuat...</h1>
         <div id="ch-big-subs" style="color:var(--text2);font-size:14px;margin-bottom:12px"></div>
         <button style="padding:10px 20px;background:var(--text);color:var(--bg);border-radius:99px;font-weight:600;font-size:14px">Berlangganan</button>
+        <button id="pin-ch-btn" onclick="togglePinChannel()" style="padding:10px 16px;background:var(--surface);color:var(--text);border-radius:99px;font-weight:600;font-size:14px;margin-left:8px">📌 Pin</button>
       </div>
     </div>
     <div id="ch-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:0 0 40px"></div>
@@ -452,6 +504,21 @@ body.data-saver .vt img{image-rendering:pixelated}
   <div id="search-page" class="page page-pad">
     <div id="sq-title" style="font-size:16px;margin:0 0 16px"></div>
     <div id="sq-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:0"></div>
+  </div>
+
+  <!-- PINNED CHANNELS -->
+  <div id="pinned-page" class="page page-pad">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <h2 style="font-size:22px;font-weight:700">📌 Channel Favorit</h2>
+      <button onclick="checkAllPinned()" style="padding:8px 16px;border-radius:99px;background:var(--surface);color:var(--text);font-size:13px;font-weight:500;border:none;cursor:pointer">🔄 Cek Update</button>
+    </div>
+    <p style="color:var(--text2);font-size:13px;margin-bottom:16px">Pin channel favorit untuk pantau update & live dengan mudah</p>
+    <div id="pinned-grid"></div>
+    <div id="pinned-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--text2)">
+      <div style="font-size:48px;margin-bottom:12px">📌</div>
+      <p>Belum ada channel yang di-pin</p>
+      <p style="font-size:13px;margin-top:6px">Buka halaman channel lalu klik tombol "📌 Pin"</p>
+    </div>
   </div>
 
   <!-- HISTORY -->
@@ -545,7 +612,38 @@ body.data-saver .vt img{image-rendering:pixelated}
       <div><div class="setting-label">📝 Export Semua Catatan</div><div class="setting-sub">Download sebagai file .txt</div></div>
       <button class="mbtn" onclick="exportAllNotes()" style="font-size:13px;padding:8px 14px">Download</button>
     </div>
+
+    <div class="setting-row">
+      <div><div class="setting-label">⏰ Sleep Timer</div><div class="setting-sub">Otomatis pause video</div></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      <button onclick="startSleepTimer(15);G('settings-modal').classList.remove('show')" style="padding:8px 14px;border-radius:8px;background:var(--surface2);color:var(--text);border:none;cursor:pointer;font-size:13px;font-weight:500">15 menit</button>
+      <button onclick="startSleepTimer(30);G('settings-modal').classList.remove('show')" style="padding:8px 14px;border-radius:8px;background:var(--surface2);color:var(--text);border:none;cursor:pointer;font-size:13px;font-weight:500">30 menit</button>
+      <button onclick="startSleepTimer(60);G('settings-modal').classList.remove('show')" style="padding:8px 14px;border-radius:8px;background:var(--surface2);color:var(--text);border:none;cursor:pointer;font-size:13px;font-weight:500">60 menit</button>
+      <button onclick="cancelSleep();toast('Sleep timer dibatalkan')" style="padding:8px 14px;border-radius:8px;background:var(--surface2);color:var(--text2);border:none;cursor:pointer;font-size:13px">Batal</button>
+    </div>
+
+    <div class="setting-row">
+      <div><div class="setting-label">🔔 Izinkan Notifikasi</div><div class="setting-sub">Dapat notif saat channel favorit upload baru</div></div>
+      <button onclick="toggleNotif()" style="padding:8px 14px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:13px;font-weight:600">Izinkan</button>
+    </div>
   </div>
+</div>
+</div>
+
+<!-- PWA INSTALL BANNER -->
+<div id="pwa-banner">
+  <span style="font-size:22px">📱</span>
+  <div style="flex:1"><div style="font-size:14px;font-weight:600">Install YourTube</div><div style="font-size:12px;color:var(--text2)">Tambah ke homescreen</div></div>
+  <button onclick="installPWA()" style="background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;font-weight:600;font-size:13px;border:none;cursor:pointer">Install</button>
+  <button onclick="G('pwa-banner').classList.remove('show')" style="background:var(--surface2);color:var(--text);padding:8px 10px;border-radius:8px;font-size:13px;border:none;cursor:pointer">✕</button>
+</div>
+
+<!-- SLEEP TIMER INDICATOR -->
+<div id="sleep-indicator">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+  <span id="sleep-label">Pause dalam 30:00</span>
+  <button onclick="cancelSleep()" style="background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:4px;padding:2px 8px;font-size:12px;cursor:pointer">Batal</button>
 </div>
 
 <div id="spinner"><div class="sring"></div><span style="color:#fff;font-weight:500">Memuat...</span></div>
@@ -556,7 +654,13 @@ body.data-saver .vt img{image-rendering:pixelated}
 // ══════════════════════════════════════════
 // CACHE + API PROXY
 // ══════════════════════════════════════════
-const CACHE_TTL={videos:3600000,search:1800000,channels:86400000};
+const CACHE_TTL={
+  videos:7200000,      // trending: 2 jam
+  search:3600000,      // search: 1 jam
+  channels:172800000,  // channel: 48 jam
+  commentThreads:3600000, // komentar: 1 jam
+  default:3600000
+};
 async function api(ep,p,uc=true){
   const k='ytc_'+ep+'_'+JSON.stringify(p);
   if(uc){try{const r=localStorage.getItem(k);if(r){const{data,exp}=JSON.parse(r);if(Date.now()<exp)return data;localStorage.removeItem(k);}}catch(e){}}
@@ -827,8 +931,283 @@ function downloadTxt(content,filename){
 }
 
 // ══════════════════════════════════════════
-// SPA ROUTER
+// KOMENTAR
 // ══════════════════════════════════════════
+let commentNextPage = null;
+let commentVidId = null;
+
+// Dipanggil saat user klik tombol — hemat quota
+function showComments() {
+  G('show-comments-btn').style.display = 'none';
+  G('comments-list').style.display = 'block';
+  if (!commentVidId) return;
+  loadComments(commentVidId);
+}
+
+async function loadComments(vid, pageToken = null) {
+  if (!vid) return;
+  commentVidId = vid;
+  // 10 komentar per load, hemat 50% vs 20
+  const params = { part: 'snippet', videoId: vid, maxResults: 10, order: 'relevance' };
+  if (pageToken) params.pageToken = pageToken;
+  
+  if (!pageToken) {
+    G('comments-list').innerHTML = '<div style="color:var(--text2);padding:20px 0;text-align:center">⏳ Memuat komentar...</div>';
+    G('load-more-comments').style.display = 'none';
+  }
+  
+  const d = await api('commentThreads', params);
+  if (!d) {
+    if (!pageToken) G('comments-list').innerHTML = '<div style="color:var(--text2);padding:12px 0;font-size:13px">💬 Komentar tidak tersedia atau dinonaktifkan untuk video ini.</div>';
+    return;
+  }
+  
+  const total = d.pageInfo?.totalResults || 0;
+  if (!pageToken) {
+    G('comment-count').textContent = fv(total) + ' komentar';
+    G('comments-list').innerHTML = '';
+  }
+  
+  commentNextPage = d.nextPageToken || null;
+  
+  const html = (d.items || []).map(item => {
+    const c = item.snippet?.topLevelComment?.snippet || {};
+    const author = esc(c.authorDisplayName || '');
+    const text = esc(c.textOriginal || c.textDisplay || '');
+    const img = c.authorProfileImageUrl || '';
+    const likes = c.likeCount || 0;
+    const time = c.publishedAt ? ago(c.publishedAt) : '';
+    const avC = avc(author);
+    const avH = img ? `<img src="${img}" loading="lazy" onerror="this.style.display='none'"/>` : (author[0] || '?').toUpperCase();
+    const replyCount = item.snippet?.totalReplyCount || 0;
+    return `<div class="comment-item">
+      <div class="comment-av" style="background:${avC}">${avH}</div>
+      <div style="flex:1;min-width:0">
+        <div class="comment-author">${author}</div>
+        <div class="comment-text">${text}</div>
+        <div class="comment-meta">
+          <span>${time}</span>
+          ${likes ? `<span>👍 ${fv(likes)}</span>` : ''}
+          ${replyCount ? `<span>💬 ${replyCount} balasan</span>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  
+  G('comments-list').innerHTML += html;
+  G('load-more-comments').style.display = commentNextPage ? 'block' : 'none';
+}
+
+async function loadMoreComments() {
+  if (!commentNextPage || !commentVidId) return;
+  G('load-more-comments').textContent = 'Memuat...';
+  G('load-more-comments').disabled = true;
+  await loadComments(commentVidId, commentNextPage);
+  G('load-more-comments').textContent = 'Muat lebih banyak komentar';
+  G('load-more-comments').disabled = false;
+}
+
+
+// ══════════════════════════════════════════
+// DETEKSI LIVE
+// ══════════════════════════════════════════
+async function checkLiveStatus(channelIds) {
+  if (!channelIds.length) return {};
+  // Search live broadcasts
+  const liveMap = {};
+  try {
+    const d = await api('search', { part: 'snippet', channelId: channelIds.slice(0,5).join(','), eventType: 'live', type: 'video', maxResults: 10 }, false);
+    (d?.items || []).forEach(item => { liveMap[item.snippet?.channelId] = item.id?.videoId; });
+  } catch(e) {}
+  return liveMap;
+}
+
+// ══════════════════════════════════════════
+// PIN CHANNEL
+// ══════════════════════════════════════════
+let pinnedChannels = JSON.parse(localStorage.getItem('yt_pinned') || '[]');
+let curOpenChId = null;
+
+function isChannelPinned(id) { return pinnedChannels.some(c => c.id === id); }
+
+function togglePinChannel() {
+  if (!curOpenChId) return;
+  const chName = G('ch-big-name').textContent;
+  const chImg = G('ch-big-av').querySelector('img')?.src || '';
+  if (isChannelPinned(curOpenChId)) {
+    pinnedChannels = pinnedChannels.filter(c => c.id !== curOpenChId);
+    G('pin-ch-btn').textContent = '📌 Pin';
+    toast('Dihapus dari Channel Favorit');
+  } else {
+    pinnedChannels.push({ id: curOpenChId, name: chName, img: chImg, addedAt: Date.now() });
+    G('pin-ch-btn').textContent = '✅ Di-pin';
+    toast('📌 Channel ditambahkan ke Favorit!');
+  }
+  localStorage.setItem('yt_pinned', JSON.stringify(pinnedChannels));
+}
+
+async function showPinnedPage() {
+  const g = G('pinned-grid');
+  if (!pinnedChannels.length) {
+    g.innerHTML = '';
+    G('pinned-empty').style.display = 'block';
+    return;
+  }
+  G('pinned-empty').style.display = 'none';
+  g.innerHTML = pinnedChannels.map(ch => `
+    <div class="pin-card" onclick="nav('channel','${ch.id}')">
+      <div class="pin-av" style="background:${avc(ch.name)}">
+        ${ch.img ? `<img src="${ch.img}" onerror="this.style.display='none'" loading="lazy"/>` : (ch.name[0]||'?').toUpperCase()}
+      </div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px">${esc(ch.name)}</div>
+      <button onclick="event.stopPropagation();removePinned('${ch.id}')" style="margin-top:8px;padding:4px 12px;border-radius:99px;background:var(--surface2);color:var(--text2);border:none;cursor:pointer;font-size:12px">Hapus Pin</button>
+    </div>`).join('');
+  
+  // Cek live status
+  await checkAllPinned();
+}
+
+async function checkAllPinned() {
+  if (!pinnedChannels.length) return;
+  toast('🔄 Mengecek update channel...');
+  const liveMap = await checkLiveStatus(pinnedChannels.map(c => c.id));
+  
+  // Cek video baru via RSS
+  for (const ch of pinnedChannels) {
+    try {
+      const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://www.youtube.com/feeds/videos.xml?channel_id=' + ch.id)}`);
+      const j = await r.json();
+      if (!j.contents) continue;
+      const xml = new DOMParser().parseFromString(j.contents, 'text/xml');
+      const latest = xml.querySelector('entry');
+      const latestId = latest?.querySelector('videoId')?.textContent;
+      const lastSeen = localStorage.getItem('yt_lastseen_' + ch.id);
+      if (latestId && latestId !== lastSeen) {
+        if (lastSeen) sendNotif(`🆕 ${ch.name} upload video baru!`, latest?.querySelector('title')?.textContent || '', `/#watch=${latestId}`);
+        localStorage.setItem('yt_lastseen_' + ch.id, latestId);
+      }
+    } catch(e) {}
+  }
+  
+  // Update UI cards dengan live badge
+  const cards = G('pinned-grid').querySelectorAll('.pin-card');
+  pinnedChannels.forEach((ch, i) => {
+    if (!cards[i]) return;
+    const old = cards[i].querySelector('.pin-live, .pin-new');
+    if (old) old.remove();
+    if (liveMap[ch.id]) {
+      const badge = document.createElement('div');
+      badge.className = 'pin-live';
+      badge.innerHTML = `<span style="width:6px;height:6px;background:#fff;border-radius:50%;animation:livepulse 1s infinite"></span> LIVE`;
+      badge.onclick = e => { e.stopPropagation(); nav('watch', liveMap[ch.id]); };
+      cards[i].appendChild(badge);
+    }
+  });
+  toast('✅ Selesai dicek!');
+}
+
+function removePinned(id) {
+  pinnedChannels = pinnedChannels.filter(c => c.id !== id);
+  localStorage.setItem('yt_pinned', JSON.stringify(pinnedChannels));
+  showPinnedPage();
+}
+
+// ══════════════════════════════════════════
+// NOTIFIKASI BROWSER
+// ══════════════════════════════════════════
+async function toggleNotif() {
+  if (Notification.permission === 'granted') {
+    toast('🔔 Notifikasi sudah aktif! Notif muncul saat channel favorit upload baru.');
+    return;
+  }
+  if (Notification.permission === 'denied') {
+    toast('❌ Notifikasi diblokir. Izinkan dari pengaturan browser.');
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    toast('🔔 Notifikasi diizinkan! Pastikan Channel Favorit sudah di-pin.');
+    new Notification('YourTube', { body: 'Notifikasi berhasil diaktifkan! 🎉', icon: 'https://www.youtube.com/favicon.ico' });
+    // Daftarkan periodic sync kalau SW support
+    if ('serviceWorker' in navigator) {
+      const reg = await navigator.serviceWorker.ready;
+      if ('periodicSync' in reg) {
+        try { await reg.periodicSync.register('check-channels', { minInterval: 30 * 60 * 1000 }); } catch(e) {}
+      }
+    }
+  } else {
+    toast('Notifikasi tidak diizinkan.');
+  }
+}
+
+function sendNotif(title, body, url) {
+  if (Notification.permission !== 'granted') return;
+  const n = new Notification(title, { body, icon: 'https://www.youtube.com/favicon.ico' });
+  n.onclick = () => { window.focus(); if (url) { window.location.hash = url.replace('/#', ''); } };
+}
+
+// Cek channel update periodik dari browser (fallback tanpa SW)
+async function startPeriodicCheck() {
+  if (!pinnedChannels.length || Notification.permission !== 'granted') return;
+  setInterval(async () => {
+    for (const ch of pinnedChannels.slice(0, 3)) {
+      try {
+        const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://www.youtube.com/feeds/videos.xml?channel_id=' + ch.id)}`);
+        const j = await r.json();
+        if (!j.contents) continue;
+        const xml = new DOMParser().parseFromString(j.contents, 'text/xml');
+        const latest = xml.querySelector('entry');
+        const latestId = latest?.querySelector('videoId')?.textContent;
+        const lastSeen = localStorage.getItem('yt_lastseen_' + ch.id);
+        if (latestId && latestId !== lastSeen) {
+          if (lastSeen) sendNotif(`🆕 ${ch.name} upload baru!`, latest?.querySelector('title')?.textContent || '', `/#watch=${latestId}`);
+          localStorage.setItem('yt_lastseen_' + ch.id, latestId);
+        }
+      } catch(e) {}
+    }
+  }, 15 * 60 * 1000); // cek tiap 15 menit
+}
+
+// ══════════════════════════════════════════
+// PWA
+// ══════════════════════════════════════════
+let pwaInstallEvent = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  pwaInstallEvent = e;
+  setTimeout(() => G('pwa-banner').classList.add('show'), 3000);
+});
+async function installPWA() {
+  if (!pwaInstallEvent) { toast('Gunakan menu browser → "Tambahkan ke layar utama"'); return; }
+  pwaInstallEvent.prompt();
+  const result = await pwaInstallEvent.userChoice;
+  G('pwa-banner').classList.remove('show');
+  if (result.outcome === 'accepted') toast('✅ YourTube berhasil diinstall!');
+  pwaInstallEvent = null;
+}
+
+// ══════════════════════════════════════════
+// SLEEP TIMER
+// ══════════════════════════════════════════
+let sleepTimer = null, sleepEnd = null;
+function startSleepTimer(minutes) {
+  if (sleepTimer) clearInterval(sleepTimer);
+  sleepEnd = Date.now() + minutes * 60 * 1000;
+  G('sleep-indicator').classList.add('show');
+  sleepTimer = setInterval(() => {
+    const left = sleepEnd - Date.now();
+    if (left <= 0) { yc('pauseVideo'); cancelSleep(); toast('😴 Sleep timer — video dijeda'); return; }
+    const m = Math.floor(left / 60000), s = Math.floor((left % 60000) / 1000);
+    G('sleep-label').textContent = `Pause dalam ${m}:${String(s).padStart(2,'0')}`;
+  }, 1000);
+  toast(`⏰ Sleep timer: ${minutes} menit`);
+}
+function cancelSleep() {
+  if (sleepTimer) clearInterval(sleepTimer);
+  sleepTimer = null; G('sleep-indicator').classList.remove('show');
+}
+
+
 function nav(page,arg){
   if(history.state?.page===page&&history.state?.arg===arg)return;
   history.pushState({page,arg},'',`#${page}${arg?'='+encodeURIComponent(arg):''}`);
@@ -852,6 +1231,7 @@ function applyRoute(state){
     if(page==='search')doSearchTerm(state.arg,true);
     if(page==='history')showHistory();
     if(page==='stats'){showStats();}
+    if(page==='pinned')showPinnedPage();
   }
   document.querySelectorAll('.si').forEach(el=>el.classList.remove('on'));
   const an=G('sb-'+page);if(an)an.classList.add('on');
@@ -910,14 +1290,24 @@ function cardH(v,horiz=false){
   const avU=avCache[chId]||'',avC=avc(ch);
   const avH=avU?`<img src="${avU}" loading="lazy" onerror="this.style.display='none'"/>`:((ch||'?')[0].toUpperCase());
 
+  const isLive = v.snippet?.liveBroadcastContent === 'live';
+  const isUpcoming = v.snippet?.liveBroadcastContent === 'upcoming';
+
   if(horiz)return`<div class="rcard" onclick="nav('watch','${id}')">
-    <div class="rthumb"><img src="${th}" loading="lazy" onerror="this.src='${ytThumb(id,'mqdefault')}'" /><span class="rdur">${d}</span></div>
+    <div class="rthumb">
+      <img src="${th}" loading="lazy" onerror="this.src='${ytThumb(id,'mqdefault')}'" />
+      ${isLive?`<div class="live-badge"><span class="live-dot"></span>LIVE</div>`:''}
+      <span class="rdur">${isLive?'':d}</span>
+    </div>
     <div style="flex:1;min-width:0"><div class="rtitle">${title}</div><div class="rch">${ch}</div><div class="rch">${ta}</div></div>
   </div>`;
 
   return`<div class="vc">
     <div class="vt" onclick="nav('watch','${id}')">
-      <img src="${th}" loading="lazy" onerror="this.src='${ytThumb(id,'mqdefault')}'"/><span class="vdur">${d}</span>
+      <img src="${th}" loading="lazy" onerror="this.src='${ytThumb(id,'mqdefault')}'"/>
+      ${isLive?`<div class="live-badge"><span class="live-dot"></span>LIVE</div>`:''}
+      ${isUpcoming?`<div class="live-badge" style="background:#333;">🔔 SEGERA</div>`:''}
+      <span class="vdur">${isLive?'':d}</span>
       <button class="vsavebtn" onclick="event.stopPropagation();openSaveModal('${id}','${title.replace(/'/g,"\\'")}','${ch.replace(/'/g,"\\'")}','${th}')">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>Simpan
       </button>
@@ -975,7 +1365,7 @@ async function doSearchTerm(q,isR){
   G('search-input').value=q;addSHist(q);
   G('sq-title').innerHTML=`Hasil untuk: <strong style="color:var(--text)">"${esc(q)}"</strong>`;
   const g=G('sq-grid');g.innerHTML=Array(8).fill(0).map(skelC).join('');
-  const items=await searchAPI(q,20);
+  const items=await searchAPI(q,12); // 12 cukup, hemat quota vs 20
   await fetchAv(items.map(v=>v.snippet?.channelId).filter(Boolean));
   g.innerHTML=items.length?items.map(v=>cardH(v)).join(''):'<div class="empty">Tidak ada hasil</div>';
 }
@@ -1019,15 +1409,41 @@ async function openWatch(vid){
   const chId=sn.channelId;
   G('chname').textContent=sn.channelTitle||'';
   G('chinfo').dataset.chid=chId||'';
-  if(chId){
-    api('channels',{part:'snippet,statistics',id:chId}).then(cd=>{
-      if(!cd?.items?.length)return;
-      const c=cd.items[0];
-      G('chsubs').textContent=`${fv(c.statistics?.subscriberCount||0)} subscriber`;
-      const img=c.snippet?.thumbnails?.medium?.url||c.snippet?.thumbnails?.default?.url;
-      if(img){G('chavatar').innerHTML=`<img src="${img}" alt=""/>`;avCache[chId]=img;}
-      else{G('chavatar').textContent=(sn.channelTitle||'?')[0].toUpperCase();G('chavatar').style.background=avc(sn.channelTitle||'');}
-    });
+  // Cek avatar cache dulu — kalau sudah ada, langsung tampil tanpa API
+  if(chId && avCache[chId]){
+    G('chavatar').innerHTML=`<img src="${avCache[chId]}" alt=""/>`;
+    // Fetch subscriber count saja (tetap pakai API tapi skip kalau sudah di cache)
+    const cachedCh = (() => { try { const r=localStorage.getItem('ytc_channels_'+JSON.stringify({part:'snippet,statistics',id:chId})); if(r){const{data,exp}=JSON.parse(r);if(Date.now()<exp)return data;} } catch(e){} return null; })();
+    if(cachedCh?.items?.length){
+      G('chsubs').textContent=`${fv(cachedCh.items[0].statistics?.subscriberCount||0)} subscriber`;
+    } else {
+      // Lazy: fetch saat chinfo terlihat
+      const chObs = new IntersectionObserver(entries => {
+        if(!entries[0].isIntersecting) return;
+        chObs.disconnect();
+        api('channels',{part:'snippet,statistics',id:chId}).then(cd=>{
+          if(!cd?.items?.length)return;
+          G('chsubs').textContent=`${fv(cd.items[0].statistics?.subscriberCount||0)} subscriber`;
+        });
+      },{threshold:0.1});
+      chObs.observe(G('chinfo'));
+    }
+  } else if(chId){
+    G('chavatar').textContent=(sn.channelTitle||'?')[0].toUpperCase();
+    G('chavatar').style.background=avc(sn.channelTitle||'');
+    // Lazy fetch channel detail
+    const chObs = new IntersectionObserver(entries => {
+      if(!entries[0].isIntersecting) return;
+      chObs.disconnect();
+      api('channels',{part:'snippet,statistics',id:chId}).then(cd=>{
+        if(!cd?.items?.length)return;
+        const c=cd.items[0];
+        G('chsubs').textContent=`${fv(c.statistics?.subscriberCount||0)} subscriber`;
+        const img=c.snippet?.thumbnails?.medium?.url||c.snippet?.thumbnails?.default?.url;
+        if(img){G('chavatar').innerHTML=`<img src="${img}" alt=""/>`;avCache[chId]=img;try{localStorage.setItem('yt_avcache',JSON.stringify(avCache));}catch(e){}}
+      });
+    },{threshold:0.1});
+    chObs.observe(G('chinfo'));
   }
 
   // Catatan
@@ -1035,18 +1451,50 @@ async function openWatch(vid){
   G('notearea').value=notes[vid]||'';G('notearea').style.display='none';
 
   addHist(v);
-  renderQueue(); // refresh antrian (highlight yang sedang diputar)
+  renderQueue();
 
-  // RELATED — RSS dulu
+  // Reset komentar — klik dulu, hemat quota
+  commentNextPage = null;
+  commentVidId = vid;
+  G('comments-list').innerHTML = '';
+  G('comments-list').style.display = 'none';
+  G('comment-count').textContent = '';
+  G('load-more-comments').style.display = 'none';
+  G('show-comments-btn').style.display = 'block';
+  G('show-comments-btn').textContent = '💬 Tampilkan Komentar';
+
+
+  // RELATED — Lazy load dengan IntersectionObserver
+  // Tidak pakai quota sampai user scroll ke bagian related
   G('rss-badge').style.display='none';
-  if(chId){
-    const rssVids=await rssChannel(chId,12);
-    const filtered=rssVids.filter(r=>r.id!==vid);
-    if(filtered.length>=3){G('rlist').innerHTML=filtered.map(r=>cardH(r,true)).join('');G('rss-badge').style.display='inline-flex';return;}
-  }
-  const rel=await searchAPI(sn.channelTitle||'',8);
-  await fetchAv(rel.map(r=>r.snippet?.channelId).filter(Boolean));
-  G('rlist').innerHTML=rel.filter(r=>(r.id?.videoId||r.id)!==vid).map(r=>cardH(r,true)).join('');
+  G('rlist').innerHTML=`<div id="related-lazy-trigger" style="color:var(--text2);font-size:13px;padding:8px 0">
+    <div class="sk" style="width:100%;height:94px;border-radius:8px;margin-bottom:8px"></div>
+    <div class="sk" style="width:100%;height:94px;border-radius:8px;margin-bottom:8px"></div>
+    <div class="sk" style="width:100%;height:94px;border-radius:8px"></div>
+  </div>`;
+
+  // Observer: load related hanya kalau elemen terlihat di layar
+  const relObs = new IntersectionObserver(async (entries) => {
+    if (!entries[0].isIntersecting) return;
+    relObs.disconnect();
+    // Coba RSS dulu (0 quota)
+    if (chId) {
+      const rssVids = await rssChannel(chId, 12);
+      const filtered = rssVids.filter(r => r.id !== vid);
+      if (filtered.length >= 3) {
+        G('rlist').innerHTML = filtered.map(r => cardH(r, true)).join('');
+        G('rss-badge').style.display = 'inline-flex';
+        return;
+      }
+    }
+    // Fallback API — 8 hasil saja
+    const rel = await searchAPI(sn.channelTitle || '', 8);
+    await fetchAv(rel.map(r => r.snippet?.channelId).filter(Boolean));
+    G('rlist').innerHTML = rel.filter(r => (r.id?.videoId || r.id) !== vid).map(r => cardH(r, true)).join('');
+  }, { threshold: 0.1 });
+
+  const trigger = document.getElementById('related-lazy-trigger');
+  if (trigger) relObs.observe(trigger);
 }
 
 // ══════════════════════════════════════════
@@ -1054,9 +1502,11 @@ async function openWatch(vid){
 // ══════════════════════════════════════════
 async function openChannel(chId){
   if(!chId)return nav('home');
+  curOpenChId = chId;
   G('ch-banner').innerHTML='';G('ch-big-av').innerHTML='';
   G('ch-big-name').textContent='Memuat...';G('ch-big-subs').textContent='';
   G('ch-grid').innerHTML=Array(8).fill(0).map(skelC).join('');
+  G('pin-ch-btn').textContent = isChannelPinned(chId) ? '✅ Di-pin' : '📌 Pin';
   const d=await api('channels',{part:'snippet,brandingSettings,statistics',id:chId});
   if(!d?.items?.length)return;
   const ch=d.items[0],sn=ch.snippet,st=ch.statistics,bs=ch.brandingSettings;
@@ -1126,6 +1576,10 @@ document.addEventListener('fullscreenchange',async()=>{if(document.fullscreenEle
 // ══════════════════════════════════════════
 document.addEventListener('DOMContentLoaded',()=>{
   cleanCache();
+  // Register Service Worker (PWA)
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  }
   if(localStorage.getItem('yt_theme')==='light')document.body.classList.add('light');
   if(dataSaver){document.body.classList.add('data-saver');G('datasaver-bar').classList.add('show');}
   const accent=localStorage.getItem('yt_accent');
@@ -1136,6 +1590,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   const hash=window.location.hash.substring(1);
   if(hash){const[page,...rest]=hash.split('=');applyRoute({page,arg:decodeURIComponent(rest.join('='))});}
   else applyRoute({page:'home'});
+  
+  // Mulai cek notifikasi channel favorit
+  setTimeout(startPeriodicCheck, 5000);
 });
 </script>
 </body>

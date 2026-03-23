@@ -1,0 +1,25 @@
+{
+  "name": "YourTube",
+  "short_name": "YourTube",
+  "description": "YouTube tanpa iklan - YourTube",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#0f0f0f",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "https://www.youtube.com/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg",
+      "sizes": "120x90",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["entertainment", "social"],
+  "lang": "id"
+}

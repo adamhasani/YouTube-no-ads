@@ -1,6 +1,12 @@
 // YourTube Service Worker
-const CACHE_NAME = 'yourtube-v1';
-const STATIC = ['/', '/index.html', '/manifest.json'];
+const CACHE_NAME = 'yourtube-v2';
+const STATIC = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png'
+];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(STATIC)).catch(() => {}));

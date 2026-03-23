@@ -286,11 +286,22 @@ body.data-saver .vt img{image-rendering:pixelated}
 
 /* RESPONSIVE */
 @media(max-width:800px){
-  body.is-watch #main{display:flex;flex-direction:column;padding:0;gap:0;margin-left:0!important}
-  body.is-watch #player-wrapper{border-radius:0;order:1;margin-top:0}
-  body.is-watch #watch-page{order:2;display:flex;flex-direction:column}
-  body.is-watch #w-details{padding:16px}
-  body.is-watch #w-related{padding:16px}
+  body.is-watch #main{
+    display:block !important;
+    padding:0;
+    margin-left:0 !important;
+  }
+  body.is-watch #player-wrapper{
+    display:flex !important;
+    border-radius:0;
+    width:100%;
+    position:sticky;
+    top:var(--nav-h);
+    z-index:60;
+  }
+  body.is-watch #watch-page{display:block !important}
+  body.is-watch #w-details{padding:12px 16px}
+  body.is-watch #w-related{padding:0 16px 40px}
 }
 @media(max-width:640px){
   #navbar{padding:0 8px;gap:6px}
@@ -491,6 +502,7 @@ body.data-saver .vt img{image-rendering:pixelated}
           <button class="ab" onclick="addToQueueCur()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>Antrian</button>
           <button class="ab" onclick="openSaveModalCur()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>Simpan</button>
           <button class="ab" onclick="shareVid()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>Bagikan</button>
+          <button class="ab" id="dl-btn" onclick="downloadVideo()" style="background:linear-gradient(135deg,#1a3a1a,#0d2010);border-color:#2a5a2a;color:#6fef6f"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Download</button>
           <button class="ab" onclick="toggleNotes()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>Catatan</button>
           <button class="ab" onclick="exportNotes()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Export</button>
         </div>
@@ -767,9 +779,26 @@ function loadP(vid){
   if(ytP){ytP.loadVideoById(vid,saved?parseFloat(saved):0);return;}
   ytP=new YT.Player('yt-player',{
     videoId:vid,
-    playerVars:{autoplay:1,rel:0,modestbranding:1,playsinline:1,enablejsapi:1,hl:'id',cc_lang_pref:'id'},
+    playerVars:{
+      autoplay:1,
+      rel:0,
+      modestbranding:1,
+      playsinline:1,  // wajib untuk mobile agar tidak fullscreen paksa
+      enablejsapi:1,
+      hl:'id',
+      cc_lang_pref:'id',
+      origin: window.location.origin
+    },
     events:{
-      onReady(e){e.target.setPlaybackRate(curSpd);if(saved)e.target.seekTo(parseFloat(saved));},
+      onReady(e){
+        e.target.setPlaybackRate(curSpd);
+        if(saved) e.target.seekTo(parseFloat(saved));
+        // Fix autoplay policy: coba play dulu, kalau gagal mute dulu baru play
+        try {
+          const p = e.target.playVideo();
+          if(p && p.catch) p.catch(()=>{ e.target.mute(); e.target.playVideo(); });
+        } catch(err) { e.target.mute(); e.target.playVideo(); }
+      },
       onStateChange(e){
         if(e.data===YT.PlayerState.ENDED){
           if(autoRep){ytP.seekTo(0);return;}
@@ -975,8 +1004,110 @@ function downloadTxt(content,filename){
 }
 
 // ══════════════════════════════════════════
-// KOMENTAR
+// FAA API — Download + Search Fallback
 // ══════════════════════════════════════════
+const FAA_BASE = 'https://api-faa.my.id/faa';
+
+// Download video via FAA API
+async function downloadVideo() {
+  if (!curVidId) return;
+  const btn = G('dl-btn');
+  const origText = btn.innerHTML;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg> Memproses...';
+  btn.disabled = true;
+
+  try {
+    const vidUrl = `https://youtube.com/watch?v=${curVidId}`;
+    const r = await fetch(`${FAA_BASE}/ytplayvid?url=${encodeURIComponent(vidUrl)}`);
+    const d = await r.json();
+
+    if (!d.status || !d.result?.download_url) {
+      toast('❌ Gagal mendapat link download');
+      btn.innerHTML = origText; btn.disabled = false;
+      return;
+    }
+
+    const { download_url, format, searched_title } = d.result;
+
+    // Tampilkan modal download
+    showDownloadModal(download_url, format, searched_title, curVidId);
+
+  } catch(e) {
+    toast('❌ Error: ' + e.message);
+  }
+  btn.innerHTML = origText;
+  btn.disabled = false;
+}
+
+function showDownloadModal(url, format, title, vidId) {
+  // Buat modal download
+  let modal = G('dl-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'dl-modal';
+    modal.className = 'moverlay';
+    modal.onclick = e => { if(e.target===modal) modal.classList.remove('show'); };
+    document.body.appendChild(modal);
+  }
+
+  const thumb = ytThumb(vidId, 'mqdefault');
+  modal.innerHTML = `<div class="mbox" style="max-width:400px">
+    <h2 style="margin-bottom:16px">⬇️ Download Video</h2>
+    <img src="${thumb}" style="width:100%;border-radius:10px;margin-bottom:14px;aspect-ratio:16/9;object-fit:cover"/>
+    <div style="font-size:13px;font-weight:600;margin-bottom:16px;line-height:1.4;color:var(--text2)">${esc(title||'')}</div>
+    <a href="${url}" target="_blank" download
+       style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:linear-gradient(135deg,#1a3a1a,#0d2010);color:#6fef6f;border-radius:10px;font-weight:700;font-size:15px;text-decoration:none;margin-bottom:10px;border:1px solid #2a5a2a"
+       onclick="toast('⬇️ Download dimulai!')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      Download ${format?.toUpperCase() || 'MP4'}
+    </a>
+    <button onclick="G('dl-modal').classList.remove('show')"
+      style="width:100%;padding:10px;background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:10px;font-size:14px;font-weight:500;cursor:pointer">
+      Tutup
+    </button>
+    <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:10px">Link download aktif ~1 jam. Jika gagal, coba lagi.</p>
+  </div>`;
+  modal.classList.add('show');
+}
+
+// Search via FAA API — dipakai sebagai fallback kalau quota YouTube API habis
+async function faaSearch(query, max = 12) {
+  try {
+    const r = await fetch(`${FAA_BASE}/youtube?query=${encodeURIComponent(query)}`);
+    const d = await r.json();
+    if (!d.status || !d.result?.length) return [];
+    // Konversi format FAA → format yang sama dengan YouTube API
+    return d.result.slice(0, max).map(v => {
+      const vidId = v.link?.match(/[?&]v=([^&]+)/)?.[1] || '';
+      return {
+        id: vidId,
+        snippet: {
+          title: v.title || '',
+          channelTitle: v.channel || '',
+          channelId: '',
+          publishedAt: '',
+          thumbnails: {
+            high: { url: v.imageUrl || ytThumb(vidId) },
+            medium: { url: v.imageUrl || ytThumb(vidId) }
+          }
+        },
+        statistics: {},
+        contentDetails: { duration: v.duration || '' }
+      };
+    }).filter(v => v.id);
+  } catch(e) { return []; }
+}
+
+// Override searchAPI: coba YouTube API dulu, kalau null fallback ke FAA
+const _origSearchAPI = searchAPI;
+async function searchAPI(q, m) {
+  const result = await _origSearchAPI(q, m);
+  if (result && result.length > 0) return result;
+  // Fallback ke FAA API (gratis, tanpa quota!)
+  console.log('YouTube API kosong, fallback ke FAA API untuk:', q);
+  return faaSearch(q, m);
+}
+
 let commentNextPage = null;
 let commentVidId = null;
 

@@ -529,16 +529,24 @@ function toast(msg,ms=3000){const t=G('toast');t.textContent=msg;t.classList.add
 function spin(v){G('spinner').style.display=v?'flex':'none';}
 
 // ═══════════════════════════════════════════════
-// YT PLAYER (Dengan Fix Dubbing/Desktop)
+// YT PLAYER (Dengan Paksaan Region Indo/Dubbing)
 // ═══════════════════════════════════════════════
 window.onYouTubeIframeAPIReady = function(){ ytReady=true; if(pendVid){loadP(pendVid);pendVid=null;} };
 function loadP(vid) {
   const saved = localStorage.getItem('ytt_' + vid);
   if (ytP) { ytP.loadVideoById(vid, saved ? parseFloat(saved) : 0); return; }
   ytP = new YT.Player('yt-player', {
-    host: 'https://www.youtube.com', // Fix dubbing di mobile
+    host: 'https://www.youtube.com', 
     videoId: vid,
-    playerVars: { autoplay:1, rel:0, modestbranding:1, playsinline:1, enablejsapi:1 },
+    playerVars: { 
+        autoplay:1, 
+        rel:0, 
+        modestbranding:1, 
+        playsinline:1, 
+        enablejsapi:1,
+        hl: 'id',             // Paksa UI dan Dubbing ke bahasa Indonesia
+        cc_lang_pref: 'id'    // Paksa Subtitle (CC) default ke Indonesia
+    },
     events: {
       onReady(e) { e.target.setPlaybackRate(curSpd); if(saved) e.target.seekTo(parseFloat(saved)); },
       onStateChange(e) {

@@ -1966,6 +1966,7 @@ function setShortWatchMode(isShort) {
   const rCol = G('w-related');
   if (rCol) rCol.style.display = isShort ? 'none' : '';
 }
+async function openWatch(vid){
   curVidId=vid;
   G('vtitle').textContent='Memuat...';G('dstats').textContent='';G('dtxt').textContent='';
   G('dtxt').classList.remove('exp');G('dtoggle').textContent='Lebih banyak';

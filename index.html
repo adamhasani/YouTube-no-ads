@@ -12,449 +12,18 @@
 <title>YourTube</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#080808;
-  --bg2:#0f0f0f;
-  --surface:#161616;
-  --surface2:#1e1e1e;
-  --surface3:#252525;
-  --border:#2a2a2a;
-  --border2:#333;
-  --text:#f0f0f0;
-  --text2:#999;
-  --text3:#555;
-  --red:#ff1f1f;
-  --accent:#3ea6ff;
-  --accent-glow:rgba(62,166,255,0.15);
-  --nav-h:58px;
-  --side-w:72px;
-  --side-full:240px;
-  --radius:10px;
-  --radius-lg:14px;
-  --shadow:0 4px 24px rgba(0,0,0,0.5);
-  --shadow-lg:0 8px 40px rgba(0,0,0,0.7);
-}
-html,body{height:100%}
-body{
-  background:var(--bg);color:var(--text);
-  font-family:'Inter',Arial,sans-serif;font-size:14px;
-  overflow-x:hidden;
-  transition:background .3s,color .3s;
-}
-body.light{
-  --bg:#f8f9fa;--bg2:#fff;--surface:#fff;--surface2:#f1f3f4;
-  --surface3:#e8eaed;--border:#e0e0e0;--border2:#ddd;
-  --text:#0f0f0f;--text2:#666;--text3:#999;
-  --accent-glow:rgba(62,166,255,0.1);
-}
-a{color:inherit;text-decoration:none}
-button{background:none;border:none;cursor:pointer;color:inherit;font-family:inherit}
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:#333;border-radius:9999px}
-::-webkit-scrollbar-thumb:hover{background:#444}
-
-/* NAV */
-#navbar{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(8,8,8,0.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;padding:0 14px;gap:8px;z-index:300;border-bottom:1px solid var(--border);transition:background .3s}
-body.light #navbar{background:rgba(248,249,250,0.94)}
-#logo-wrap{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.icon-btn{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative;transition:background .15s,transform .1s}
-.icon-btn:hover{background:var(--surface2);transform:scale(1.05)}
-.icon-btn:active{transform:scale(0.95)}
-.icon-btn svg{width:21px;height:21px}
-#logo-svg{cursor:pointer;display:flex;align-items:center;gap:7px}
-.logo-txt{font-family:"Outfit",sans-serif;font-size:17px;font-weight:800;letter-spacing:-0.5px;background:linear-gradient(120deg,#fff 30%,#888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-body.light .logo-txt{background:linear-gradient(120deg,#111 30%,#555);-webkit-background-clip:text;background-clip:text}
-#search-wrap{flex:1;max-width:580px;margin:0 auto;position:relative}
-#search-form{display:flex}
-#search-input{flex:1;padding:9px 18px;background:var(--surface);color:var(--text);border:1px solid var(--border2);border-right:none;border-radius:40px 0 0 40px;outline:none;font-size:14px;transition:border-color .2s,background .2s;font-family:"Inter",sans-serif}
-body.light #search-input{background:#fff}
-#search-input:focus{border-color:var(--accent);background:var(--surface2)}
-#search-btn{width:52px;background:var(--surface2);border:1px solid var(--border2);border-radius:0 40px 40px 0;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
-#search-btn:hover{background:var(--surface3)}
-#suggest-box{position:absolute;top:calc(100% + 6px);left:0;right:52px;background:var(--surface2);border:1px solid var(--border2);border-radius:14px;overflow:hidden;z-index:400;display:none;box-shadow:0 8px 32px rgba(0,0,0,.7)}
-.sug-item{padding:11px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;font-size:14px;color:var(--text);transition:background .1s}
-.sug-item:hover{background:var(--surface3)}
-.sug-item svg{flex-shrink:0;opacity:.4;width:16px;height:16px}
-#nav-right{display:flex;align-items:center;gap:2px;flex-shrink:0}
-.badge{position:absolute;top:2px;right:2px;background:var(--red);color:#fff;font-size:9px;font-weight:700;min-width:15px;height:15px;border-radius:99px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
-
-/* SIDEBAR */
-#sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:290;backdrop-filter:blur(4px)}
-#sb-overlay.show{display:block}
-#sidebar{position:fixed;top:var(--nav-h);left:0;bottom:0;width:var(--side-w);background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:8px 0;z-index:295;overflow-y:auto;overflow-x:hidden;transition:width .25s cubic-bezier(.4,0,.2,1),transform .25s cubic-bezier(.4,0,.2,1),background .3s;scrollbar-width:none;border-right:1px solid var(--border)}
-#sidebar.exp{width:var(--side-full);align-items:flex-start}
-#sidebar::-webkit-scrollbar{display:none}
-.si{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0;width:100%;cursor:pointer;border-radius:10px;font-size:10px;color:var(--text2);transition:background .15s,color .15s}
-.si:hover{background:var(--surface2);color:var(--text)}
-.si.on{background:var(--surface2);color:var(--text)}
-.si svg{width:22px;height:22px;flex-shrink:0}
-#sidebar.exp .si{flex-direction:row;padding:10px 16px;gap:18px;font-size:14px}
-#sidebar.exp .si.on{font-weight:600;background:var(--accent-glow);color:var(--accent)}
-.sdiv{width:36px;height:1px;background:var(--border);margin:6px 0;flex-shrink:0}
-#sidebar.exp .sdiv{width:calc(100% - 32px);margin:6px 16px}
-.slabel{display:none;font-size:11px;font-weight:700;padding:8px 16px;width:100%;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
-#sidebar.exp .slabel{display:block}
-
-/* MAIN */
-#main{margin-top:var(--nav-h);margin-left:var(--side-w);transition:margin-left .2s;min-height:calc(100vh - var(--nav-h))}
-#main.exp{margin-left:var(--side-full)}
-.page{display:none}
-.page-pad{padding:16px 20px 60px;max-width:1800px;margin:0 auto}
-
-/* PLAYER WRAPPER */
-#player-wrapper{display:none;background:#000;flex-direction:column;position:relative}
-#pw-inner{position:relative;width:100%;background:#000}
-#pw-inner-ratio{width:100%;padding-top:56.25%;position:relative}
-#yt-player{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
-#audio-overlay{position:absolute;inset:0;background:#111;z-index:5;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer}
-
-/* PLAYER BAR */
-#player-bar{background:linear-gradient(180deg,#111,#0d0d0d);border-top:1px solid #2a2a2a;padding:8px 12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.pb{background:none;border:none;color:#ccc;cursor:pointer;padding:5px 8px;border-radius:7px;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;white-space:nowrap;flex-shrink:0;transition:background .15s,color .15s}
-.pb:hover{background:rgba(255,255,255,.1);color:#fff}
-.pb svg{width:19px;height:19px}
-.pb.active{color:var(--accent);background:var(--accent-glow)}
-.psel{background:rgba(255,255,255,.08);color:#ccc;border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:5px 8px;font-size:12px;cursor:pointer;font-family:"Inter",sans-serif;max-width:115px;transition:background .15s}
-.psel:hover{background:rgba(255,255,255,.14)}
-.psp{flex:1}
-
-/* WATCH GRID */
-body.is-watch #main{display:grid;grid-template-columns:minmax(0,1fr) 370px;grid-template-areas:"player related""details related";gap:20px;padding:16px 20px 40px;max-width:1800px;margin:var(--nav-h) auto 0 var(--side-w)}
-body.is-watch #main.exp{margin-left:var(--side-full)}
-body.is-watch #player-wrapper{grid-area:player;display:flex!important;width:100%;border-radius:14px;overflow:hidden}
-body.is-watch #watch-page{display:contents}
-body.is-watch #w-details{grid-area:details;padding-bottom:40px}
-body.is-watch #w-related{grid-area:related}
-
-/* MINI PLAYER */
-body.is-mini #player-wrapper{display:flex!important;position:fixed;bottom:20px;right:20px;width:320px;z-index:999;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.8);overflow:hidden}
-body.is-mini #player-bar{display:none!important}
-#mini-ui{display:none;align-items:center;gap:8px;padding:8px 10px;background:#1a1a1a;border-top:1px solid #333}
-body.is-mini #mini-ui{display:flex}
-.mini-btn{background:none;border:none;color:#fff;padding:6px;cursor:pointer;display:flex;align-items:center}
-.mini-btn svg{width:22px;height:22px}
-
-/* LOOP TIMESTAMP UI */
-#loop-ui{background:#1a1a1a;border-radius:10px;padding:10px 14px;margin-top:10px;display:none;gap:10px;align-items:center;flex-wrap:wrap}
-#loop-ui.show{display:flex}
-.loop-inp{width:70px;padding:6px 8px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;font-size:13px;text-align:center;outline:none}
-.loop-inp:focus{border-color:var(--accent)}
-
-/* ANTRIAN */
-#queue-panel{position:fixed;top:var(--nav-h);right:-380px;width:360px;bottom:0;background:var(--bg);border-left:1px solid var(--border);z-index:248;transition:right .2s,background .3s;display:flex;flex-direction:column}
-#queue-panel.open{right:0}
-.q-item{display:flex;gap:8px;padding:8px;border-radius:8px;cursor:pointer;align-items:flex-start}
-.q-item:hover{background:var(--surface)}
-.q-item.playing{border-left:3px solid var(--accent);padding-left:5px}
-.q-thumb{width:100px;aspect-ratio:16/9;border-radius:6px;overflow:hidden;background:#000;flex-shrink:0}
-.q-thumb img{width:100%;height:100%;object-fit:cover}
-
-/* CATS */
-#cats{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;scrollbar-width:none;position:sticky;top:var(--nav-h);background:rgba(8,8,8,0.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:50;transition:background .3s;border-bottom:1px solid var(--border)}
-body.light #cats{background:rgba(248,249,250,0.9)}
-#cats::-webkit-scrollbar{display:none}
-.cpill{flex-shrink:0;padding:7px 15px;border-radius:8px;background:var(--surface2);color:var(--text2);border:none;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;transition:background .15s,color .15s,transform .1s;letter-spacing:.01em}
-.cpill:hover{background:var(--surface3);color:var(--text);transform:translateY(-1px)}
-.cpill.on{background:var(--text);color:var(--bg)}
-
-#pbanner{display:none;margin:8px 20px;padding:12px 16px;background:linear-gradient(135deg,#12122a,#1e1030);border-radius:12px;align-items:center;gap:10px;font-size:13px;color:#c9b8ff;border:1px solid rgba(139,92,246,.2);box-shadow:0 2px 16px rgba(139,92,246,.1)}
-.rss-badge{display:inline-flex;align-items:center;gap:4px;background:#ff6600;color:#fff;font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;margin-left:8px}
-
-/* DATA SAVER banner */
-#datasaver-bar{display:none;background:linear-gradient(90deg,#0d2010,#102010);border-bottom:1px solid #1a3a1a;padding:7px 20px;font-size:12px;color:#6fef6f;align-items:center;gap:8px;font-weight:500}
-#datasaver-bar.show{display:flex}
-
-/* GRID */
-#grid,#sq-grid,#hist-grid,#stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:8px 20px 40px}
-
-/* VIDEO CARD */
-.vc{cursor:pointer;transition:transform .2s}
-.vc:hover{transform:translateY(-2px)}
-.vt{position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;box-shadow:0 2px 12px rgba(0,0,0,.4)}
-.vt img{width:100%;height:100%;object-fit:cover;transition:transform .3s;display:block}
-.vc:hover .vt img{transform:scale(1.05)}
-.vdur{position:absolute;bottom:7px;right:7px;background:rgba(0,0,0,.88);color:#fff;font-size:11px;font-weight:700;padding:3px 7px;border-radius:5px;letter-spacing:.02em}
-.vsavebtn{position:absolute;top:7px;left:7px;background:rgba(0,0,0,.78);color:#fff;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;display:none;align-items:center;gap:4px;border:none;cursor:pointer;backdrop-filter:blur(4px)}
-.vt:hover .vsavebtn{display:flex}
-.vq-btn{position:absolute;top:7px;right:7px;background:rgba(0,0,0,.78);color:#fff;border-radius:6px;padding:5px 8px;font-size:12px;display:none;align-items:center;gap:3px;border:none;cursor:pointer;backdrop-filter:blur(4px)}
-.vt:hover .vq-btn{display:flex}
-.vmi{display:flex;gap:10px;margin-top:12px;align-items:flex-start}
-.vav{width:34px;height:34px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;cursor:pointer;transition:transform .15s}
-.vav:hover{transform:scale(1.1)}
-.vav img{width:100%;height:100%;object-fit:cover}
-.vnm{font-size:14px;font-weight:600;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;letter-spacing:-.01em}
-.vch,.vst{font-size:12px;color:var(--text2);margin-top:3px}
-
-/* DATA SAVER: thumbnails low quality */
-body.data-saver .vt img{image-rendering:pixelated}
-
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.sk{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:shimmer 1.8s infinite;border-radius:8px}
-.page-enter{animation:fadeIn .3s ease}
-
-/* WATCH DETAILS */
-#vtitle{font-size:19px;font-weight:700;margin:0 0 12px;line-height:1.4;font-family:"Inter",sans-serif;letter-spacing:-.02em}
-#lbar-wrap{display:none;margin-bottom:14px;padding:12px 14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)}
-#lbar-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:500}
-#lbar{height:4px;background:var(--surface3);border-radius:99px;overflow:hidden}
-#lbar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#7c3aed);transition:width .6s cubic-bezier(.4,0,.2,1)}
-#vmeta{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px}
-#chinfo{display:flex;align-items:center;gap:10px;flex:1;min-width:200px;cursor:pointer;padding:4px;border-radius:8px}
-#chinfo:hover{background:var(--surface)}
-#chavatar{width:42px;height:42px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px}
-#chavatar img{width:100%;height:100%;object-fit:cover}
-#subbtn{padding:10px 20px;background:var(--text);color:var(--bg);border-radius:99px;font-weight:700;font-size:13px;flex-shrink:0;transition:opacity .15s,transform .1s;letter-spacing:.01em}
-#subbtn:hover{opacity:.88;transform:scale(1.02)}
-#abtns{display:flex;gap:8px;flex-wrap:wrap}
-.ab{display:flex;align-items:center;gap:6px;padding:8px 15px;border-radius:99px;background:var(--surface2);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s,transform .1s;border:1px solid var(--border)}
-.ab:hover{background:var(--surface3);transform:translateY(-1px)}
-.ab:active{transform:translateY(0)}
-.ab svg{width:17px;height:17px}
-#dbox{background:var(--surface2);border-radius:12px;padding:14px;margin-top:10px;transition:background .3s;border:1px solid var(--border)}
-#dtxt{font-size:14px;line-height:1.65;white-space:pre-wrap;max-height:75px;overflow:hidden;color:var(--text2)}
-#dtxt.exp{max-height:none}
-#notesec{display:none;margin-top:10px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
-#notehdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);cursor:pointer;font-weight:600;font-size:14px}
-#notearea{width:100%;min-height:90px;background:var(--bg);color:var(--text);border:none;padding:12px;font-family:inherit;font-size:14px;resize:vertical;outline:none;display:none;transition:background .3s,color .3s}
-
-/* SUBTITLE SIZE */
-.ytp-caption-segment{font-size:var(--sub-size,100%) !important}
-
-/* RELATED */
-.rcard{display:flex;gap:8px;margin-bottom:8px;cursor:pointer;padding:6px;border-radius:10px;transition:background .15s}
-.rcard:hover{background:var(--surface2)}
-.rthumb{position:relative;flex-shrink:0;width:160px;height:90px;border-radius:8px;overflow:hidden;background:#000}
-.rthumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s}
-.rcard:hover .rthumb img{transform:scale(1.04)}
-.rdur{position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.88);color:#fff;font-size:11px;font-weight:700;padding:2px 5px;border-radius:4px}
-.rtitle{font-size:13px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.rch{font-size:12px;color:var(--text2);margin-top:2px}
-
-/* PLAYLIST PANEL */
-#pl-panel{position:fixed;top:var(--nav-h);right:-380px;width:360px;bottom:0;background:var(--bg);border-left:1px solid var(--border);z-index:250;transition:right .2s,background .3s;display:flex;flex-direction:column}
-#pl-panel.open{right:0}
-.pl-hdr{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface)}
-.pl-sel{background:var(--surface2);color:var(--text);border:1px solid var(--border2);padding:8px 12px;border-radius:8px;outline:none;font-size:14px;font-weight:600;cursor:pointer;font-family:"Inter",sans-serif}
-#wl-list{flex:1;overflow-y:auto;padding:12px}
-.wlitem{display:flex;gap:10px;margin-bottom:10px;cursor:pointer;padding:8px;border-radius:8px;align-items:flex-start}
-.wlitem:hover{background:var(--surface)}
-.wlthumb{width:110px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;flex-shrink:0}
-.wlthumb img{width:100%;height:100%;object-fit:cover}
-
-/* MODALS */
-.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;align-items:center;justify-content:center;padding:16px}
-.moverlay.show{display:flex}
-.mbox{background:var(--surface2);border:1px solid var(--border2);border-radius:18px;padding:24px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.8)}
-.mbox h2{font-size:18px;margin-bottom:14px;font-family:"Inter",sans-serif;font-weight:700}
-.minput{width:100%;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;margin-bottom:12px}
-.minput:focus{border-color:var(--accent)}
-.mbtn{padding:10px 20px;background:var(--accent);color:#fff;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none}
-
-/* SETTINGS MODAL */
-.setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
-.setting-row:last-child{border:none}
-.setting-label{font-size:14px;font-weight:500}
-.setting-sub{font-size:12px;color:var(--text2);margin-top:2px}
-.color-picker-wrap{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.color-dot{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:border-color .15s}
-.color-dot.active{border-color:var(--text)}
-.toggle-switch{width:44px;height:24px;background:var(--border);border-radius:99px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
-.toggle-switch.on{background:var(--accent)}
-.toggle-switch::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:left .2s}
-.toggle-switch.on::after{left:23px}
-
-/* STATS PAGE */
-#stats-bars{padding:20px}
-.stat-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.stat-bar-label{font-size:12px;color:var(--text2);width:60px;flex-shrink:0;text-align:right}
-.stat-bar-track{flex:1;height:20px;background:var(--surface);border-radius:4px;overflow:hidden}
-.stat-bar-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .5s}
-.stat-bar-val{font-size:12px;color:var(--text2);width:50px;flex-shrink:0}
-
-/* TOAST */
-#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(30,30,30,0.95);color:#f0f0f0;padding:10px 22px;border-radius:99px;font-size:13px;font-weight:600;z-index:9999;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;white-space:nowrap;pointer-events:none;border:1px solid #444;box-shadow:0 4px 20px rgba(0,0,0,.6);backdrop-filter:blur(10px);letter-spacing:.01em}
-#toast.show{transform:translateX(-50%) translateY(0)}
-#spinner{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9998;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px}
-.sring{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.empty{text-align:center;padding:80px 20px;color:var(--text2);grid-column:1/-1}
-
-/* RESPONSIVE */
-@media(max-width:800px){
-  body.is-watch #main{
-    display:block !important;
-    padding:0;
-    margin-left:0 !important;
-  }
-  body.is-watch #player-wrapper{
-    display:flex !important;
-    border-radius:0;
-    width:100%;
-    position:sticky;
-    top:var(--nav-h);
-    z-index:60;
-  }
-  body.is-watch #watch-page{display:block !important}
-  body.is-watch #w-details{padding:12px 16px}
-  body.is-watch #w-related{padding:0 16px 40px}
-}
-@media(max-width:640px){
-  #navbar{padding:0 8px;gap:6px}
-  .logo-txt{display:none}
-  #main{margin-left:0!important}
-  #grid,#sq-grid,#hist-grid{grid-template-columns:1fr;padding:8px 0 40px}
-  .vt{border-radius:0}
-  .vmi{padding:0 12px}
-  #sidebar{transform:translateX(-100%);width:260px;box-shadow:none}
-  #sidebar.exp{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,.6)}
-  #sidebar .si{flex-direction:row;padding:14px 20px;gap:20px;font-size:15px}
-  #sidebar .slabel{display:block;padding:12px 20px}
-  #sidebar .sdiv{width:calc(100% - 40px);margin:8px 20px}
-  body.is-mini #player-wrapper{bottom:0;right:0;width:100%;border-radius:0;box-shadow:none}
-  body.is-mini #pw-inner-ratio{padding-top:0;height:60px}
-  body.is-mini #yt-player{width:106px}
-  #pl-panel,#queue-panel{width:100%;right:-100%;z-index:400}
-  #player-bar{padding:6px 8px;gap:4px}
-  .pb{padding:4px 5px;font-size:12px}
-  .psel{font-size:12px;padding:4px 6px;max-width:90px}
-}
-/* SHORTS — full height, no margin */
-body.is-shorts #main{margin-left:0!important}
-
-/* SHORT WATCH MODE — video vertikal full screen */
-body.is-short-watch #main{
-  display:block !important;
-  padding:0;
-  margin-left:0 !important;
-}
-body.is-short-watch #player-wrapper{
-  display:flex !important;
-  width:100%;
-  max-width:460px;
-  margin:0 auto;
-  border-radius:0;
-  aspect-ratio:unset;
-}
-body.is-short-watch #pw-inner{
-  width:100%;
-}
-body.is-short-watch #pw-inner-ratio{
-  padding-top:177.78%; /* 9:16 ratio */
-}
-body.is-short-watch #player-bar{
-  background:rgba(0,0,0,.9);
-  border-top:1px solid #222;
-}
-body.is-short-watch #w-related{display:none}
-body.is-short-watch #w-details{
-  max-width:460px;
-  margin:0 auto;
-  padding:12px 16px;
-}
-/* Back button untuk short watch */
-#short-watch-back{
-  display:none;
-  position:fixed;
-  top:calc(var(--nav-h) + 10px);
-  left:12px;
-  z-index:100;
-  background:rgba(0,0,0,.6);
-  color:#fff;
-  border:none;
-  border-radius:50%;
-  width:36px;height:36px;
-  align-items:center;justify-content:center;
-  cursor:pointer;
-  backdrop-filter:blur(4px);
-}
-body.is-short-watch #short-watch-back{display:flex}
-@media(min-width:600px){
-  body.is-short-watch #player-wrapper{
-    max-width:380px;
-  }
-  body.is-short-watch #w-details{max-width:380px;}
-}
-#shorts-page{display:none;position:relative;background:#000;height:calc(100vh - var(--nav-h));overflow:hidden}
-#shorts-container{height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-#shorts-container::-webkit-scrollbar{display:none}
-.short-item{height:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;display:flex;align-items:center;justify-content:center;background:#000;flex-shrink:0}
-.short-iframe{width:100%;height:100%;border:none;position:absolute;inset:0}
-/* Portrait adjust */
-@media(min-aspect-ratio:9/16){
-  .short-iframe{width:calc(100vh * 9/16);height:100%;left:50%;transform:translateX(-50%)}
-}
-/* Short overlay info */
-.short-overlay{position:absolute;bottom:0;left:0;right:0;padding:16px 16px 24px;background:linear-gradient(transparent,rgba(0,0,0,.85));z-index:10;pointer-events:none}
-.short-overlay *{pointer-events:auto}
-.short-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:8px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 1px 4px rgba(0,0,0,.6)}
-.short-ch{font-size:13px;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:8px}
-.short-ch-av{width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid #fff;background:#333;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
-.short-ch-av img{width:100%;height:100%;object-fit:cover}
-/* Short right actions */
-.short-actions{position:absolute;right:12px;bottom:80px;display:flex;flex-direction:column;align-items:center;gap:18px;z-index:10}
-.short-act{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:#fff}
-.short-act svg{width:28px;height:28px;filter:drop-shadow(0 1px 4px rgba(0,0,0,.6))}
-.short-act span{font-size:11px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.7)}
-/* Nav arrows */
-.short-nav{position:absolute;right:12px;z-index:20;width:40px;height:40px;background:rgba(0,0,0,.5);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(4px)}
-#short-prev{top:50%;transform:translateY(-calc(50% + 40px))}
-#short-next{bottom:140px}
-/* Loading shorts */
-.short-loading{height:100%;display:flex;align-items:center;justify-content:center;background:#0a0a0a;scroll-snap-align:start;flex-shrink:0}
-/* Shorts top bar */
-#shorts-topbar{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:linear-gradient(rgba(0,0,0,.5),transparent)}
-
-/* HOME SHORTS GRID */
-.hs-card{position:relative;aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:#111;cursor:pointer}
-.hs-card img{width:100%;height:100%;object-fit:cover;transition:transform .25s;display:block}
-.hs-card:hover img{transform:scale(1.04)}
-.hs-card-info{position:absolute;bottom:0;left:0;right:0;padding:8px 10px 10px;background:linear-gradient(transparent,rgba(0,0,0,.88))}
-.hs-card-title{font-size:12px;font-weight:600;color:#fff;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.hs-card-ch{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}
-.sk-short{aspect-ratio:9/16;border-radius:12px}
-
-.live-badge{position:absolute;top:6px;left:6px;background:#ff0000;color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;display:flex;align-items:center;gap:4px;z-index:2}
-.live-dot{width:7px;height:7px;background:#fff;border-radius:50%;animation:livepulse 1s infinite}
-@keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
-/* COMMENTS */
-#comments-sec{margin-top:16px;border-top:1px solid var(--border);padding-top:16px}
-#comments-sec h3{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.comment-item{display:flex;gap:10px;margin-bottom:16px}
-.comment-av{width:32px;height:32px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
-.comment-av img{width:100%;height:100%;object-fit:cover}
-.comment-author{font-size:13px;font-weight:600}
-.comment-text{font-size:14px;line-height:1.5;margin-top:3px;white-space:pre-wrap}
-.comment-meta{font-size:12px;color:var(--text2);margin-top:4px;display:flex;align-items:center;gap:8px}
-#load-more-comments{display:block;width:100%;padding:10px;background:var(--surface);color:var(--text);border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-top:8px}
-#load-more-comments:hover{background:var(--surface2)}
-/* PIN CHANNEL */
-#pinned-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-top:16px}
-.pin-card{background:var(--surface);border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;transition:background .15s;position:relative}
-.pin-card:hover{background:var(--surface2)}
-.pin-av{width:64px;height:64px;border-radius:50%;overflow:hidden;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700}
-.pin-av img{width:100%;height:100%;object-fit:cover}
-.pin-live{position:absolute;top:8px;right:8px;background:#ff0000;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;display:flex;align-items:center;gap:3px}
-.pin-new{position:absolute;top:8px;left:8px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
-/* PWA BANNER */
-#pwa-banner{display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;z-index:800;box-shadow:0 8px 32px rgba(0,0,0,.7);align-items:center;gap:12px;max-width:340px;width:90%}
-#pwa-banner.show{display:flex}
-/* SLEEP TIMER */
-#sleep-indicator{position:fixed;bottom:20px;left:20px;background:rgba(0,0,0,.85);color:#fff;padding:8px 14px;border-radius:99px;font-size:13px;font-weight:500;z-index:800;display:none;align-items:center;gap:8px;border:1px solid #555}
-#sleep-indicator.show{display:flex}
-</style>
+<link rel="stylesheet" href="/css/styles.css"/>
 </head>
 <body>
 
+<!-- Data Saver Bar -->
 <div id="datasaver-bar">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
   Mode Hemat Data aktif — thumbnail kualitas rendah
   <button onclick="toggleDataSaver()" style="margin-left:auto;padding:2px 10px;border-radius:99px;background:rgba(255,255,255,.2);color:#fff;font-size:12px;border:none;cursor:pointer">Nonaktifkan</button>
 </div>
 
+<!-- Navbar -->
 <nav id="navbar">
   <div id="logo-wrap">
     <button class="icon-btn" onclick="toggleSidebar()">
@@ -468,13 +37,17 @@ body.is-short-watch #short-watch-back{display:flex}
       <span class="logo-txt">YourTube</span>
     </div>
   </div>
+
   <div id="search-wrap">
     <form id="search-form" onsubmit="doSearch(event)" autocomplete="off">
       <input id="search-input" type="text" placeholder="Cari video..." oninput="onSugInput(this.value)" onfocus="onSugFocus()" onblur="onSugBlur()"/>
-      <button id="search-btn" type="submit"><svg width="20" height="20" viewBox="0 0 24 24" fill="#aaa"><path d="M20.87 20.17l-5.59-5.59C16.35 13.35 17 11.75 17 10c0-3.87-3.13-7-7-7s-7 3.13-7 7 3.13 7 7 7c1.75 0 3.35-.65 4.58-1.71l5.59 5.59.7-.71zM10 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg></button>
+      <button id="search-btn" type="submit">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#aaa"><path d="M20.87 20.17l-5.59-5.59C16.35 13.35 17 11.75 17 10c0-3.87-3.13-7-7-7s-7 3.13-7 7 3.13 7 7 7c1.75 0 3.35-.65 4.58-1.71l5.59 5.59.7-.71zM10 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
+      </button>
     </form>
     <div id="suggest-box"></div>
   </div>
+
   <div id="nav-right">
     <button class="icon-btn" id="notif-btn" onclick="toggleNotif()" title="Notifikasi">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
@@ -492,30 +65,101 @@ body.is-short-watch #short-watch-back{display:flex}
     <button class="icon-btn" onclick="showSettings()" title="Pengaturan">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
     </button>
+
+    <!-- Google Login Button -->
+    <button id="google-login-btn" onclick="signInWithGoogle()" title="Masuk dengan Google">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      <span>Masuk</span>
+    </button>
+
+    <!-- User Avatar (shown when logged in) -->
+    <div id="user-avatar-btn" onclick="toggleUserMenu()" title="Akun Google"></div>
   </div>
 </nav>
 
+<!-- User Dropdown Menu -->
+<div id="user-menu">
+  <div class="user-menu-header" id="user-menu-header-info">
+    <div class="user-menu-avatar" id="user-menu-avatar-img"></div>
+    <div>
+      <div class="uname" style="font-size:14px;font-weight:700">–</div>
+      <div class="uemail" style="font-size:12px;color:var(--text2)">–</div>
+    </div>
+  </div>
+  <div class="user-menu-item" onclick="nav('history');G('user-menu').classList.remove('show')">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+    Riwayat Tontonan
+  </div>
+  <div class="user-menu-item" onclick="openPLPanel();G('user-menu').classList.remove('show')">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
+    Playlist Saya
+  </div>
+  <div class="user-menu-item" onclick="nav('pinned');G('user-menu').classList.remove('show')">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+    Channel Favorit
+  </div>
+  <div class="user-menu-item" onclick="showSettings();G('user-menu').classList.remove('show')">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+    Pengaturan
+  </div>
+  <div class="user-menu-item" onclick="signOutGoogle()" style="color:#ef9a9a">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+    Keluar
+  </div>
+</div>
+
+<!-- Sidebar overlay -->
 <div id="sb-overlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
 <aside id="sidebar">
-  <div class="si on" id="sb-home" onclick="nav('home')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Beranda</span></div>
-  <div class="si" id="sb-shorts" onclick="nav('shorts')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.77 10.32l-1.2-.5L18 9l.5-1.2.5 1.2 1.2.5-1.2.5L18 11.2l-.23-.88zM3 9l2.93 7h1.76l1.44-3.39L10.56 16h1.76L15.26 9h-1.7l-1.45 3.48L10.56 9H8.81l-1.45 3.48L5.91 9H3z"/></svg><span>Shorts</span></div>
-  <div class="si" id="sb-pinned" onclick="nav('pinned')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg><span>Channel Favorit</span></div>
-  <div class="si" id="sb-history" onclick="nav('history')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg><span>Riwayat</span></div>
-  <div class="si" id="sb-stats" onclick="nav('stats')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg><span>Statistik</span></div>
-  <div class="si" onclick="openPLPanel()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg><span>Koleksi</span></div>
+  <div class="si on" id="sb-home" onclick="nav('home')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Beranda</span>
+  </div>
+  <div class="si" id="sb-shorts" onclick="nav('shorts')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.77 10.32l-1.2-.5L18 9l.5-1.2.5 1.2 1.2.5-1.2.5L18 11.2l-.23-.88zM3 9l2.93 7h1.76l1.44-3.39L10.56 16h1.76L15.26 9h-1.7l-1.45 3.48L10.56 9H8.81l-1.45 3.48L5.91 9H3z"/></svg><span>Shorts</span>
+  </div>
+  <div class="si" id="sb-pinned" onclick="nav('pinned')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg><span>Channel Favorit</span>
+  </div>
+  <div class="si" id="sb-history" onclick="nav('history')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg><span>Riwayat</span>
+  </div>
+  <div class="si" id="sb-stats" onclick="nav('stats')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg><span>Statistik</span>
+  </div>
+  <div class="si" onclick="openPLPanel()">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg><span>Koleksi</span>
+  </div>
   <div class="sdiv"></div>
   <div class="slabel">Jelajahi</div>
-  <div class="si" onclick="loadCat('')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.2 10H14L17 3H11v8H8l6.8 9z"/></svg><span>Trending</span></div>
-  <div class="si" onclick="nav('search','musik indonesia terbaru')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg><span>Musik</span></div>
-  <div class="si" onclick="nav('search','gaming indonesia')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5S14.67 12 15.5 12s1.5.67 1.5 1.5S16.33 15 15.5 15zm3-3c-.83 0-1.5-.67-1.5-1.5S17.67 9 18.5 9s1.5.67 1.5 1.5S19.33 12 18.5 12z"/></svg><span>Gaming</span></div>
-  <div class="si" onclick="nav('search','berita terkini indonesia')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 3H2C.9 3 0 3.9 0 5v14c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H2V5h20v14z"/></svg><span>Berita</span></div>
-  <div class="si" onclick="nav('search','olahraga indonesia')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/></svg><span>Olahraga</span></div>
+  <div class="si" onclick="loadCat('')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.2 10H14L17 3H11v8H8l6.8 9z"/></svg><span>Trending</span>
+  </div>
+  <div class="si" onclick="nav('search','musik indonesia terbaru')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg><span>Musik</span>
+  </div>
+  <div class="si" onclick="nav('search','gaming indonesia')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5S14.67 12 15.5 12s1.5.67 1.5 1.5S16.33 15 15.5 15zm3-3c-.83 0-1.5-.67-1.5-1.5S17.67 9 18.5 9s1.5.67 1.5 1.5S19.33 12 18.5 12z"/></svg><span>Gaming</span>
+  </div>
+  <div class="si" onclick="nav('search','berita terkini indonesia')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 3H2C.9 3 0 3.9 0 5v14c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H2V5h20v14z"/></svg><span>Berita</span>
+  </div>
+  <div class="si" onclick="nav('search','olahraga indonesia')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-.7-1c-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/></svg><span>Olahraga</span>
+  </div>
   <div class="sdiv"></div>
-  <div class="si" onclick="showSettings()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><span>Pengaturan</span></div>
+  <div class="si" onclick="showSettings()">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><span>Pengaturan</span>
+  </div>
 </aside>
 
+<!-- ══════════════════════════════════════
+     MAIN CONTENT
+     ══════════════════════════════════════ -->
 <main id="main">
 
+  <!-- Player Wrapper (shared between watch + mini) -->
   <div id="player-wrapper" onclick="if(document.body.classList.contains('is-mini'))nav('watch',curVidId)">
     <div id="pw-inner">
       <div id="pw-inner-ratio">
@@ -545,7 +189,7 @@ body.is-short-watch #short-watch-back{display:flex}
       <button class="pb" id="rep-btn" onclick="toggleRep()" title="Ulangi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg></button>
       <button class="pb" id="loop-btn" onclick="toggleLoopUI()" title="Loop Timestamp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg> Loop</button>
       <button class="pb" id="audio-btn" onclick="toggleAudioMode()" title="Mode Audio"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v9.28a4.39 4.39 0 00-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/></svg></button>
-      <button class="pb" onclick="goFS()" title="Layar Penuh + Auto Landscape"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
+      <button class="pb" onclick="goFS()" title="Layar Penuh"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
     </div>
 
     <div id="loop-ui">
@@ -569,9 +213,13 @@ body.is-short-watch #short-watch-back{display:flex}
     </div>
   </div>
 
+  <!-- ── HOME PAGE ── -->
   <div id="home-page" class="page">
     <div id="cats"></div>
-    <div id="pbanner"><svg width="18" height="18" viewBox="0 0 24 24" fill="#c9b8ff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span id="pbtext"></span></div>
+    <div id="pbanner">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#c9b8ff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+      <span id="pbtext"></span>
+    </div>
     <div id="home-shorts-sec" style="display:none;padding:8px 20px 0">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;margin-top:4px">
         <div style="display:flex;align-items:center;gap:8px">
@@ -580,19 +228,26 @@ body.is-short-watch #short-watch-back{display:flex}
         </div>
         <button onclick="nav('shorts')" style="font-size:13px;color:var(--accent);font-weight:600;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='none'">Lihat semua →</button>
       </div>
-      <div id="home-shorts-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px"></div>
+      <div id="home-shorts-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px"></div>
     </div>
     <div id="grid"></div>
   </div>
 
+  <!-- ── WATCH PAGE ── -->
   <div id="watch-page" class="page">
     <div id="w-details">
       <h1 id="vtitle">Memuat...</h1>
-      <div id="lbar-wrap"><div id="lbar-labels"><span id="llike"></span><span id="lratio"></span></div><div id="lbar"><div id="lbar-fill" style="width:0"></div></div></div>
+      <div id="lbar-wrap">
+        <div id="lbar-labels"><span id="llike"></span><span id="lratio"></span></div>
+        <div id="lbar"><div id="lbar-fill" style="width:0"></div></div>
+      </div>
       <div id="vmeta">
         <div id="chinfo" onclick="nav('channel',this.dataset.chid)">
           <div id="chavatar"></div>
-          <div><div id="chname" style="font-weight:600;font-size:15px"></div><div id="chsubs" style="font-size:13px;color:var(--text2)"></div></div>
+          <div>
+            <div id="chname" style="font-weight:600;font-size:15px"></div>
+            <div id="chsubs" style="font-size:13px;color:var(--text2)"></div>
+          </div>
         </div>
         <button id="subbtn">Berlangganan</button>
         <div id="abtns">
@@ -618,9 +273,7 @@ body.is-short-watch #short-watch-back{display:flex}
       </div>
       <div id="comments-sec">
         <h3>💬 Komentar <span id="comment-count" style="font-size:14px;color:var(--text2);font-weight:400"></span></h3>
-        <button id="show-comments-btn" onclick="showComments()" style="width:100%;padding:12px;background:var(--surface2);color:var(--text);border:1px solid var(--border2);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px;transition:background .15s;letter-spacing:.01em">
-          💬 Tampilkan Komentar
-        </button>
+        <button id="show-comments-btn" onclick="showComments()" style="width:100%;padding:12px;background:var(--surface2);color:var(--text);border:1px solid var(--border2);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px;transition:background .15s">💬 Tampilkan Komentar</button>
         <div id="comments-list" style="display:none"></div>
         <button id="load-more-comments" onclick="loadMoreComments()" style="display:none">Muat lebih banyak komentar</button>
       </div>
@@ -634,6 +287,7 @@ body.is-short-watch #short-watch-back{display:flex}
     </div>
   </div>
 
+  <!-- ── CHANNEL PAGE ── -->
   <div id="channel-page" class="page page-pad">
     <div id="ch-banner" style="width:100%;height:180px;background:var(--surface);border-radius:12px;overflow:hidden;margin-bottom:20px"></div>
     <div id="ch-hdr" style="display:flex;gap:20px;align-items:center;margin-bottom:28px">
@@ -648,17 +302,19 @@ body.is-short-watch #short-watch-back{display:flex}
     <div id="ch-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:0 0 40px"></div>
   </div>
 
+  <!-- ── SEARCH PAGE ── -->
   <div id="search-page" class="page page-pad">
     <div id="sq-title" style="font-size:16px;margin:0 0 16px"></div>
     <div id="sq-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:0"></div>
   </div>
 
+  <!-- ── PINNED PAGE ── -->
   <div id="pinned-page" class="page page-pad">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
       <h2 style="font-size:22px;font-weight:700">📌 Channel Favorit</h2>
       <button onclick="checkAllPinned()" style="padding:8px 16px;border-radius:99px;background:var(--surface);color:var(--text);font-size:13px;font-weight:500;border:none;cursor:pointer">🔄 Cek Update</button>
     </div>
-    <p style="color:var(--text2);font-size:13px;margin-bottom:16px">Pin channel favorit untuk pantau update & live dengan mudah</p>
+    <p style="color:var(--text2);font-size:13px;margin-bottom:16px">Pin channel favorit untuk pantau update & live</p>
     <div id="pinned-grid"></div>
     <div id="pinned-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--text2)">
       <div style="font-size:48px;margin-bottom:12px">📌</div>
@@ -667,29 +323,41 @@ body.is-short-watch #short-watch-back{display:flex}
     </div>
   </div>
 
+  <!-- ── SHORTS PAGE ── -->
   <div id="shorts-page" class="page">
     <div id="shorts-topbar">
-      <span style="font-size:18px;font-weight:800;color:#fff;font-family:'Outfit',sans-serif;letter-spacing:-.5px">
-        ▶ Shorts
-      </span>
-      <div style="display:flex;gap:8px">
-        <button onclick="loadShorts('viral')" style="padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:12px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px)">🔥 Viral</button>
-        <button onclick="loadShorts('gaming')" style="padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:12px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px)">🎮 Gaming</button>
-        <button onclick="loadShorts('musik')" style="padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:12px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px)">🎵 Musik</button>
-        <button onclick="loadShorts('lucu')" style="padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:12px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px)">😂 Lucu</button>
+      <span style="font-size:18px;font-weight:800;color:#fff;font-family:'Outfit',sans-serif;letter-spacing:-.5px">▶ Shorts</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="short-cat-btn on" data-cat="viral"  onclick="loadShorts('viral')">🔥 Viral</button>
+        <button class="short-cat-btn"    data-cat="gaming" onclick="loadShorts('gaming')">🎮 Gaming</button>
+        <button class="short-cat-btn"    data-cat="musik"  onclick="loadShorts('musik')">🎵 Musik</button>
+        <button class="short-cat-btn"    data-cat="lucu"   onclick="loadShorts('lucu')">😂 Lucu</button>
+        <button class="short-cat-btn"    data-cat="masak"  onclick="loadShorts('masak')">🍳 Masak</button>
+        <button class="short-cat-btn"    data-cat="travel" onclick="loadShorts('travel')">✈️ Travel</button>
       </div>
     </div>
+    <!-- Progress bar -->
+    <div id="shorts-progress"><div id="shorts-progress-fill"></div></div>
+    <!-- Nav arrows -->
+    <button class="short-nav" id="short-prev" onclick="shortNavPrev()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+    </button>
+    <button class="short-nav" id="short-next" onclick="shortNavNext()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+    </button>
     <div id="shorts-container"></div>
   </div>
 
+  <!-- ── HISTORY PAGE ── -->
   <div id="history-page" class="page page-pad">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
       <h2 style="font-size:22px;font-weight:700">Riwayat Tontonan</h2>
-      <button onclick="clearHistory()" style="padding:8px 16px;border-radius:99px;background:var(--surface);color:var(--text);font-size:13px;font-weight:500">Hapus Semua</button>
+      <button onclick="clearHistory()" style="padding:8px 16px;border-radius:99px;background:var(--surface);color:var(--text);font-size:13px;font-weight:500;border:none;cursor:pointer">Hapus Semua</button>
     </div>
     <div id="hist-grid" style="padding:0"></div>
   </div>
 
+  <!-- ── STATS PAGE ── -->
   <div id="stats-page" class="page page-pad">
     <h2 style="font-size:22px;font-weight:700;margin-bottom:20px">📊 Statistik Tontonan</h2>
     <div id="stats-content"></div>
@@ -697,6 +365,11 @@ body.is-short-watch #short-watch-back{display:flex}
 
 </main>
 
+<!-- ══════════════════════════════════════
+     PANELS + MODALS
+     ══════════════════════════════════════ -->
+
+<!-- Queue Panel -->
 <div id="queue-panel">
   <div class="pl-hdr">
     <div>
@@ -711,6 +384,7 @@ body.is-short-watch #short-watch-back{display:flex}
   <div id="q-list" style="flex:1;overflow-y:auto;padding:12px"></div>
 </div>
 
+<!-- Playlist Panel -->
 <div id="pl-panel">
   <div class="pl-hdr">
     <select id="pl-select" class="pl-sel" onchange="curPlView=this.value;renderPL()"></select>
@@ -719,6 +393,7 @@ body.is-short-watch #short-watch-back{display:flex}
   <div id="wl-list"></div>
 </div>
 
+<!-- Save to Playlist Modal -->
 <div class="moverlay" id="pl-modal" onclick="bgClose(event,'pl-modal')">
   <div class="mbox">
     <h2>Simpan ke...</h2>
@@ -730,20 +405,18 @@ body.is-short-watch #short-watch-back{display:flex}
   </div>
 </div>
 
+<!-- Settings Modal -->
 <div class="moverlay" id="settings-modal" onclick="bgClose(event,'settings-modal')">
   <div class="mbox">
     <h2>⚙️ Pengaturan</h2>
-
     <div class="setting-row">
       <div><div class="setting-label">🌙 Tema Gelap/Terang</div></div>
       <div class="toggle-switch" id="theme-toggle" onclick="toggleTheme()"></div>
     </div>
-
     <div class="setting-row">
       <div><div class="setting-label">📉 Mode Hemat Data</div><div class="setting-sub">Thumbnail kualitas rendah</div></div>
       <div class="toggle-switch" id="datasaver-toggle" onclick="toggleDataSaver()"></div>
     </div>
-
     <div class="setting-row">
       <div><div class="setting-label">🎨 Warna Aksen</div></div>
     </div>
@@ -757,17 +430,14 @@ body.is-short-watch #short-watch-back{display:flex}
       <div class="color-dot" style="background:#ffd600" data-color="#ffd600" onclick="setAccent('#ffd600',this)"></div>
       <div class="color-dot" style="background:#00bcd4" data-color="#00bcd4" onclick="setAccent('#00bcd4',this)"></div>
     </div>
-
     <div class="setting-row">
       <div><div class="setting-label">🔤 Ukuran Subtitle</div><div class="setting-sub" id="sub-size-label">100%</div></div>
     </div>
     <input type="range" id="sub-size-range" min="80" max="200" value="100" oninput="setSubSize(this.value)" style="width:100%;margin-bottom:16px;accent-color:var(--accent)"/>
-
     <div class="setting-row">
       <div><div class="setting-label">📝 Export Semua Catatan</div><div class="setting-sub">Download sebagai file .txt</div></div>
       <button class="mbtn" onclick="exportAllNotes()" style="font-size:13px;padding:8px 14px">Download</button>
     </div>
-
     <div class="setting-row">
       <div><div class="setting-label">⏰ Sleep Timer</div><div class="setting-sub">Otomatis pause video</div></div>
     </div>
@@ -777,14 +447,14 @@ body.is-short-watch #short-watch-back{display:flex}
       <button onclick="startSleepTimer(60);G('settings-modal').classList.remove('show')" style="padding:8px 14px;border-radius:8px;background:var(--surface2);color:var(--text);border:none;cursor:pointer;font-size:13px;font-weight:500">60 menit</button>
       <button onclick="cancelSleep();toast('Sleep timer dibatalkan')" style="padding:8px 14px;border-radius:8px;background:var(--surface2);color:var(--text2);border:none;cursor:pointer;font-size:13px">Batal</button>
     </div>
-
     <div class="setting-row">
-      <div><div class="setting-label">🔔 Izinkan Notifikasi</div><div class="setting-sub">Dapat notif saat channel favorit upload baru</div></div>
+      <div><div class="setting-label">🔔 Izinkan Notifikasi</div><div class="setting-sub">Notif saat channel favorit upload baru</div></div>
       <button onclick="toggleNotif()" style="padding:8px 14px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:13px;font-weight:600">Izinkan</button>
     </div>
   </div>
 </div>
 
+<!-- PWA Banner -->
 <div id="pwa-banner">
   <img src="/icon-192.png" style="width:40px;height:40px;border-radius:10px;flex-shrink:0" onerror="this.style.display='none'"/>
   <div style="flex:1">
@@ -795,1393 +465,37 @@ body.is-short-watch #short-watch-back{display:flex}
   <button onclick="G('pwa-banner').classList.remove('show');localStorage.setItem('pwa_dismissed','1')" style="background:var(--surface3);color:var(--text2);padding:8px 10px;border-radius:8px;font-size:13px;border:none;cursor:pointer;flex-shrink:0">✕</button>
 </div>
 
+<!-- Sleep Indicator -->
 <div id="sleep-indicator">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
   <span id="sleep-label">Pause dalam 30:00</span>
   <button onclick="cancelSleep()" style="background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:4px;padding:2px 8px;font-size:12px;cursor:pointer">Batal</button>
 </div>
 
+<!-- Short watch back button -->
 <button id="short-watch-back" onclick="history.back()" title="Kembali">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
 </button>
 
+<!-- Toast + Spinner -->
 <div id="spinner"><div class="sring"></div><span style="color:#fff;font-weight:500">Memuat...</span></div>
 <div id="toast"></div>
 
+<!-- ══════════════════════════════════════
+     SCRIPTS
+     ══════════════════════════════════════ -->
+<!-- Google Identity Services (untuk login Google) -->
+<script src="https://accounts.google.com/gsi/client" async onload="onGISLoaded()"></script>
+<!-- YouTube IFrame API -->
 <script src="https://www.youtube.com/iframe_api"></script>
-<script>
-// ══════════════════════════════════════════
-// CACHE + API PROXY
-// ══════════════════════════════════════════
-const CACHE_TTL={
-  videos:7200000,      // trending: 2 jam
-  search:3600000,      // search: 1 jam
-  channels:172800000,  // channel: 48 jam
-  commentThreads:3600000, // komentar: 1 jam
-  default:3600000
-};
-async function api(ep,p,uc=true){
-  const k='ytc_'+ep+'_'+JSON.stringify(p);
-  if(uc){try{const r=localStorage.getItem(k);if(r){const{data,exp}=JSON.parse(r);if(Date.now()<exp)return data;localStorage.removeItem(k);}}catch(e){}}
-  try{
-    const r=await fetch('/api/youtube?'+new URLSearchParams({endpoint:ep,...p}));
-    const d=await r.json();
-    if(d.error){console.error(d.error.message);return null;}
-    if(uc){try{localStorage.setItem(k,JSON.stringify({data:d,exp:Date.now()+(CACHE_TTL[ep]||1800000)}));}catch(e){}}
-    return d;
-  }catch(e){return null;}
-}
-function cleanCache(){const n=Date.now();Object.keys(localStorage).filter(k=>k.startsWith('ytc_')).forEach(k=>{try{const{exp}=JSON.parse(localStorage.getItem(k));if(n>exp)localStorage.removeItem(k);}catch(e){localStorage.removeItem(k);}});}
+<!-- App modules (urutan penting) -->
+<script src="/js/utils.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/player.js"></script>
+<script src="/js/shorts.js"></script>
+<script src="/js/ui.js"></script>
+<script src="/js/app.js"></script>
 
-// RSS
-async function rssChannel(chId,max=12){
-  try{
-    const r=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://www.youtube.com/feeds/videos.xml?channel_id='+chId)}`);
-    const j=await r.json();if(!j.contents)return[];
-    const xml=new DOMParser().parseFromString(j.contents,'text/xml');
-    return[...xml.querySelectorAll('entry')].slice(0,max).map(e=>{
-      const id=e.querySelector('videoId')?.textContent||'';
-      return{id,snippet:{title:e.querySelector('title')?.textContent||'',publishedAt:e.querySelector('published')?.textContent||'',channelTitle:e.querySelector('author name')?.textContent||'',channelId:chId,thumbnails:{high:{url:`https://i.ytimg.com/vi/${id}/hqdefault.jpg`},medium:{url:`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}}},statistics:{viewCount:e.querySelector('statistics')?.getAttribute('views')||'0'},contentDetails:{}};
-    }).filter(v=>v.id);
-  }catch(e){return[];}
-}
-function ytThumb(id,q='hqdefault'){return`https://i.ytimg.com/vi/${id}/${q}.jpg`;}
-
-// ══════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════
-let sideExp=window.innerWidth>1024,curCat='',curVidId=null,curVidData=null;
-let ytP=null,ytReady=false,pendVid=null;
-let autoRep=false,curSpd=1,audioMode=false;
-let sugTimer=null,ttTimer=null,loopTimer=null;
-let avCache=(() =>{try{return JSON.parse(localStorage.getItem('yt_avcache')||'{}');}catch(e){return{};}})();
-let wHist=JSON.parse(localStorage.getItem('yt_hist')||'[]');
-let sHist=JSON.parse(localStorage.getItem('yt_shist')||'[]');
-let playlists=JSON.parse(localStorage.getItem('yt_playlists')||'{"Tonton Nanti":[]}');
-let curPlView='Tonton Nanti';
-let queue=[],queueIdx=0;
-let dataSaver=localStorage.getItem('yt_datasaver')==='1';
-let subSize=parseInt(localStorage.getItem('yt_subsize')||'100');
-
-const AVC=['#e53935','#8e24aa','#1e88e5','#00897b','#f4511e','#6d4c41','#546e7a','#43a047','#fb8c00','#d81b60'];
-function avc(s){let h=0;for(let c of(s||''))h=(h*31+c.charCodeAt(0))&0xffffffff;return AVC[Math.abs(h)%AVC.length];}
-function fv(n){if(!n)return'0';n=parseInt(n);if(n>=1e9)return(n/1e9).toFixed(1)+'M';if(n>=1e6)return(n/1e6).toFixed(1)+'jt';if(n>=1e3)return(n/1e3).toFixed(0)+'rb';return n.toString();}
-function fvl(n){if(!n)return'0';n=parseInt(n);return n.toLocaleString('id');}
-function ago(d){const s=Math.floor((Date.now()-new Date(d))/1000);if(s<60)return'baru saja';const m=Math.floor(s/60);if(m<60)return m+'m lalu';const h=Math.floor(m/60);if(h<24)return h+' jam lalu';const dy=Math.floor(h/24);if(dy<7)return dy+' hari lalu';const w=Math.floor(dy/7);if(w<5)return w+' minggu lalu';const mo=Math.floor(dy/30);if(mo<12)return mo+' bulan lalu';return Math.floor(dy/365)+' tahun lalu';}
-function dur(d){if(!d)return'';const m=d.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return'';const h=parseInt(m[1]||0),mn=parseInt(m[2]||0),s=parseInt(m[3]||0);if(h>0)return`${h}:${String(mn).padStart(2,'0')}:${String(s).padStart(2,'0')}`;return`${mn}:${String(s).padStart(2,'0')}`;}
-function esc(s){return(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function G(id){return document.getElementById(id);}
-function toast(msg,ms=3000){const t=G('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
-
-// ══════════════════════════════════════════
-// YT PLAYER
-// ══════════════════════════════════════════
-window.onYouTubeIframeAPIReady=function(){ytReady=true;if(pendVid){loadP(pendVid);pendVid=null;}};
-function loadP(vid){
-  const saved=localStorage.getItem('ytt_'+vid);
-  if(ytP){ytP.loadVideoById(vid,saved?parseFloat(saved):0);return;}
-  ytP=new YT.Player('yt-player',{
-    videoId:vid,
-    playerVars:{
-      autoplay:1,
-      rel:0,
-      modestbranding:1,
-      playsinline:1,
-      enablejsapi:1,
-      hl:'id',
-      cc_lang_pref:'id',
-      origin: window.location.origin
-    },
-    events:{
-      onReady(e){
-        e.target.setPlaybackRate(curSpd);
-        if(saved) e.target.seekTo(parseFloat(saved));
-        try {
-          const p = e.target.playVideo();
-          if(p && p.catch) p.catch(()=>{ e.target.mute(); e.target.playVideo(); });
-        } catch(err) { e.target.mute(); e.target.playVideo(); }
-      },
-      onStateChange(e){
-        if(e.data===YT.PlayerState.ENDED){
-          if(autoRep){ytP.seekTo(0);return;}
-          playNextQueue(); 
-        }
-        if(e.data===YT.PlayerState.PLAYING){
-          ttTimer=setInterval(()=>{if(ytP?.getCurrentTime&&curVidId)localStorage.setItem('ytt_'+curVidId,ytP.getCurrentTime());},4000);
-        }else clearInterval(ttTimer);
-      }
-    }
-  });
-}
-function yc(cmd){if(ytP&&ytP[cmd])ytP[cmd]();}
-function setSpd(v){curSpd=parseFloat(v);if(ytP)ytP.setPlaybackRate(curSpd);}
-function setCap(l){try{if(!l)ytP.unloadModule('captions');else{ytP.loadModule('captions');ytP.setOption('captions','track',{languageCode:l});}}catch(e){}}
-function toggleAudioMode(){audioMode=!audioMode;G('audio-overlay').style.display=audioMode?'flex':'none';G('audio-btn').classList.toggle('active',audioMode);toast(audioMode?'🎧 Mode Audio — Hemat Data':'Mode Audio OFF');}
-function closeMini(){if(ytP?.pauseVideo)ytP.pauseVideo();document.body.classList.remove('is-mini');curVidId=null;}
-async function goFS(){
-  const el=G('player-wrapper');
-  try{if(el.requestFullscreen)await el.requestFullscreen();else if(el.webkitRequestFullscreen)await el.webkitRequestFullscreen();
-    setTimeout(async()=>{try{await screen.orientation.lock('landscape');toast('📱 Auto landscape!');}catch(e){}},200);}catch(e){}
-}
-function toggleRep(){autoRep=!autoRep;G('rep-btn').classList.toggle('active',autoRep);toast(autoRep?'🔁 Putar Ulang ON':'Putar Ulang OFF');}
-
-// ══════════════════════════════════════════
-// LOOP TIMESTAMP
-// ══════════════════════════════════════════
-function toggleLoopUI(){const ui=G('loop-ui');ui.classList.toggle('show');G('loop-btn').classList.toggle('active',ui.classList.contains('show'));}
-function parseMSS(s){const p=s.split(':').map(Number);return p.length===2?p[0]*60+p[1]:p.length===3?p[0]*3600+p[1]*60+p[2]:NaN;}
-function startLoop(){
-  const s=parseMSS(G('loop-start').value),e=parseMSS(G('loop-end').value);
-  if(isNaN(s)||isNaN(e)||e<=s){toast('⚠️ Timestamp tidak valid! Format: mm:ss');return;}
-  if(loopTimer)clearInterval(loopTimer);
-  if(ytP)ytP.seekTo(s);
-  loopTimer=setInterval(()=>{
-    if(!ytP?.getCurrentTime)return;
-    const cur=ytP.getCurrentTime();
-    if(cur>=e){ytP.seekTo(s);}
-  },300);
-  G('loop-status').textContent=`Looping ${G('loop-start').value} → ${G('loop-end').value}`;
-  toast(`🔁 Loop aktif: ${G('loop-start').value} → ${G('loop-end').value}`);
-}
-function stopLoop(){if(loopTimer)clearInterval(loopTimer);loopTimer=null;G('loop-status').textContent='';toast('Loop dihentikan');}
-
-// ══════════════════════════════════════════
-// ANTRIAN VIDEO
-// ══════════════════════════════════════════
-function addToQueue(v){
-  const id=v.id?.videoId||v.id;
-  if(queue.some(q=>q.id===id)){toast('Video sudah ada di antrian');return;}
-  queue.push({id,title:v.snippet?.title||'',ch:v.snippet?.channelTitle||'',thumb:v.snippet?.thumbnails?.medium?.url||ytThumb(id,'mqdefault')});
-  updQBadge();renderQueue();toast('➕ Ditambah ke Antrian');
-}
-function addToQueueCur(){if(curVidData)addToQueue(curVidData);}
-function addToQueueById(id,title,ch,thumb){
-  if(queue.some(q=>q.id===id)){toast('Sudah ada di antrian');return;}
-  queue.push({id,title,ch,thumb});updQBadge();renderQueue();toast('➕ Ditambah ke Antrian');
-}
-function playNextQueue(){
-  if(!queue.length)return;
-  const idx=queue.findIndex(q=>q.id===curVidId);
-  const next=queue[idx+1]||queue[0];
-  if(next)nav('watch',next.id);
-}
-function clearQueue(){queue=[];updQBadge();renderQueue();}
-function updQBadge(){const b=G('q-badge');if(queue.length){b.textContent=queue.length;b.style.display='flex';}else b.style.display='none';}
-function renderQueue(){
-  const now=curVidId;
-  G('q-now').textContent=queue.length?`${queue.length} video`:'Kosong';
-  G('q-list').innerHTML=queue.length?queue.map((v,i)=>`
-    <div class="q-item${v.id===now?' playing':''}" onclick="nav('watch','${v.id}')">
-      <div style="color:var(--text2);font-size:12px;font-weight:600;flex-shrink:0;width:18px">${i+1}</div>
-      <div class="q-thumb"><img src="${v.thumb}" loading="lazy" onerror="this.src='${ytThumb(v.id,'mqdefault')}'"/></div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(v.title)}</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:2px">${esc(v.ch)}</div>
-      </div>
-      <button onclick="event.stopPropagation();queue.splice(${i},1);updQBadge();renderQueue()" style="width:26px;height:26px;border-radius:50%;background:var(--surface2);border:none;cursor:pointer;color:var(--text);flex-shrink:0;font-size:14px">✕</button>
-    </div>`).join(''):'<div class="empty" style="padding:40px 20px">Antrian kosong<br><span style="font-size:13px">Tambah video dengan tombol ⋮ di thumbnail</span></div>';
-}
-function toggleQueuePanel(){G('queue-panel').classList.toggle('open');renderQueue();}
-function closeQueuePanel(){G('queue-panel').classList.remove('open');}
-
-// ══════════════════════════════════════════
-// STATISTIK TONTONAN
-// ══════════════════════════════════════════
-function showStats(){
-  const hist=JSON.parse(localStorage.getItem('yt_hist')||'[]');
-  const notes=JSON.parse(localStorage.getItem('yt_notes')||'{}');
-  const pl=JSON.parse(localStorage.getItem('yt_playlists')||'{}');
-  const total=hist.length;
-  const days={};
-  hist.forEach(v=>{
-    const d=new Date(v.ts);
-    const label=['Min','Sen','Sel','Rab','Kam','Jum','Sab'][d.getDay()];
-    days[label]=(days[label]||0)+1;
-  });
-  const chCount={};
-  hist.forEach(v=>{if(v.ch)chCount[v.ch]=(chCount[v.ch]||0)+1;});
-  const topCh=Object.entries(chCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const maxCh=topCh[0]?.[1]||1;
-  const totalPl=Object.values(pl).reduce((a,v)=>a+v.length,0);
-  const totalNotes=Object.keys(notes).length;
-
-  G('stats-content').innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:28px">
-      ${[['📺','Total Ditonton',total+' video'],['📝','Video Dicatat',totalNotes+' video'],['🗂️','Di Playlist',totalPl+' video'],['🔍','Riwayat Cari',sHist.length+' pencarian']].map(([ic,lb,vl])=>`
-      <div style="background:var(--surface);border-radius:12px;padding:16px;text-align:center">
-        <div style="font-size:28px">${ic}</div>
-        <div style="font-size:22px;font-weight:700;margin:6px 0">${vl.split(' ')[0]}</div>
-        <div style="font-size:12px;color:var(--text2)">${lb}</div>
-      </div>`).join('')}
-    </div>
-    <div style="background:var(--surface);border-radius:12px;padding:16px;margin-bottom:16px">
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">🏆 Channel Paling Sering Ditonton</h3>
-      <div id="stats-bars">
-        ${topCh.length?topCh.map(([ch,n])=>`
-          <div class="stat-bar-row">
-            <div class="stat-bar-label" title="${esc(ch)}">${esc(ch.length>10?ch.slice(0,10)+'…':ch)}</div>
-            <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${Math.round((n/maxCh)*100)}%"></div></div>
-            <div class="stat-bar-val">${n}x</div>
-          </div>`).join(''):'<div style="color:var(--text2);font-size:14px">Belum ada data</div>'}
-      </div>
-    </div>
-    <div style="background:var(--surface);border-radius:12px;padding:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <h3 style="font-size:15px;font-weight:700">🗑️ Kelola Data</h3>
-      </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button onclick="clearHistory()" style="padding:8px 16px;border-radius:99px;background:var(--surface2);color:var(--text);font-size:13px;border:none;cursor:pointer">Hapus Riwayat</button>
-        <button onclick="exportAllNotes()" style="padding:8px 16px;border-radius:99px;background:var(--accent);color:#fff;font-size:13px;border:none;cursor:pointer">Export Catatan</button>
-        <button onclick="if(confirm('Hapus semua catatan?')){localStorage.removeItem('yt_notes');toast('Catatan dihapus');}" style="padding:8px 16px;border-radius:99px;background:var(--surface2);color:var(--text);font-size:13px;border:none;cursor:pointer">Hapus Catatan</button>
-      </div>
-    </div>`;
-}
-
-// ══════════════════════════════════════════
-// SETTINGS
-// ══════════════════════════════════════════
-function showSettings(){
-  G('settings-modal').classList.add('show');
-  G('theme-toggle').classList.toggle('on',document.body.classList.contains('light'));
-  G('datasaver-toggle').classList.toggle('on',dataSaver);
-  G('sub-size-range').value=subSize;
-  G('sub-size-label').textContent=subSize+'%';
-  const saved=localStorage.getItem('yt_accent')||'#3ea6ff';
-  document.querySelectorAll('.color-dot').forEach(d=>d.classList.toggle('active',d.dataset.color===saved));
-}
-function setAccent(color,el){
-  document.documentElement.style.setProperty('--accent',color);
-  document.documentElement.style.setProperty('--blue',color);
-  localStorage.setItem('yt_accent',color);
-  document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('active'));
-  el.classList.add('active');
-  toast('🎨 Warna diubah!');
-}
-function setSubSize(v){
-  subSize=parseInt(v);
-  document.documentElement.style.setProperty('--sub-size',subSize+'%');
-  G('sub-size-label').textContent=subSize+'%';
-  localStorage.setItem('yt_subsize',subSize);
-  let st=document.getElementById('sub-style');
-  if(!st){st=document.createElement('style');st.id='sub-style';document.head.appendChild(st);}
-  st.textContent=`.ytp-caption-segment{font-size:${subSize}% !important}`;
-}
-function toggleDataSaver(){
-  dataSaver=!dataSaver;
-  localStorage.setItem('yt_datasaver',dataSaver?'1':'0');
-  document.body.classList.toggle('data-saver',dataSaver);
-  G('datasaver-bar').classList.toggle('show',dataSaver);
-  G('datasaver-toggle').classList.toggle('on',dataSaver);
-  toast(dataSaver?'📉 Mode Hemat Data ON':'Mode Hemat Data OFF');
-}
-
-// ══════════════════════════════════════════
-// EXPORT CATATAN
-// ══════════════════════════════════════════
-function exportNotes(){
-  if(!curVidId)return;
-  const notes=JSON.parse(localStorage.getItem('yt_notes')||'{}');
-  const note=notes[curVidId]||'';
-  if(!note){toast('Belum ada catatan untuk video ini');return;}
-  const title=curVidData?.snippet?.title||curVidId;
-  const content=`Video: ${title}\nURL: https://youtu.be/${curVidId}\n\n${note}`;
-  downloadTxt(content,`catatan-${curVidId}.txt`);
-}
-function exportAllNotes(){
-  const notes=JSON.parse(localStorage.getItem('yt_notes')||'{}');
-  if(!Object.keys(notes).length){toast('Belum ada catatan tersimpan');return;}
-  const lines=Object.entries(notes).map(([id,n])=>`===== https://youtu.be/${id} =====\n${n}`).join('\n\n');
-  downloadTxt(lines,'semua-catatan-yourtube.txt');
-  toast('✅ Catatan berhasil diexport!');
-}
-function downloadTxt(content,filename){
-  const a=document.createElement('a');
-  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(content);
-  a.download=filename;a.click();
-}
-
-// ══════════════════════════════════════════
-// FAA API — Download + Search Fallback
-// ══════════════════════════════════════════
-const FAA_BASE = 'https://api-faa.my.id/faa';
-
-async function downloadVideo() {
-  if (!curVidId) return;
-  const btn = G('dl-btn');
-  const origText = btn.innerHTML;
-  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg> Memproses...';
-  btn.disabled = true;
-  try {
-    const vidUrl = `https://youtube.com/watch?v=${curVidId}`;
-    const r = await fetch(`${FAA_BASE}/ytplayvid?url=${encodeURIComponent(vidUrl)}`);
-    const d = await r.json();
-    if (!d.status || !d.result?.download_url) {
-      toast('❌ Gagal mendapat link download');
-      btn.innerHTML = origText; btn.disabled = false;
-      return;
-    }
-    const { download_url, format, searched_title } = d.result;
-    showDownloadModal(download_url, format, searched_title, curVidId);
-  } catch(e) {
-    toast('❌ Error: ' + e.message);
-  }
-  btn.innerHTML = origText;
-  btn.disabled = false;
-}
-
-function showDownloadModal(url, format, title, vidId) {
-  let modal = G('dl-modal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'dl-modal';
-    modal.className = 'moverlay';
-    modal.onclick = e => { if(e.target===modal) modal.classList.remove('show'); };
-    document.body.appendChild(modal);
-  }
-  const thumb = ytThumb(vidId, 'mqdefault');
-  modal.innerHTML = `<div class="mbox" style="max-width:400px">
-    <h2 style="margin-bottom:16px">⬇️ Download Video</h2>
-    <img src="${thumb}" style="width:100%;border-radius:10px;margin-bottom:14px;aspect-ratio:16/9;object-fit:cover"/>
-    <div style="font-size:13px;font-weight:600;margin-bottom:16px;line-height:1.4;color:var(--text2)">${esc(title||'')}</div>
-    <a href="${url}" target="_blank" download
-       style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:linear-gradient(135deg,#1a3a1a,#0d2010);color:#6fef6f;border-radius:10px;font-weight:700;font-size:15px;text-decoration:none;margin-bottom:10px;border:1px solid #2a5a2a"
-       onclick="toast('⬇️ Download dimulai!')">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-      Download ${format?.toUpperCase() || 'MP4'}
-    </a>
-    <button onclick="G('dl-modal').classList.remove('show')"
-      style="width:100%;padding:10px;background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:10px;font-size:14px;font-weight:500;cursor:pointer">
-      Tutup
-    </button>
-    <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:10px">Link download aktif ~1 jam. Jika gagal, coba lagi.</p>
-  </div>`;
-  modal.classList.add('show');
-}
-
-async function faaSearch(query, max = 12) {
-  try {
-    const r = await fetch(`${FAA_BASE}/youtube?query=${encodeURIComponent(query)}`);
-    const d = await r.json();
-    if (!d.status || !d.result?.length) return [];
-    return d.result.slice(0, max).map(v => {
-      const vidId = v.link?.match(/[?&]v=([^&]+)/)?.[1] || '';
-      return {
-        id: vidId,
-        snippet: {
-          title: v.title || '',
-          channelTitle: v.channel || '',
-          channelId: '',
-          publishedAt: '',
-          thumbnails: {
-            high: { url: v.imageUrl || ytThumb(vidId) },
-            medium: { url: v.imageUrl || ytThumb(vidId) }
-          }
-        },
-        statistics: {},
-        contentDetails: { duration: v.duration || '' }
-      };
-    }).filter(v => v.id);
-  } catch(e) { return []; }
-}
-
-// ══════════════════════════════════════════
-// SHORTS — 0 QUOTA (Invidious + FAA fallback)
-// ══════════════════════════════════════════
-let shortsData=[], shortsCurIdx=0, shortsLoading=false, shortsQuery='shorts viral indonesia';
-let shortsObserver=null, invIdx=0;
-
-const INV_INSTANCES=[
-  'https://iv.datura.network',
-  'https://invidious.privacyredirect.com',
-  'https://invidious.fdn.fr',
-  'https://inv.nadeko.net',
-];
-
-function fetchWithTimeout(url, ms=6000){
-  const ctrl=new AbortController();
-  const t=setTimeout(()=>ctrl.abort(),ms);
-  return fetch(url,{signal:ctrl.signal}).finally(()=>clearTimeout(t));
-}
-
-async function fetchFAAShorts(query){
-  try{
-    const r=await fetchWithTimeout(`${FAA_BASE}/youtube?query=${encodeURIComponent(query+' shorts indonesia')}`);
-    const d=await r.json();
-    if(!d.status||!d.result?.length)return[];
-    return d.result.map(v=>{
-      const id=v.link?.match(/[?&]v=([^&]+)/)?.[1]||'';
-      const[m,s]=(v.duration||'0:30').split(':').map(Number);
-      const dur=(m||0)*60+(s||0);
-      return{id,title:v.title||'',channel:v.channel||'',channelId:'',thumb:v.imageUrl||ytThumb(id),views:0,dur};
-    }).filter(v=>v.id); 
-  }catch(e){return[];}
-}
-
-async function fetchInvShorts(query, page=1){
-  for(let i=0;i<INV_INSTANCES.length;i++){
-    const base=INV_INSTANCES[(invIdx+i)%INV_INSTANCES.length];
-    try{
-      const r=await fetchWithTimeout(`${base}/api/v1/search?q=${encodeURIComponent(query)}&type=video&page=${page}&region=ID`,5000);
-      if(!r.ok)continue;
-      const data=await r.json();
-      if(!Array.isArray(data)||!data.length)continue;
-      invIdx=(invIdx+i)%INV_INSTANCES.length;
-      const shorts=data.filter(v=>v.lengthSeconds>0&&v.lengthSeconds<=90);
-      if(!shorts.length)continue;
-      return shorts.slice(0,15).map(v=>({
-        id:v.videoId, title:v.title||'', channel:v.author||'', channelId:v.authorId||'',
-        thumb:v.videoThumbnails?.[0]?.url||ytThumb(v.videoId), views:v.viewCount||0, dur:v.lengthSeconds||0
-      }));
-    }catch(e){continue;}
-  }
-  return[];
-}
-
-async function fetchYTShorts(query){
-  try{
-    const d=await api('search',{part:'snippet',q:query+' shorts',type:'video',videoDuration:'short',maxResults:12,regionCode:'ID'},true);
-    if(!d?.items?.length)return[];
-    return d.items.map(v=>({
-      id:v.id?.videoId||'',
-      title:v.snippet?.title||'',
-      channel:v.snippet?.channelTitle||'',
-      channelId:v.snippet?.channelId||'',
-      thumb:v.snippet?.thumbnails?.high?.url||ytThumb(v.id?.videoId||''),
-      views:0, dur:30
-    })).filter(v=>v.id);
-  }catch(e){return[];}
-}
-
-async function fetchShorts(query, page=1){
-  let videos=await fetchFAAShorts(query);
-  if(videos.length>=3)return videos;
-  const inv=await fetchInvShorts(query+' shorts',page);
-  const seen=new Set(videos.map(v=>v.id));
-  inv.forEach(v=>{if(!seen.has(v.id)){seen.add(v.id);videos.push(v);}});
-  if(videos.length>=3)return videos;
-  const yt=await fetchYTShorts(query);
-  yt.forEach(v=>{if(!seen.has(v.id)){seen.add(v.id);videos.push(v);}});
-  return videos;
-}
-
-// ══════════════════════════════════════════
-// FUNGSI ACAK (SHUFFLE) AGAR VIDEO TIDAK URUT
-// ══════════════════════════════════════════
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-// ══════════════════════════════════════════
-// LOAD SHORTS DENGAN KATA KUNCI RANDOM
-// ══════════════════════════════════════════
-async function loadShorts(cat='viral'){
-  if(shortsLoading)return;
-  shortsLoading=true;
-  const container=G('shorts-container');
-  
-  const queryPools = {
-    viral: [
-      'shorts viral indonesia terbaru', 'shorts fyp tiktok', 'shorts trending hari ini', 
-      'shorts fakta unik', 'shorts random indonesia', 'youtube shorts populer indo'
-    ],
-    gaming: [
-      'gaming shorts indonesia', 'shorts mlbb wtf', 'shorts free fire kocak', 
-      'shorts pubg mobile ngakak', 'shorts gta 5 lucu', 'shorts minecraft indonesia'
-    ],
-    musik: [
-      'shorts cover lagu merdu', 'shorts musik galau', 'shorts konser ambyar', 
-      'shorts gitar akustik', 'shorts lirik lagu indonesia', 'shorts penyanyi jalanan'
-    ],
-    lucu: [
-      'shorts lucu ngakak', 'shorts meme indonesia', 'shorts prank kocak', 
-      'shorts kucing lucu', 'shorts komedi indo', 'shorts stand up comedy'
-    ]
-  };
-
-  const pool = queryPools[cat] || queryPools['viral'];
-  shortsQuery = pool[Math.floor(Math.random() * pool.length)];
-
-  container.innerHTML=`<div class="short-loading"><div class="sring"></div></div>`;
-  shortsData=[]; shortsCurIdx=0;
-
-  let videos=await fetchShorts(shortsQuery);
-
-  if(!videos.length){
-    container.innerHTML=`<div class="short-loading" style="flex-direction:column;gap:12px">
-      <div style="font-size:40px">😕</div>
-      <div style="color:#aaa;font-size:14px">Gagal memuat Shorts. Coba kategori lain.</div>
-      <button onclick="loadShorts('${cat}')" style="padding:8px 20px;border-radius:99px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-weight:600">Coba Lagi</button>
-    </div>`;
-    shortsLoading=false;return;
-  }
-  
-  videos = shuffleArray(videos);
-  shortsData=videos;
-  renderShorts(container);
-  shortsLoading=false;
-}
-
-function shortCard(v,i){
-  return`<div class="short-item" id="short-${i}" data-idx="${i}">
-    <iframe class="short-iframe" src="about:blank"
-      data-src="https://www.youtube.com/embed/${v.id}?autoplay=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${v.id}"
-      allow="autoplay;encrypted-media" allowfullscreen></iframe>
-    <div class="short-overlay">
-      <div class="short-title">${esc(v.title)}</div>
-      <div class="short-ch">
-        <div class="short-ch-av" style="background:${avc(v.channel)}">${(v.channel[0]||'?').toUpperCase()}</div>
-        <span>${esc(v.channel)}</span>
-        ${v.views?`<span style="color:rgba(255,255,255,.6)">· ${fv(v.views)}x</span>`:''}
-      </div>
-    </div>
-    <div class="short-actions">
-      <div class="short-act" onclick="nav('watch','${v.id}')">
-        <svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg><span>Tonton</span>
-      </div>
-      <div class="short-act" onclick="event.stopPropagation();shareShort('${v.id}','${esc(v.title).replace(/'/g,"\\'")}')">
-        <svg viewBox="0 0 24 24" fill="#fff"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg><span>Share</span>
-      </div>
-      <div class="short-act" onclick="addToQueueById('${v.id}','${esc(v.title).replace(/'/g,"\\'")}','${esc(v.channel).replace(/'/g,"\\'")}','${v.thumb}')">
-        <svg viewBox="0 0 24 24" fill="#fff"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm4 0h14v-2H7v2zm0-4h14v-2H7v2zM7 7v2h14V7H7z"/></svg><span>Antrian</span>
-      </div>
-    </div>
-  </div>`;
-}
-
-function renderShorts(container){
-  container.innerHTML=shortsData.map((v,i)=>shortCard(v,i)).join('');
-  setupShortsObserver(container);
-}
-
-function setupShortsObserver(container){
-  if(shortsObserver)shortsObserver.disconnect();
-  shortsObserver=new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-      const el=entry.target, iframe=el.querySelector('iframe');
-      const idx=parseInt(el.dataset.idx);
-      if(!iframe)return;
-      if(entry.isIntersecting){
-        if(!iframe.src.includes('youtube.com')){
-          iframe.src=iframe.dataset.src.replace('autoplay=0','autoplay=1');
-        }
-        shortsCurIdx=idx;
-        if(idx>=shortsData.length-3)loadMoreShorts();
-      } else {
-        if(Math.abs(idx-shortsCurIdx)>2) iframe.src='about:blank';
-      }
-    });
-  },{root:container,threshold:0.75});
-  container.querySelectorAll('.short-item').forEach(el=>shortsObserver.observe(el));
-}
-
-async function loadMoreShorts(){
-  if(shortsLoading)return;
-  shortsLoading=true;
-  const page=Math.ceil(shortsData.length/15)+1;
-  const randomSuffix = [' terbaru', ' hd', ' viral', ' fyp', ' keren'][Math.floor(Math.random()*5)];
-  let more=await fetchShorts(shortsQuery + randomSuffix, page);
-  more = shuffleArray(more);
-
-  const seen=new Set(shortsData.map(v=>v.id));
-  const newVids=more.filter(v=>!seen.has(v.id));
-  
-  if(newVids.length){
-    const container=G('shorts-container');
-    const startIdx=shortsData.length;
-    shortsData.push(...newVids);
-    newVids.forEach((v,i)=>{
-      const el=document.createElement('div');
-      el.outerHTML; 
-      const tmp=document.createElement('template');
-      tmp.innerHTML=shortCard(v,startIdx+i);
-      const item=tmp.content.firstElementChild;
-      container.appendChild(item);
-      shortsObserver.observe(item);
-    });
-  }
-  shortsLoading=false;
-}
-
-function shareShort(id,title){
-  const u=`https://youtu.be/${id}`;
-  if(navigator.share)navigator.share({title,url:u});
-  else if(navigator.clipboard)navigator.clipboard.writeText(u).then(()=>toast('🔗 Link Shorts disalin!'));
-  else toast(u);
-}
-
-let commentNextPage = null;
-let commentVidId = null;
-
-function showComments() {
-  G('show-comments-btn').style.display = 'none';
-  G('comments-list').style.display = 'block';
-  if (!commentVidId) return;
-  loadComments(commentVidId);
-}
-
-async function loadComments(vid, pageToken = null) {
-  if (!vid) return;
-  commentVidId = vid;
-  const params = { part: 'snippet', videoId: vid, maxResults: 10, order: 'relevance' };
-  if (pageToken) params.pageToken = pageToken;
-  
-  if (!pageToken) {
-    G('comments-list').innerHTML = '<div style="color:var(--text2);padding:20px 0;text-align:center">⏳ Memuat komentar...</div>';
-    G('load-more-comments').style.display = 'none';
-  }
-  
-  const d = await api('commentThreads', params);
-  if (!d) {
-    if (!pageToken) G('comments-list').innerHTML = '<div style="color:var(--text2);padding:12px 0;font-size:13px">💬 Komentar tidak tersedia atau dinonaktifkan untuk video ini.</div>';
-    return;
-  }
-  
-  const total = d.pageInfo?.totalResults || 0;
-  if (!pageToken) {
-    G('comment-count').textContent = fv(total) + ' komentar';
-    G('comments-list').innerHTML = '';
-  }
-  
-  commentNextPage = d.nextPageToken || null;
-  
-  const html = (d.items || []).map(item => {
-    const c = item.snippet?.topLevelComment?.snippet || {};
-    const author = esc(c.authorDisplayName || '');
-    const text = esc(c.textOriginal || c.textDisplay || '');
-    const img = c.authorProfileImageUrl || '';
-    const likes = c.likeCount || 0;
-    const time = c.publishedAt ? ago(c.publishedAt) : '';
-    const avC = avc(author);
-    const avH = img ? `<img src="${img}" loading="lazy" onerror="this.style.display='none'"/>` : (author[0] || '?').toUpperCase();
-    const replyCount = item.snippet?.totalReplyCount || 0;
-    return `<div class="comment-item">
-      <div class="comment-av" style="background:${avC}">${avH}</div>
-      <div style="flex:1;min-width:0">
-        <div class="comment-author">${author}</div>
-        <div class="comment-text">${text}</div>
-        <div class="comment-meta">
-          <span>${time}</span>
-          ${likes ? `<span>👍 ${fv(likes)}</span>` : ''}
-          ${replyCount ? `<span>💬 ${replyCount} balasan</span>` : ''}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-  
-  G('comments-list').innerHTML += html;
-  G('load-more-comments').style.display = commentNextPage ? 'block' : 'none';
-}
-
-async function loadMoreComments() {
-  if (!commentNextPage || !commentVidId) return;
-  G('load-more-comments').textContent = 'Memuat...';
-  G('load-more-comments').disabled = true;
-  await loadComments(commentVidId, commentNextPage);
-  G('load-more-comments').textContent = 'Muat lebih banyak komentar';
-  G('load-more-comments').disabled = false;
-}
-
-
-// ══════════════════════════════════════════
-// DETEKSI LIVE
-// ══════════════════════════════════════════
-async function checkLiveStatus(channelIds) {
-  if (!channelIds.length) return {};
-  const liveMap = {};
-  try {
-    const d = await api('search', { part: 'snippet', channelId: channelIds.slice(0,5).join(','), eventType: 'live', type: 'video', maxResults: 10 }, false);
-    (d?.items || []).forEach(item => { liveMap[item.snippet?.channelId] = item.id?.videoId; });
-  } catch(e) {}
-  return liveMap;
-}
-
-// ══════════════════════════════════════════
-// PIN CHANNEL
-// ══════════════════════════════════════════
-let pinnedChannels = JSON.parse(localStorage.getItem('yt_pinned') || '[]');
-let curOpenChId = null;
-
-function isChannelPinned(id) { return pinnedChannels.some(c => c.id === id); }
-
-function togglePinChannel() {
-  if (!curOpenChId) return;
-  const chName = G('ch-big-name').textContent;
-  const chImg = G('ch-big-av').querySelector('img')?.src || '';
-  if (isChannelPinned(curOpenChId)) {
-    pinnedChannels = pinnedChannels.filter(c => c.id !== curOpenChId);
-    G('pin-ch-btn').textContent = '📌 Pin';
-    toast('Dihapus dari Channel Favorit');
-  } else {
-    pinnedChannels.push({ id: curOpenChId, name: chName, img: chImg, addedAt: Date.now() });
-    G('pin-ch-btn').textContent = '✅ Di-pin';
-    toast('📌 Channel ditambahkan ke Favorit!');
-  }
-  localStorage.setItem('yt_pinned', JSON.stringify(pinnedChannels));
-}
-
-async function showPinnedPage() {
-  const g = G('pinned-grid');
-  if (!pinnedChannels.length) {
-    g.innerHTML = '';
-    G('pinned-empty').style.display = 'block';
-    return;
-  }
-  G('pinned-empty').style.display = 'none';
-  g.innerHTML = pinnedChannels.map(ch => `
-    <div class="pin-card" onclick="nav('channel','${ch.id}')">
-      <div class="pin-av" style="background:${avc(ch.name)}">
-        ${ch.img ? `<img src="${ch.img}" onerror="this.style.display='none'" loading="lazy"/>` : (ch.name[0]||'?').toUpperCase()}
-      </div>
-      <div style="font-size:14px;font-weight:700;margin-bottom:4px">${esc(ch.name)}</div>
-      <button onclick="event.stopPropagation();removePinned('${ch.id}')" style="margin-top:8px;padding:4px 12px;border-radius:99px;background:var(--surface2);color:var(--text2);border:none;cursor:pointer;font-size:12px">Hapus Pin</button>
-    </div>`).join('');
-  
-  await checkAllPinned();
-}
-
-async function checkAllPinned() {
-  if (!pinnedChannels.length) return;
-  toast('🔄 Mengecek update channel...');
-  const liveMap = await checkLiveStatus(pinnedChannels.map(c => c.id));
-  
-  for (const ch of pinnedChannels) {
-    try {
-      const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://www.youtube.com/feeds/videos.xml?channel_id=' + ch.id)}`);
-      const j = await r.json();
-      if (!j.contents) continue;
-      const xml = new DOMParser().parseFromString(j.contents, 'text/xml');
-      const latest = xml.querySelector('entry');
-      const latestId = latest?.querySelector('videoId')?.textContent;
-      const lastSeen = localStorage.getItem('yt_lastseen_' + ch.id);
-      if (latestId && latestId !== lastSeen) {
-        if (lastSeen) sendNotif(`🆕 ${ch.name} upload video baru!`, latest?.querySelector('title')?.textContent || '', `/#watch=${latestId}`);
-        localStorage.setItem('yt_lastseen_' + ch.id, latestId);
-      }
-    } catch(e) {}
-  }
-  
-  const cards = G('pinned-grid').querySelectorAll('.pin-card');
-  pinnedChannels.forEach((ch, i) => {
-    if (!cards[i]) return;
-    const old = cards[i].querySelector('.pin-live, .pin-new');
-    if (old) old.remove();
-    if (liveMap[ch.id]) {
-      const badge = document.createElement('div');
-      badge.className = 'pin-live';
-      badge.innerHTML = `<span style="width:6px;height:6px;background:#fff;border-radius:50%;animation:livepulse 1s infinite"></span> LIVE`;
-      badge.onclick = e => { e.stopPropagation(); nav('watch', liveMap[ch.id]); };
-      cards[i].appendChild(badge);
-    }
-  });
-  toast('✅ Selesai dicek!');
-}
-
-function removePinned(id) {
-  pinnedChannels = pinnedChannels.filter(c => c.id !== id);
-  localStorage.setItem('yt_pinned', JSON.stringify(pinnedChannels));
-  showPinnedPage();
-}
-
-// ══════════════════════════════════════════
-// NOTIFIKASI BROWSER
-// ══════════════════════════════════════════
-async function toggleNotif() {
-  if (Notification.permission === 'granted') {
-    toast('🔔 Notifikasi sudah aktif! Notif muncul saat channel favorit upload baru.');
-    return;
-  }
-  if (Notification.permission === 'denied') {
-    toast('❌ Notifikasi diblokir. Izinkan dari pengaturan browser.');
-    return;
-  }
-  const perm = await Notification.requestPermission();
-  if (perm === 'granted') {
-    toast('🔔 Notifikasi diizinkan! Pastikan Channel Favorit sudah di-pin.');
-    new Notification('YourTube', { body: 'Notifikasi berhasil diaktifkan! 🎉', icon: 'https://www.youtube.com/favicon.ico' });
-    if ('serviceWorker' in navigator) {
-      const reg = await navigator.serviceWorker.ready;
-      if ('periodicSync' in reg) {
-        try { await reg.periodicSync.register('check-channels', { minInterval: 30 * 60 * 1000 }); } catch(e) {}
-      }
-    }
-  } else {
-    toast('Notifikasi tidak diizinkan.');
-  }
-}
-
-function sendNotif(title, body, url) {
-  if (Notification.permission !== 'granted') return;
-  const n = new Notification(title, { body, icon: 'https://www.youtube.com/favicon.ico' });
-  n.onclick = () => { window.focus(); if (url) { window.location.hash = url.replace('/#', ''); } };
-}
-
-async function startPeriodicCheck() {
-  if (!pinnedChannels.length || Notification.permission !== 'granted') return;
-  setInterval(async () => {
-    for (const ch of pinnedChannels.slice(0, 3)) {
-      try {
-        const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://www.youtube.com/feeds/videos.xml?channel_id=' + ch.id)}`);
-        const j = await r.json();
-        if (!j.contents) continue;
-        const xml = new DOMParser().parseFromString(j.contents, 'text/xml');
-        const latest = xml.querySelector('entry');
-        const latestId = latest?.querySelector('videoId')?.textContent;
-        const lastSeen = localStorage.getItem('yt_lastseen_' + ch.id);
-        if (latestId && latestId !== lastSeen) {
-          if (lastSeen) sendNotif(`🆕 ${ch.name} upload baru!`, latest?.querySelector('title')?.textContent || '', `/#watch=${latestId}`);
-          localStorage.setItem('yt_lastseen_' + ch.id, latestId);
-        }
-      } catch(e) {}
-    }
-  }, 15 * 60 * 1000); 
-}
-
-// ══════════════════════════════════════════
-// PWA
-// ══════════════════════════════════════════
-let pwaInstallEvent = null;
-let pwaInstalled = false;
-
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  pwaInstallEvent = e;
-  if (!localStorage.getItem('pwa_dismissed')) {
-    setTimeout(() => G('pwa-banner').classList.add('show'), 4000);
-  }
-});
-
-window.addEventListener('appinstalled', () => {
-  pwaInstalled = true;
-  G('pwa-banner').classList.remove('show');
-  localStorage.setItem('pwa_installed', '1');
-  toast('✅ YourTube berhasil diinstall sebagai aplikasi!');
-});
-
-async function installPWA() {
-  if (pwaInstallEvent) {
-    pwaInstallEvent.prompt();
-    const result = await pwaInstallEvent.userChoice;
-    G('pwa-banner').classList.remove('show');
-    if (result.outcome === 'accepted') {
-      toast('✅ Menginstall YourTube...');
-    } else {
-      localStorage.setItem('pwa_dismissed', '1');
-    }
-    pwaInstallEvent = null;
-  } else {
-    const ua = navigator.userAgent.toLowerCase();
-    if (/iphone|ipad|ipod/.test(ua)) {
-      alert('Di iPhone/iPad:\n1. Ketuk tombol Share (kotak dengan panah atas)\n2. Pilih "Add to Home Screen"\n3. Ketuk "Add"\n\nSetelah itu YourTube akan terbuka seperti aplikasi!');
-    } else if (/samsung/.test(ua)) {
-      alert('Di Samsung Browser:\n1. Ketuk menu titik tiga (...)\n2. Pilih "Add page to"\n3. Pilih "Home screen"\n4. Ketuk "Add"');
-    } else {
-      alert('Cara install:\n1. Ketuk menu browser (titik tiga)\n2. Pilih "Install app" atau "Add to Home Screen"\n3. Ketuk "Install" atau "Add"');
-    }
-    G('pwa-banner').classList.remove('show');
-  }
-}
-
-// ══════════════════════════════════════════
-// SLEEP TIMER
-// ══════════════════════════════════════════
-let sleepTimer = null, sleepEnd = null;
-function startSleepTimer(minutes) {
-  if (sleepTimer) clearInterval(sleepTimer);
-  sleepEnd = Date.now() + minutes * 60 * 1000;
-  G('sleep-indicator').classList.add('show');
-  sleepTimer = setInterval(() => {
-    const left = sleepEnd - Date.now();
-    if (left <= 0) { yc('pauseVideo'); cancelSleep(); toast('😴 Sleep timer — video dijeda'); return; }
-    const m = Math.floor(left / 60000), s = Math.floor((left % 60000) / 1000);
-    G('sleep-label').textContent = `Pause dalam ${m}:${String(s).padStart(2,'0')}`;
-  }, 1000);
-  toast(`⏰ Sleep timer: ${minutes} menit`);
-}
-function cancelSleep() {
-  if (sleepTimer) clearInterval(sleepTimer);
-  sleepTimer = null; G('sleep-indicator').classList.remove('show');
-}
-
-
-function nav(page,arg){
-  if(history.state?.page===page&&history.state?.arg===arg)return;
-  history.pushState({page,arg},'',`#${page}${arg?'='+encodeURIComponent(arg):''}`);
-  applyRoute({page,arg});
-}
-window.addEventListener('popstate',e=>applyRoute(e.state||{page:'home'}));
-function applyRoute(state){
-  if(window.innerWidth<=640&&G('sidebar').classList.contains('exp'))toggleSidebar();
-  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-  window.scrollTo(0,0);
-  const page=state.page||'home',pgEl=G(page+'-page');
-  if(pgEl) pgEl.style.display = (page==='watch') ? 'contents' : 'block';
-  if(page==='watch'){
-    document.body.classList.add('is-watch');document.body.classList.remove('is-mini','is-shorts');
-    if(curVidId!==state.arg)openWatch(state.arg);
-  }else{
-    document.body.classList.remove('is-watch','is-short-watch');
-    document.body.classList.toggle('is-shorts', page==='shorts');
-    if(curVidId)document.body.classList.add('is-mini');else document.body.classList.remove('is-mini');
-    if(page==='home')showHome();
-    if(page==='channel')openChannel(state.arg);
-    if(page==='search')doSearchTerm(state.arg,true);
-    if(page==='history')showHistory();
-    if(page==='stats')showStats();
-    if(page==='pinned')showPinnedPage();
-    if(page==='shorts'){ if(!shortsData.length) loadShorts('viral'); }
-  }
-  document.querySelectorAll('.si').forEach(el=>el.classList.remove('on'));
-  const an=G('sb-'+page);if(an)an.classList.add('on');
-}
-
-// ══════════════════════════════════════════
-// HISTORY
-// ══════════════════════════════════════════
-function addHist(v){
-  const id=v.id?.videoId||v.id;wHist=wHist.filter(x=>x.id!==id);
-  wHist.unshift({id,title:v.snippet?.title,ch:v.snippet?.channelTitle,chId:v.snippet?.channelId,thumb:v.snippet?.thumbnails?.medium?.url||ytThumb(id,'mqdefault'),ts:Date.now()});
-  wHist=wHist.slice(0,60);localStorage.setItem('yt_hist',JSON.stringify(wHist));
-}
-function showHistory(){
-  const g=G('hist-grid');
-  if(!wHist.length){g.innerHTML='<div class="empty">Belum ada riwayat tontonan</div>';return;}
-  g.innerHTML=wHist.map(v=>cardH({id:v.id,snippet:{title:v.title,channelTitle:v.ch,channelId:v.chId,thumbnails:{medium:{url:v.thumb}}}})).join('');
-}
-function clearHistory(){if(!confirm('Hapus semua riwayat?'))return;wHist=[];localStorage.setItem('yt_hist',JSON.stringify(wHist));showHistory();toast('Riwayat dihapus');}
-function addSHist(q){sHist=sHist.filter(x=>x!==q);sHist.unshift(q);localStorage.setItem('yt_shist',JSON.stringify(sHist.slice(0,12)));}
-
-// ══════════════════════════════════════════
-// SEARCH SUGGESTIONS
-// ══════════════════════════════════════════
-function onSugInput(v){clearTimeout(sugTimer);if(!v||v.length<2){showRecentSearch();return;}sugTimer=setTimeout(()=>fetchSug(v),300);}
-function onSugFocus(){const v=G('search-input').value.trim();if(v.length>=2)fetchSug(v);else showRecentSearch();}
-function onSugBlur(){setTimeout(hideSug,200);}
-function showRecentSearch(){if(!sHist.length){hideSug();return;}G('suggest-box').innerHTML='<div style="padding:8px 16px;font-size:12px;color:var(--text2);font-weight:600">PENCARIAN TERAKHIR</div>'+sHist.map(s=>`<div class="sug-item" onmousedown="pickSug('${esc(s)}')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>${esc(s)}</div>`).join('');G('suggest-box').style.display='block';}
-function fetchSug(q){const cb='_yts_'+Date.now();const s=document.createElement('script');const t=setTimeout(()=>{hideSug();try{delete window[cb];s.remove();}catch(e){}},3000);window[cb]=data=>{clearTimeout(t);try{delete window[cb];s.remove();}catch(e){}renderSug(data[1]?data[1].map(x=>Array.isArray(x)?x[0]:x):[]);};s.src=`https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&hl=id&q=${encodeURIComponent(q)}&callback=${cb}`;document.head.appendChild(s);}
-function renderSug(items){if(!items.length)return;G('suggest-box').innerHTML=items.slice(0,8).map(s=>`<div class="sug-item" onmousedown="pickSug('${esc(s)}')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>${esc(s)}</div>`).join('');G('suggest-box').style.display='block';}
-function hideSug(){G('suggest-box').style.display='none';}
-function pickSug(s){G('search-input').value=s;hideSug();nav('search',s);}
-function doSearch(e){e.preventDefault();const q=G('search-input').value.trim();if(q)nav('search',q);}
-
-// ══════════════════════════════════════════
-// AVATAR
-// ══════════════════════════════════════════
-async function fetchAv(ids){
-  const miss=[...new Set(ids)].filter(id=>!avCache[id]&&id);if(!miss.length)return;
-  for(let i=0;i<miss.length;i+=50){
-    const d=await api('channels',{part:'snippet',id:miss.slice(i,i+50).join(','),maxResults:50});
-    if(d?.items)d.items.forEach(ch=>{avCache[ch.id]=ch.snippet?.thumbnails?.default?.url||'';});
-    try{localStorage.setItem('yt_avcache',JSON.stringify(avCache));}catch(e){}
-  }
-}
-
-// ══════════════════════════════════════════
-// CARDS
-// ══════════════════════════════════════════
-function cardH(v,horiz=false){
-  const id=v.id?.videoId||v.id;
-  const sn=v.snippet||{},st=v.statistics||{},cd=v.contentDetails||{};
-  const th=dataSaver?ytThumb(id,'default'):(sn.thumbnails?.high?.url||sn.thumbnails?.medium?.url||ytThumb(id));
-  const d=dur(cd.duration),views=fv(st.viewCount),ta=sn.publishedAt?ago(sn.publishedAt):'';
-  const title=esc(sn.title||''),ch=esc(sn.channelTitle||''),chId=sn.channelId||'';
-  const avU=avCache[chId]||'',avC=avc(ch);
-  const avH=avU?`<img src="${avU}" loading="lazy" onerror="this.style.display='none'"/>`:((ch||'?')[0].toUpperCase());
-
-  const isLive = v.snippet?.liveBroadcastContent === 'live';
-  const isUpcoming = v.snippet?.liveBroadcastContent === 'upcoming';
-
-  if(horiz)return`<div class="rcard" onclick="nav('watch','${id}')">
-    <div class="rthumb">
-      <img src="${th}" loading="lazy" onerror="this.src='${ytThumb(id,'mqdefault')}'" />
-      ${isLive?`<div class="live-badge"><span class="live-dot"></span>LIVE</div>`:''}
-      <span class="rdur">${isLive?'':d}</span>
-    </div>
-    <div style="flex:1;min-width:0"><div class="rtitle">${title}</div><div class="rch">${ch}</div><div class="rch">${ta}</div></div>
-  </div>`;
-
-  return`<div class="vc">
-    <div class="vt" onclick="nav('watch','${id}')">
-      <img src="${th}" loading="lazy" onerror="this.src='${ytThumb(id,'mqdefault')}'"/>
-      ${isLive?`<div class="live-badge"><span class="live-dot"></span>LIVE</div>`:''}
-      ${isUpcoming?`<div class="live-badge" style="background:#333;">🔔 SEGERA</div>`:''}
-      <span class="vdur">${isLive?'':d}</span>
-      <button class="vsavebtn" onclick="event.stopPropagation();openSaveModal('${id}','${title.replace(/'/g,"\\'")}','${ch.replace(/'/g,"\\'")}','${th}')">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>Simpan
-      </button>
-      <button class="vq-btn" onclick="event.stopPropagation();addToQueueById('${id}','${title.replace(/'/g,"\\'")}','${ch.replace(/'/g,"\\'")}','${th}')">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm4 0h14v-2H7v2zm0-4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>+
-      </button>
-    </div>
-    <div class="vmi">
-      <div class="vav" style="background:${avC}" onclick="event.stopPropagation();nav('channel','${chId}')">${avH}</div>
-      <div style="flex:1;min-width:0;cursor:pointer" onclick="nav('watch','${id}')">
-        <div class="vnm">${title}</div><div class="vch">${ch}</div>
-        <div class="vst">${views?views+' penayangan':''}${ta?' · '+ta:''}</div>
-      </div>
-    </div>
-  </div>`;
-}
-function skelC(){return`<div><div class="sk" style="width:100%;aspect-ratio:16/9;border-radius:12px"></div><div style="display:flex;gap:10px;margin-top:10px"><div class="sk" style="width:36px;height:36px;border-radius:50%;flex-shrink:0"></div><div style="flex:1"><div class="sk" style="height:13px;border-radius:4px;margin-bottom:7px;width:90%"></div><div class="sk" style="height:12px;border-radius:4px;width:60%"></div></div></div></div>`;}
-
-// ══════════════════════════════════════════
-// HOME + CATS
-// ══════════════════════════════════════════
-const CATS=[{id:'',l:'Semua'},{id:'10',l:'🎵 Musik'},{id:'20',l:'🎮 Gaming'},{id:'25',l:'📰 Berita'},{id:'17',l:'⚽ Olahraga'},{id:'28',l:'💻 Teknologi'},{id:'24',l:'🎭 Hiburan'},{id:'22',l:'👤 Vlog'},{id:'23',l:'😂 Komedi'},{id:'27',l:'📚 Edukasi'}];
-function buildCats(){G('cats').innerHTML=CATS.map(c=>`<button class="cpill${c.id===curCat?' on':''}" onclick="loadCat('${c.id}')">${c.l}</button>`).join('');}
-async function showHome(){
-  buildCats();
-  const terms=Object.entries(wHist.slice(0,20).reduce((a,v)=>{if(v.ch)a[v.ch]=(a[v.ch]||0)+1;return a;},{})).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
-  const mainLoad = terms.length
-    ? (G('pbanner').style.display='flex', G('pbtext').textContent=`Untukmu: ${terms.join(', ')}`, loadPersonalized(terms))
-    : (G('pbanner').style.display='none', loadCat(''));
-  await Promise.all([mainLoad, loadHomeShorts()]);
-}
-async function loadHomeShorts(){
-  const sec=G('home-shorts-sec'), grid=G('home-shorts-grid');
-  sec.style.display='block';
-  grid.innerHTML=`<div class="sk sk-short"></div><div class="sk sk-short"></div><div class="sk sk-short"></div><div class="sk sk-short"></div><div class="sk sk-short"></div><div class="sk sk-short"></div>`;
-
-  let videos=await fetchShorts('shorts viral indonesia');
-  if(!videos.length){sec.style.display='none';return;}
-
-  grid.innerHTML=videos.slice(0,6).map(v=>`
-    <div class="hs-card" onclick="nav('watch','`+`${v.id}')">
-      <img src="`+`${v.thumb||ytThumb(v.id,'mqdefault')}" loading="lazy" onerror="this.src='`+`${ytThumb(v.id,'mqdefault')}'"/>
-      <div class="hs-card-info">
-        <div class="hs-card-title">`+`${esc(v.title)}</div>
-        <div class="hs-card-ch">`+`${esc(v.channel)}</div>
-      </div>
-    </div>`).join('');
-}
-
-async function loadPersonalized(terms){
-  const g=G('grid');g.innerHTML=Array(12).fill(0).map(skelC).join('');
-  const qs=[...terms.map(t=>searchAPI(t,6)),getTrendAPI('',6)];
-  const res=await Promise.all(qs);
-  const seen=new Set(),merged=[];
-  for(const b of res){for(const v of(b||[])){const id=v.id?.videoId||v.id;if(!seen.has(id)){seen.add(id);merged.push(v);}}}
-  await fetchAv(merged.map(v=>v.snippet?.channelId).filter(Boolean));
-  g.innerHTML=merged.map(v=>cardH(v)).join('')||'<div class="empty">Gagal memuat</div>';
-}
-async function loadCat(c){
-  curCat=c;buildCats();const g=G('grid');g.innerHTML=Array(12).fill(0).map(skelC).join('');
-  const shortsSec=G('home-shorts-sec');
-  if(c===''){
-    if(!shortsSec.querySelector('.hs-card'))loadHomeShorts();
-    else shortsSec.style.display='block';
-  } else {
-    shortsSec.style.display='none';
-  }
-  const d=await getTrendAPI(c,24);
-  if(!d){g.innerHTML='<div class="empty">Gagal memuat</div>';return;}
-  await fetchAv(d.map(v=>v.snippet?.channelId).filter(Boolean));
-  g.innerHTML=d.map(v=>cardH(v)).join('');G('pbanner').style.display='none';
-}
-async function getTrendAPI(c,m){const d=await api('videos',{part:'snippet,statistics,contentDetails',chart:'mostPopular',maxResults:m,regionCode:'ID',...(c?{videoCategoryId:c}:{})});return d?.items||null;}
-async function searchAPI(q,m){
-  const d=await api('search',{part:'snippet',q,type:'video',maxResults:m});
-  if(d?.items?.length){
-    const ids=d.items.map(x=>x.id.videoId).filter(Boolean).join(',');
-    const r=(await api('videos',{part:'snippet,statistics,contentDetails',id:ids}))?.items||[];
-    if(r.length)return r;
-  }
-  return faaSearch(q,m);
-}
-async function doSearchTerm(q,isR){
-  if(!isR)return nav('search',q);
-  G('search-input').value=q;addSHist(q);
-  G('sq-title').innerHTML=`Hasil untuk: <strong style="color:var(--text)">"${esc(q)}"</strong>`;
-  const g=G('sq-grid');g.innerHTML=Array(8).fill(0).map(skelC).join('');
-  const items=await searchAPI(q,12); 
-  await fetchAv(items.map(v=>v.snippet?.channelId).filter(Boolean));
-  g.innerHTML=items.length?items.map(v=>cardH(v)).join(''):'<div class="empty">Tidak ada hasil</div>';
-}
-
-// ══════════════════════════════════════════
-// DETEKSI SHORTS AKURAT (VIA LEMNOSLIFE API)
-// ══════════════════════════════════════════
-async function checkIsShort(vidId) {
-  try {
-    const r = await fetch(`https://yt.lemnoslife.com/videos?part=short&id=${vidId}`);
-    const d = await r.json();
-    if (d?.items && d.items.length > 0) {
-      return d.items[0]?.short?.available === true;
-    }
-  } catch (e) {
-    console.error("Gagal cek status Shorts:", e);
-  }
-  return false;
-}
-
-// ══════════════════════════════════════════
-// WATCH
-// ══════════════════════════════════════════
-function setShortWatchMode(isShort) {
-  document.body.classList.toggle('is-short-watch', isShort);
-  const rCol = G('w-related');
-  if (rCol) rCol.style.display = isShort ? 'none' : '';
-}
-async function openWatch(vid){
-  curVidId=vid;
-  G('vtitle').textContent='Memuat...';G('dstats').textContent='';G('dtxt').textContent='';
-  G('dtxt').classList.remove('exp');G('dtoggle').textContent='Lebih banyak';
-  G('lbar-wrap').style.display='none';G('notesec').style.display='none';
-  G('chavatar').innerHTML='';G('chname').textContent='';G('chsubs').textContent='';
-  G('mini-title').textContent='';G('mini-ch').textContent='';
-  G('loop-ui').classList.remove('show');G('loop-btn').classList.remove('active');
-  if(loopTimer){clearInterval(loopTimer);loopTimer=null;}
-  G('rlist').innerHTML=Array(5).fill(0).map(()=>`<div style="display:flex;gap:8px;margin-bottom:10px"><div class="sk" style="width:168px;height:94px;border-radius:8px;flex-shrink:0"></div><div style="flex:1"><div class="sk" style="height:12px;border-radius:4px;margin-bottom:6px;width:90%"></div><div class="sk" style="height:11px;border-radius:4px;width:65%"></div></div></div>`).join('');
-
-  if(ytReady)loadP(vid);else pendVid=vid;
-
-  const d=await api('videos',{part:'snippet,statistics,contentDetails',id:vid});
-  if(!d?.items?.length)return;
-  const v=d.items[0];curVidData=v;
-  const sn=v.snippet||{},st=v.statistics||{};
-
-  // Auto-detect Short → tampilkan mode vertikal full screen
-  const isShort = await checkIsShort(vid);
-  setShortWatchMode(isShort);
-
-  document.title=`${sn.title||''} - YourTube`;
-  G('vtitle').textContent=sn.title||'';
-  G('dstats').textContent=`${fvl(st.viewCount)} penayangan · ${ago(sn.publishedAt)}`;
-  G('dtxt').textContent=sn.description||'';
-  G('mini-title').textContent=sn.title||'';
-  G('mini-ch').textContent=sn.channelTitle||'';
-
-  if(st.likeCount&&st.viewCount){
-    const r=Math.min(100,(parseInt(st.likeCount)/parseInt(st.viewCount))*500);
-    G('llike').textContent=`👍 ${fv(st.likeCount)} suka`;
-    G('lratio').textContent=`Disukai ${r.toFixed(1)}% penonton`;
-    G('lbar-fill').style.width=`${Math.min(100,r*2)}%`;
-    G('lbar-wrap').style.display='block';
-  }
-
-  const chId=sn.channelId;
-  G('chname').textContent=sn.channelTitle||'';
-  G('chinfo').dataset.chid=chId||'';
-  if(chId && avCache[chId]){
-    G('chavatar').innerHTML=`<img src="${avCache[chId]}" alt=""/>`;
-    const cachedCh = (() => { try { const r=localStorage.getItem('ytc_channels_'+JSON.stringify({part:'snippet,statistics',id:chId})); if(r){const{data,exp}=JSON.parse(r);if(Date.now()<exp)return data;} } catch(e){} return null; })();
-    if(cachedCh?.items?.length){
-      G('chsubs').textContent=`${fv(cachedCh.items[0].statistics?.subscriberCount||0)} subscriber`;
-    } else {
-      const chObs = new IntersectionObserver(entries => {
-        if(!entries[0].isIntersecting) return;
-        chObs.disconnect();
-        api('channels',{part:'snippet,statistics',id:chId}).then(cd=>{
-          if(!cd?.items?.length)return;
-          G('chsubs').textContent=`${fv(cd.items[0].statistics?.subscriberCount||0)} subscriber`;
-        });
-      },{threshold:0.1});
-      chObs.observe(G('chinfo'));
-    }
-  } else if(chId){
-    G('chavatar').textContent=(sn.channelTitle||'?')[0].toUpperCase();
-    G('chavatar').style.background=avc(sn.channelTitle||'');
-    const chObs = new IntersectionObserver(entries => {
-      if(!entries[0].isIntersecting) return;
-      chObs.disconnect();
-      api('channels',{part:'snippet,statistics',id:chId}).then(cd=>{
-        if(!cd?.items?.length)return;
-        const c=cd.items[0];
-        G('chsubs').textContent=`${fv(c.statistics?.subscriberCount||0)} subscriber`;
-        const img=c.snippet?.thumbnails?.medium?.url||c.snippet?.thumbnails?.default?.url;
-        if(img){G('chavatar').innerHTML=`<img src="${img}" alt=""/>`;avCache[chId]=img;try{localStorage.setItem('yt_avcache',JSON.stringify(avCache));}catch(e){}}
-      });
-    },{threshold:0.1});
-    chObs.observe(G('chinfo'));
-  }
-
-  const notes=JSON.parse(localStorage.getItem('yt_notes')||'{}');
-  G('notearea').value=notes[vid]||'';G('notearea').style.display='none';
-
-  addHist(v);
-  renderQueue();
-
-  commentNextPage = null;
-  commentVidId = vid;
-  G('comments-list').innerHTML = '';
-  G('comments-list').style.display = 'none';
-  G('comment-count').textContent = '';
-  G('load-more-comments').style.display = 'none';
-  G('show-comments-btn').style.display = 'block';
-  G('show-comments-btn').textContent = '💬 Tampilkan Komentar';
-
-  G('rss-badge').style.display='none';
-  G('rlist').innerHTML=`<div id="related-lazy-trigger" style="color:var(--text2);font-size:13px;padding:8px 0">
-    <div class="sk" style="width:100%;height:94px;border-radius:8px;margin-bottom:8px"></div>
-    <div class="sk" style="width:100%;height:94px;border-radius:8px;margin-bottom:8px"></div>
-    <div class="sk" style="width:100%;height:94px;border-radius:8px"></div>
-  </div>`;
-
-  const relObs = new IntersectionObserver(async (entries) => {
-    if (!entries[0].isIntersecting) return;
-    relObs.disconnect();
-    if (chId) {
-      const rssVids = await rssChannel(chId, 12);
-      const filtered = rssVids.filter(r => r.id !== vid);
-      if (filtered.length >= 3) {
-        G('rlist').innerHTML = filtered.map(r => cardH(r, true)).join('');
-        G('rss-badge').style.display = 'inline-flex';
-        return;
-      }
-    }
-    const rel = await searchAPI(sn.channelTitle || '', 8);
-    await fetchAv(rel.map(r => r.snippet?.channelId).filter(Boolean));
-    G('rlist').innerHTML = rel.filter(r => (r.id?.videoId || r.id) !== vid).map(r => cardH(r, true)).join('');
-  }, { threshold: 0.1 });
-
-  const trigger = document.getElementById('related-lazy-trigger');
-  if (trigger) relObs.observe(trigger);
-}
-
-// ══════════════════════════════════════════
-// AMBIL FULL SHORTS DARI CHANNEL (TRIK UUSH)
-// ══════════════════════════════════════════
-async function getChannelShorts(channelId, max = 12) {
-  const shortsPlaylistId = channelId.replace(/^UC/, 'UUSH');
-  try {
-    const d = await api('playlistItems', {
-      part: 'snippet',
-      playlistId: shortsPlaylistId,
-      maxResults: max
-    });
-    
-    if (!d?.items?.length) return [];
-    
-    return d.items.map(v => {
-      const vidId = v.snippet?.resourceId?.videoId || '';
-      return {
-        id: vidId,
-        snippet: {
-          title: v.snippet?.title || '',
-          channelTitle: v.snippet?.channelTitle || '',
-          channelId: channelId,
-          thumbnails: v.snippet?.thumbnails || { medium: { url: ytThumb(vidId, 'mqdefault') } }
-        },
-        contentDetails: { duration: 'PT30S' }
-      };
-    }).filter(v => v.id);
-  } catch(e) {
-    return [];
-  }
-}
-
-// ══════════════════════════════════════════
-// CHANNEL
-// ══════════════════════════════════════════
-async function openChannel(chId){
-  if(!chId)return nav('home');
-  curOpenChId = chId;
-  G('ch-banner').innerHTML='';G('ch-big-av').innerHTML='';
-  G('ch-big-name').textContent='Memuat...';G('ch-big-subs').textContent='';
-  G('ch-grid').innerHTML=Array(8).fill(0).map(skelC).join('');
-  G('pin-ch-btn').textContent = isChannelPinned(chId) ? '✅ Di-pin' : '📌 Pin';
-  const d=await api('channels',{part:'snippet,brandingSettings,statistics',id:chId});
-  if(!d?.items?.length)return;
-  const ch=d.items[0],sn=ch.snippet,st=ch.statistics,bs=ch.brandingSettings;
-  if(bs?.image?.bannerExternalUrl)G('ch-banner').innerHTML=`<img src="${bs.image.bannerExternalUrl}" style="width:100%;height:100%;object-fit:cover"/>`;
-  const hiAvUrl=sn?.thumbnails?.high?.url;
-  if(hiAvUrl)G('ch-big-av').innerHTML=`<img src="${hiAvUrl}" style="width:100%;height:100%;object-fit:cover"/>`;
-  else{G('ch-big-av').textContent=(sn?.title||'?')[0].toUpperCase();G('ch-big-av').style.background=avc(sn?.title||'');}
-  G('ch-big-name').textContent=sn?.title||'';
-  G('ch-big-subs').textContent=`${fv(st?.subscriberCount||0)} subscriber · ${fv(st?.videoCount||0)} video`;
-  if(sn?.thumbnails?.default?.url)avCache[chId]=sn.thumbnails.default.url;
-  
-  const rssVids=await rssChannel(chId,16);
-  if(rssVids.length>=4){
-    G('ch-grid').innerHTML=rssVids.map(v=>cardH(v)).join('');
-  } else {
-    const sv=await api('search',{part:'snippet',channelId:chId,order:'date',type:'video',maxResults:16});
-    if(!sv?.items?.length){
-      G('ch-grid').innerHTML='<div class="empty">Belum ada video</div>';
-    } else {
-      const vd=await api('videos',{part:'snippet,statistics,contentDetails',id:sv.items.map(i=>i.id.videoId).join(',')});
-      G('ch-grid').innerHTML=vd?.items?.map(v=>cardH(v)).join('')||'';
-    }
-  }
-
-  // Tampilkan Shorts channel tersebut di bagian bawah
-  const chShorts = await getChannelShorts(chId, 8);
-  if (chShorts.length > 0) {
-    G('ch-grid').innerHTML += `<div style="grid-column: 1/-1; font-size: 18px; font-weight: 700; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px;">🔥 Shorts Channel Ini</div>`;
-    G('ch-grid').innerHTML += chShorts.map(v => cardH(v)).join('');
-  }
-}
-
-// ══════════════════════════════════════════
-// PLAYLIST
-// ══════════════════════════════════════════
-function openSaveModalCur(){if(curVidData)openSaveModal(curVidData.id,curVidData.snippet?.title||'',curVidData.snippet?.channelTitle||'',curVidData.snippet?.thumbnails?.medium?.url||ytThumb(curVidData.id));}
-function openSaveModal(id,t,c,th){
-  const m=G('pl-modal');m.dataset.vid=id;m.dataset.vt=t;m.dataset.vc=c;m.dataset.vth=th;
-  G('pl-list-modal').innerHTML=Object.keys(playlists).map(p=>`<label style="display:flex;align-items:center;gap:12px;margin-bottom:12px;cursor:pointer;font-size:15px"><input type="checkbox" style="width:18px;height:18px" ${playlists[p].some(v=>v.id===id)?'checked':''} onchange="togglePlItem('${p}','${id}','${esc(t)}','${esc(c)}','${th}',this.checked)">${esc(p)}</label>`).join('');
-  m.classList.add('show');
-}
-function togglePlItem(p,id,t,c,th,chk){
-  if(chk){if(!playlists[p].some(v=>v.id===id)){playlists[p].unshift({id,title:t,ch:c,thumb:th});toast(`✅ Disimpan ke "${p}"`);}}
-  else{playlists[p]=playlists[p].filter(v=>v.id!==id);toast(`Dihapus dari "${p}"`);}
-  localStorage.setItem('yt_playlists',JSON.stringify(playlists));
-  if(G('pl-panel').classList.contains('open'))renderPL();
-}
-function createNewPl(){
-  const n=G('new-pl-inp').value.trim();if(!n||playlists[n])return;
-  playlists[n]=[];G('new-pl-inp').value='';
-  const m=G('pl-modal');togglePlItem(n,m.dataset.vid,m.dataset.vt,m.dataset.vc,m.dataset.vth,true);
-  openSaveModal(m.dataset.vid,m.dataset.vt,m.dataset.vc,m.dataset.vth);
-}
-function renderPL(){
-  G('pl-select').innerHTML=Object.keys(playlists).map(p=>`<option value="${p}" ${p===curPlView?'selected':''}>${esc(p)}</option>`).join('');
-  const items=playlists[curPlView]||[];
-  G('wl-list').innerHTML=items.length?items.map(v=>`<div class="wlitem" onclick="nav('watch','${v.id}');closePLPanel()"><div class="wlthumb"><img src="${v.thumb||ytThumb(v.id,'mqdefault')}" loading="lazy"/></div><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${esc(v.title)}</div><div style="font-size:12px;color:var(--text2);margin-top:2px">${esc(v.ch||'')}</div></div><button onclick="event.stopPropagation();playlists['${curPlView}']=playlists['${curPlView}'].filter(x=>x.id!=='${v.id}');localStorage.setItem('yt_playlists',JSON.stringify(playlists));renderPL()" style="width:28px;height:28px;border-radius:50%;background:var(--surface2);border:none;cursor:pointer;color:var(--text);flex-shrink:0">✕</button></div>`).join(''):'<div class="empty" style="padding:40px 20px">Playlist kosong</div>';
-}
-function togglePLPanel(){G('pl-panel').classList.toggle('open');renderPL();}
-function openPLPanel(){if(window.innerWidth<=640)toggleSidebar();G('pl-panel').classList.add('open');renderPL();}
-function closePLPanel(){G('pl-panel').classList.remove('open');}
-function bgClose(e,id){if(e.target===G(id))G(id).classList.remove('show');}
-
-// ══════════════════════════════════════════
-// MISC
-// ══════════════════════════════════════════
-function toggleTheme(){document.body.classList.toggle('light');localStorage.setItem('yt_theme',document.body.classList.contains('light')?'light':'dark');G('theme-toggle').classList.toggle('on',document.body.classList.contains('light'));}
-function toggleSidebar(){
-  const sb=G('sidebar'),mn=G('main'),ov=G('sb-overlay');
-  if(window.innerWidth<=640){sb.classList.toggle('exp');ov.classList.toggle('show',sb.classList.contains('exp'));}
-  else{sideExp=!sideExp;sb.classList.toggle('exp',sideExp);mn.classList.toggle('exp',sideExp);}
-}
-function toggleDesc(){const e=G('dtxt').classList.toggle('exp');G('dtoggle').textContent=e?'Lebih sedikit':'Lebih banyak';}
-function toggleNotes(){const ns=G('notesec');ns.style.display=ns.style.display==='block'?'none':'block';}
-function saveNote(){if(!curVidId)return;const n=JSON.parse(localStorage.getItem('yt_notes')||'{}');n[curVidId]=G('notearea').value;localStorage.setItem('yt_notes',JSON.stringify(n));}
-function shareVid(){const u=`https://youtu.be/${curVidId}`;if(navigator.share)navigator.share({title:G('vtitle').textContent,url:u});else if(navigator.clipboard)navigator.clipboard.writeText(u).then(()=>toast('🔗 Link disalin!'));else toast(u);}
-document.addEventListener('fullscreenchange',async()=>{if(document.fullscreenElement){try{await screen.orientation.lock('landscape');}catch(e){}}else{try{screen.orientation.unlock();}catch(e){}}});
-
-// ══════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════
-document.addEventListener('DOMContentLoaded',()=>{
-  cleanCache();
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('/sw.js').catch(()=>{});
-  }
-  if(localStorage.getItem('yt_theme')==='light')document.body.classList.add('light');
-  if(dataSaver){document.body.classList.add('data-saver');G('datasaver-bar').classList.add('show');}
-  const accent=localStorage.getItem('yt_accent');
-  if(accent){document.documentElement.style.setProperty('--accent',accent);document.documentElement.style.setProperty('--blue',accent);}
-  if(subSize!==100)setSubSize(subSize);
-  if(sideExp&&window.innerWidth>640){G('sidebar').classList.add('exp');G('main').classList.add('exp');}
-  if(!history.state)history.replaceState({page:'home'},'',window.location.pathname);
-  const hash=window.location.hash.substring(1);
-  if(hash){const[page,...rest]=hash.split('=');applyRoute({page,arg:decodeURIComponent(rest.join('='))});}
-  else applyRoute({page:'home'});
-  
-  setTimeout(startPeriodicCheck, 5000);
-});
-</script>
 </body>
 </html>

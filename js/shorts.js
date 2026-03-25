@@ -1,6 +1,6 @@
 // ════════════════════════════════════════
 // shorts.js — Shorts player (persis YouTube Shorts)
-// FIX: video sebelumnya langsung berhenti saat ganti
+// FIX: video sebelumnya langsung berhenti saat ganti + Algoritma Personal (FYP)
 // ════════════════════════════════════════
 
 let shortsData    = [];
@@ -19,7 +19,7 @@ const SHORTS_QUERY_POOLS = {
   travel: ['shorts wisata indonesia','shorts vlog travel','shorts destinasi'],
 };
 
-// ── Load shorts for a category
+// ── Load shorts for a category (VERSI ALGORITMA PINTAR)
 async function loadShorts(cat = 'viral') {
   if (shortsLoading) return;
   shortsLoading = true;
@@ -29,15 +29,39 @@ async function loadShorts(cat = 'viral') {
   document.querySelectorAll('.short-cat-btn').forEach(b => b.classList.toggle('on', b.dataset.cat === cat));
 
   const container = G('shorts-container');
-  const pool = SHORTS_QUERY_POOLS[cat] || SHORTS_QUERY_POOLS['viral'];
-  shortsQuery = pool[Math.floor(Math.random() * pool.length)];
-
-  // Show loading
   container.innerHTML = `<div class="short-loading"><div class="sring"></div></div>`;
-  shortsData = []; shortsCurIdx = 0;
+  shortsData = []; 
+  shortsCurIdx = 0;
 
-  let videos = await fetchShorts(shortsQuery);
-  if (!videos.length) {
+  let videos = [];
+
+  // ALGORITMA: Cek apakah user sudah login Google (punya access token)
+  // Ini bakal ngecek token dari localStorage (biasanya disimpen pas login di auth.js)
+  let token = null;
+  if (typeof getAuthToken === 'function') {
+    token = getAuthToken();
+  } else if (localStorage.getItem('yt_access_token')) {
+    token = localStorage.getItem('yt_access_token');
+  }
+
+  // JALUR 1: USER LOGIN (FYP Personal) -> Tarik kalau buka tab "Viral" (Beranda Shorts)
+  if (token && cat === 'viral') {
+    try {
+      videos = await fetchPersonalizedShorts(token);
+    } catch (e) {
+      console.log("Gagal tarik personal shorts, fallback ke pencarian umum.");
+    }
+  }
+
+  // JALUR 2: GUEST atau Pilih Kategori Spesifik (Gaming, Musik, dll)
+  if (!videos || videos.length === 0) {
+    const pool = SHORTS_QUERY_POOLS[cat] || SHORTS_QUERY_POOLS['viral'];
+    shortsQuery = pool[Math.floor(Math.random() * pool.length)];
+    videos = await fetchShorts(shortsQuery);
+  }
+
+  // Handle kalau API limit atau kosong
+  if (!videos || !videos.length) {
     container.innerHTML = `<div class="short-loading" style="flex-direction:column;gap:12px">
       <div style="font-size:40px">😕</div>
       <div style="color:#aaa;font-size:14px">Gagal memuat Shorts. Coba lagi.</div>
@@ -66,7 +90,6 @@ function shortCard(v, i) {
   const embedSrc = `https://www.youtube.com/embed/${v.id}?autoplay=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${v.id}&enablejsapi=1`;
 
   return `<div class="short-item" id="short-${i}" data-idx="${i}" data-id="${v.id}">
-    <!-- Player -->
     <div class="short-player-wrap">
       <iframe class="short-iframe" src="about:blank"
         data-src="${embedSrc}"
@@ -74,7 +97,6 @@ function shortCard(v, i) {
         allowfullscreen></iframe>
     </div>
 
-    <!-- Bottom overlay: channel + title -->
     <div class="short-overlay">
       <div class="short-ch-row">
         <div class="short-ch-av" style="background:${avColor}">${avLetter}</div>
@@ -88,7 +110,6 @@ function shortCard(v, i) {
       </div>
     </div>
 
-    <!-- Right side actions -->
     <div class="short-actions">
       <div class="short-act" onclick="event.stopPropagation();nav('watch','${v.id}')" title="Tonton penuh">
         <svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
@@ -116,7 +137,6 @@ function shortCard(v, i) {
       </div>
     </div>
 
-    <!-- Tap center to pause/play -->
     <div style="position:absolute;inset:0;z-index:5" onclick="toggleShortPlayback(${i})"></div>
   </div>`;
 }
@@ -164,7 +184,6 @@ function setupShortsObserver(container) {
         // Load more when near end
         if (idx >= shortsData.length - 3) loadMoreShorts();
       }
-      // Note: tidak perlu else branch karena sudah ditangani di atas
     });
   }, {
     root: container,
@@ -266,4 +285,45 @@ async function loadHomeShorts() {
         <div class="hs-card-ch">${esc(v.channel)}</div>
       </div>
     </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// ALGORITMA TARIK SHORTS PERSONAL (Untuk yang udah Login)
+// ══════════════════════════════════════════
+async function fetchPersonalizedShorts(token) {
+  let personalShorts = [];
+  
+  try {
+    // 1. Ambil 5 channel terbaru yang disubscribe user
+    const subRes = await fetch(`https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&mine=true&maxResults=5`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const subData = await subRes.json();
+    if (!subData.items) return [];
+
+    const channelIds = subData.items.map(item => item.snippet.resourceId.channelId);
+
+    // 2. Tarik video dari masing-masing channel yang formatnya mirip Shorts
+    // Pastikan API_KEY sudah global dari file api.js kamu
+    for (let chId of channelIds) {
+      const searchRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${chId}&maxResults=3&q=%23shorts&type=video&videoDuration=short&key=${API_KEY}`);
+      const searchData = await searchRes.json();
+      
+      if (searchData.items) {
+        searchData.items.forEach(item => {
+          personalShorts.push({
+            id: item.id.videoId,
+            title: item.snippet.title,
+            channel: item.snippet.channelTitle,
+            thumb: item.snippet.thumbnails.high.url
+          });
+        });
+      }
+    }
+    return personalShorts;
+
+  } catch (error) {
+    console.error("Error algoritma personal:", error);
+    return [];
+  }
 }

@@ -31,7 +31,7 @@ export default async function handler(req, res) {
   if (!endpoint) return res.status(400).json({ error: { message: 'Parameter endpoint wajib.' } });
 
   // Tambah commentThreads ke whitelist
-  const ALLOWED = ['videos', 'search', 'channels', 'commentThreads'];
+  const ALLOWED = ['videos', 'search', 'channels', 'commentThreads', 'playlistItems', 'subscriptions'];
   if (!ALLOWED.includes(endpoint)) return res.status(403).json({ error: { message: 'Endpoint tidak diizinkan.' } });
 
   let lastError = null;

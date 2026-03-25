@@ -452,16 +452,5 @@ body.is-short-watch #short-watch-back{display:flex}
   #player-bar{padding:6px 8px;gap:4px}
   .pb{padding:4px 5px;font-size:12px}
   .psel{font-size:12px;padding:4px 6px;max-width:90px}
-  
-  /* --- FIX UI NAVBAR HP --- */
-  /* Sembunyikan tombol Masuk di atas biar nggak desak-desakan */
-  #google-login-btn { 
-    display: none !important; 
-  }
-  
-  /* Sembunyikan icon Antrian & Koleksi di navbar HP, biar Search Bar makin panjang & rapi */
-  #nav-right button[title="Antrian"],
-  #nav-right button[title="Koleksi"] {
-    display: none;
-  }
+  #google-login-btn span{display:none}
 }

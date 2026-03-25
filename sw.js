@@ -1,5 +1,5 @@
 // YourTube Service Worker
-const CACHE_NAME = 'yourtube-v2';
+const CACHE_NAME = 'yourtube-v3';
 const STATIC = [
   '/',
   '/index.html',

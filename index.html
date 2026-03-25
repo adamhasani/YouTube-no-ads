@@ -12,18 +12,16 @@
 <title>YourTube</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="css/styles.css?v=2"/>
+<link rel="stylesheet" href="/css/styles.css?v=2"/>
 </head>
 <body>
 
-<!-- Data Saver Bar -->
 <div id="datasaver-bar">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
   Mode Hemat Data aktif — thumbnail kualitas rendah
   <button onclick="toggleDataSaver()" style="margin-left:auto;padding:2px 10px;border-radius:99px;background:rgba(255,255,255,.2);color:#fff;font-size:12px;border:none;cursor:pointer">Nonaktifkan</button>
 </div>
 
-<!-- Navbar -->
 <nav id="navbar">
   <div id="logo-wrap">
     <button class="icon-btn" onclick="toggleSidebar()">
@@ -66,18 +64,15 @@
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
     </button>
 
-    <!-- Google Login Button -->
     <button id="google-login-btn" onclick="signInWithGoogle()" title="Masuk dengan Google">
       <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       <span>Masuk</span>
     </button>
 
-    <!-- User Avatar (shown when logged in) -->
     <div id="user-avatar-btn" onclick="toggleUserMenu()" title="Akun Google"></div>
   </div>
 </nav>
 
-<!-- User Dropdown Menu -->
 <div id="user-menu">
   <div class="user-menu-header" id="user-menu-header-info">
     <div class="user-menu-avatar" id="user-menu-avatar-img"></div>
@@ -108,10 +103,8 @@
   </div>
 </div>
 
-<!-- Sidebar overlay -->
 <div id="sb-overlay" onclick="toggleSidebar()"></div>
 
-<!-- Sidebar -->
 <aside id="sidebar">
   <div class="si on" id="sb-home" onclick="nav('home')">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Beranda</span>
@@ -154,12 +147,8 @@
   </div>
 </aside>
 
-<!-- ══════════════════════════════════════
-     MAIN CONTENT
-     ══════════════════════════════════════ -->
 <main id="main">
 
-  <!-- Player Wrapper (shared between watch + mini) -->
   <div id="player-wrapper" onclick="if(document.body.classList.contains('is-mini'))nav('watch',curVidId)">
     <div id="pw-inner">
       <div id="pw-inner-ratio">
@@ -213,7 +202,6 @@
     </div>
   </div>
 
-  <!-- ── HOME PAGE ── -->
   <div id="home-page" class="page">
     <div id="cats"></div>
     <div id="pbanner">
@@ -233,7 +221,6 @@
     <div id="grid"></div>
   </div>
 
-  <!-- ── WATCH PAGE ── -->
   <div id="watch-page" class="page">
     <div id="w-details">
       <h1 id="vtitle">Memuat...</h1>
@@ -287,7 +274,6 @@
     </div>
   </div>
 
-  <!-- ── CHANNEL PAGE ── -->
   <div id="channel-page" class="page page-pad">
     <div id="ch-banner" style="width:100%;height:180px;background:var(--surface);border-radius:12px;overflow:hidden;margin-bottom:20px"></div>
     <div id="ch-hdr" style="display:flex;gap:20px;align-items:center;margin-bottom:28px">
@@ -302,13 +288,11 @@
     <div id="ch-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:0 0 40px"></div>
   </div>
 
-  <!-- ── SEARCH PAGE ── -->
   <div id="search-page" class="page page-pad">
     <div id="sq-title" style="font-size:16px;margin:0 0 16px"></div>
     <div id="sq-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:0"></div>
   </div>
 
-  <!-- ── PINNED PAGE ── -->
   <div id="pinned-page" class="page page-pad">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
       <h2 style="font-size:22px;font-weight:700">📌 Channel Favorit</h2>
@@ -323,7 +307,6 @@
     </div>
   </div>
 
-  <!-- ── SHORTS PAGE ── -->
   <div id="shorts-page" class="page">
     <div id="shorts-topbar">
       <span style="font-size:18px;font-weight:800;color:#fff;font-family:'Outfit',sans-serif;letter-spacing:-.5px">▶ Shorts</span>
@@ -336,9 +319,7 @@
         <button class="short-cat-btn"    data-cat="travel" onclick="loadShorts('travel')">✈️ Travel</button>
       </div>
     </div>
-    <!-- Progress bar -->
     <div id="shorts-progress"><div id="shorts-progress-fill"></div></div>
-    <!-- Nav arrows -->
     <button class="short-nav" id="short-prev" onclick="shortNavPrev()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
     </button>
@@ -348,7 +329,6 @@
     <div id="shorts-container"></div>
   </div>
 
-  <!-- ── HISTORY PAGE ── -->
   <div id="history-page" class="page page-pad">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
       <h2 style="font-size:22px;font-weight:700">Riwayat Tontonan</h2>
@@ -357,7 +337,6 @@
     <div id="hist-grid" style="padding:0"></div>
   </div>
 
-  <!-- ── STATS PAGE ── -->
   <div id="stats-page" class="page page-pad">
     <h2 style="font-size:22px;font-weight:700;margin-bottom:20px">📊 Statistik Tontonan</h2>
     <div id="stats-content"></div>
@@ -365,11 +344,6 @@
 
 </main>
 
-<!-- ══════════════════════════════════════
-     PANELS + MODALS
-     ══════════════════════════════════════ -->
-
-<!-- Queue Panel -->
 <div id="queue-panel">
   <div class="pl-hdr">
     <div>
@@ -384,7 +358,6 @@
   <div id="q-list" style="flex:1;overflow-y:auto;padding:12px"></div>
 </div>
 
-<!-- Playlist Panel -->
 <div id="pl-panel">
   <div class="pl-hdr">
     <select id="pl-select" class="pl-sel" onchange="curPlView=this.value;renderPL()"></select>
@@ -393,7 +366,6 @@
   <div id="wl-list"></div>
 </div>
 
-<!-- Save to Playlist Modal -->
 <div class="moverlay" id="pl-modal" onclick="bgClose(event,'pl-modal')">
   <div class="mbox">
     <h2>Simpan ke...</h2>
@@ -405,10 +377,19 @@
   </div>
 </div>
 
-<!-- Settings Modal -->
 <div class="moverlay" id="settings-modal" onclick="bgClose(event,'settings-modal')">
   <div class="mbox">
     <h2>⚙️ Pengaturan</h2>
+    <div class="setting-row" id="mobile-login-setting">
+      <div>
+        <div class="setting-label">👤 Akun Google</div>
+        <div class="setting-sub">Masuk untuk simpan riwayat & playlist</div>
+      </div>
+      <button class="mbtn" onclick="signInWithGoogle(); G('settings-modal').classList.remove('show')" style="font-size:13px;padding:8px 14px;background:#4285F4;display:flex;align-items:center;gap:6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" style="background:#fff;border-radius:50%;padding:2px"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Masuk
+      </button>
+    </div>
     <div class="setting-row">
       <div><div class="setting-label">🌙 Tema Gelap/Terang</div></div>
       <div class="toggle-switch" id="theme-toggle" onclick="toggleTheme()"></div>
@@ -454,7 +435,6 @@
   </div>
 </div>
 
-<!-- PWA Banner -->
 <div id="pwa-banner">
   <img src="/icon-192.png" style="width:40px;height:40px;border-radius:10px;flex-shrink:0" onerror="this.style.display='none'"/>
   <div style="flex:1">
@@ -465,30 +445,21 @@
   <button onclick="G('pwa-banner').classList.remove('show');localStorage.setItem('pwa_dismissed','1')" style="background:var(--surface3);color:var(--text2);padding:8px 10px;border-radius:8px;font-size:13px;border:none;cursor:pointer;flex-shrink:0">✕</button>
 </div>
 
-<!-- Sleep Indicator -->
 <div id="sleep-indicator">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
   <span id="sleep-label">Pause dalam 30:00</span>
   <button onclick="cancelSleep()" style="background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:4px;padding:2px 8px;font-size:12px;cursor:pointer">Batal</button>
 </div>
 
-<!-- Short watch back button -->
 <button id="short-watch-back" onclick="history.back()" title="Kembali">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
 </button>
 
-<!-- Toast + Spinner -->
 <div id="spinner"><div class="sring"></div><span style="color:#fff;font-weight:500">Memuat...</span></div>
 <div id="toast"></div>
 
-<!-- ══════════════════════════════════════
-     SCRIPTS
-     ══════════════════════════════════════ -->
-<!-- Google Identity Services (untuk login Google) -->
 <script src="https://accounts.google.com/gsi/client" async onload="onGISLoaded()"></script>
-<!-- YouTube IFrame API -->
 <script src="https://www.youtube.com/iframe_api"></script>
-<!-- App modules (urutan penting) -->
 <script src="/js/utils.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/auth.js"></script>

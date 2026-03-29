@@ -10,7 +10,7 @@ window.onYouTubeIframeAPIReady = function() {
 
 function loadP(vid) {
   const saved = localStorage.getItem('ytt_' + vid);
-  if (ytP) { ytP.loadVideoById(vid, saved ? parseFloat(saved) : 0); return; }
+  if (ytP) { ytP.loadVideoById(vid, saved ? parseFloat(saved) : 0); setTimeout(loadAudioTracks, 2000); return; }
   ytP = new YT.Player('yt-player', {
     videoId: vid,
     playerVars: {
@@ -22,6 +22,7 @@ function loadP(vid) {
       onReady(e) {
         e.target.setPlaybackRate(curSpd);
         if (saved) e.target.seekTo(parseFloat(saved));
+        setTimeout(loadAudioTracks, 1500);
         try {
           const p = e.target.playVideo();
           if (p && p.catch) p.catch(() => { e.target.mute(); e.target.playVideo(); });
@@ -214,4 +215,42 @@ function showDownloadModal(url, format, title, vidId) {
     <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:10px">Link download aktif ~1 jam. Jika gagal, coba lagi.</p>
   </div>`;
   modal.classList.add('show');
+}
+
+// ── Audio Track / Sulih Suara
+function loadAudioTracks() {
+  const wrap = document.getElementById('audio-track-wrap');
+  const sel = document.getElementById('audio-track-sel');
+  if (!ytP || !ytP.getOption) { wrap.style.display = 'none'; return; }
+  try {
+    ytP.loadModule('audioTrack');
+    setTimeout(() => {
+      try {
+        const tracks = ytP.getOption('audioTrack', 'availableAudioTracks');
+        if (!tracks || tracks.length <= 1) { wrap.style.display = 'none'; return; }
+        sel.innerHTML = tracks.map((t, i) => {
+          const lang = t.displayName || t.id || ('Track ' + (i + 1));
+          return `<option value="${i}">${lang}</option>`;
+        }).join('');
+        wrap.style.display = 'flex';
+        // set current
+        const cur = ytP.getOption('audioTrack', 'track');
+        if (cur) {
+          const curIdx = tracks.findIndex(t => t.id === cur.id);
+          if (curIdx >= 0) sel.value = curIdx;
+        }
+      } catch(e) { wrap.style.display = 'none'; }
+    }, 1200);
+  } catch(e) { wrap.style.display = 'none'; }
+}
+
+function setAudioTrack(idx) {
+  if (!ytP || !ytP.getOption) return;
+  try {
+    const tracks = ytP.getOption('audioTrack', 'availableAudioTracks');
+    if (tracks && tracks[idx]) {
+      ytP.setOption('audioTrack', 'track', tracks[idx]);
+      toast('🎙️ Audio: ' + (tracks[idx].displayName || tracks[idx].id));
+    }
+  } catch(e) { toast('❌ Gagal ganti audio'); }
 }
